@@ -1,0 +1,10 @@
+gray-left: watertight=True; bounds_mm=139.971 x 155.000 x 130.952
+gray-right: watertight=True; bounds_mm=139.371 x 155.000 x 158.952
+white-right: watertight=True; bounds_mm=70.494 x 155.000 x 21.660
+base-left: watertight=True; bounds_mm=140.000 x 155.000 x 6.000
+base-right: watertight=True; bounds_mm=139.400 x 155.000 x 6.000
+splice: watertight=True; bounds_mm=25.000 x 12.000 x 3.000
+fit-coupon: watertight=True; bounds_mm=74.000 x 36.900 x 62.000
+Envelope: nominal 279.4 x 155 x 165 mm; display bay depth=36.9 mm (2+9.5+25.4)
+3MF: two material parts, one build object, valid ZIP/XML
+PDF: 6 pages; text and raster renders verified by builder; visual review required
