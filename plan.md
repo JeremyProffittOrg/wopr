@@ -35,8 +35,8 @@ depends on: model-export
 ### pdf-review — assembled views and dimensioned drawings
 - [x] drawing-packet — python C:/dev/wopr/cad/build.py creates C:/dev/wopr/output/pdf/wopr-first-draft.pdf; all rendered pages inspected.
 ### artifact-delivery — commit, push, email attachments
-- [ ] repository-delivery — git -C C:/dev/wopr push origin main exits 0; gh run list checks for triggered workflow.
-- [ ] operator-email — delegated SES send returns MessageId; PDF and model ZIP attached.
+- [x] repository-delivery — git -C C:/dev/wopr push origin main exits 0; gh run list returned [] (repository has no workflow).
+- [x] operator-email — delegated SES send returned MessageId; PDF and model ZIP attached.
 
 ## Stop conditions (only these)
 - Missing credentials or delivery recipient that cannot be resolved from existing configuration.
@@ -52,3 +52,5 @@ depends on: model-export
 - 2026-09-26: Read repository instructions and deployment guide; clean main initially. Confirmed local OpenSCAD, Python PDF/mesh tools, GitHub access, and manufacturer CAD dimensions. No dependency installation needed.
 - 2026-09-26: Builder sessions 59785 and 49901 completed with exit 0. User confirmed eight boards; final geometry has four per long side. Seven STL exports passed watertight/winding/positive-volume checks, structural parts passed single-component checks, and 3MF passed ZIP/XML/material-part checks. All six PDF page images inspected at C:/dev/wopr/tmp/pdfs/page-1.png through page-6.png. No clipping or text overlap. Physical fit and slicer toolpaths remain unverified as explicitly stated in the packet.
 - 2026-09-26: Final builder session 20668: exit 0, "PASS: all geometry and document checks". Final section and coupon pages visually checked. Trimesh loaded the 3MF with 2 geometries; bounds [[0,0,0],[139.371094,155,158.951843]]. Initial artifact commit a611cc5. gh workflow list returned no configured workflows. Font cache moved into ignored temporary directory; no scratch files staged.
+- 2026-09-26: Pushed main at 59d07c7a4bf9a4199fe1b4e0441948a0bb492a9d; git ls-remote confirmed the remote SHA. gh run list --limit 5 --json databaseId,status,conclusion,headSha returned []. git diff --check passed. PDF and ZIP committed bytes match local attachments; ZIP integrity and SCAD source match passed (12 entries).
+- 2026-09-26: Agent /root/email_draft sent HTML mail through SES us-east-1 to proffitt.jeremy@gmail.com, with PDF and printable ZIP attached. SES accepted message 010001a0dd695595-c8b70668-057d-437d-bc55-073aa580f00e-000000. Receipt read from C:/dev/wopr/tmp/pdfs/email-receipt.json. This confirms SES acceptance, not inbox delivery.
