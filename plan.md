@@ -37,8 +37,8 @@ depends on: model-export
 - [x] revision-proof — python C:/dev/wopr/cad/build.py exits 0, eleven watertight STLs and mechanical clearance probes pass; six PDF pages inspected.
 ### revised-delivery — publish and email the corrected packet
 depends on: revised-geometry
-- [ ] revision-push — git -C C:/dev/wopr push origin main exits 0 and gh run list checks triggered workflows.
-- [ ] revision-email — SES accepts updated PDF and kit to proffitt.jeremy@gmail.com; record MessageId.
+- [x] revision-push — git -C C:/dev/wopr push origin main exits 0 and gh run list returns [] (no workflow configured).
+- [x] revision-email — SES accepted updated PDF and kit to proffitt.jeremy@gmail.com; MessageId recorded below.
 
 ## cad-draft — parametric printable geometry
 depends on: none
@@ -71,3 +71,5 @@ depends on: model-export
 - 2026-09-26: Pushed main at 59d07c7a4bf9a4199fe1b4e0441948a0bb492a9d; git ls-remote confirmed the remote SHA. gh run list --limit 5 --json databaseId,status,conclusion,headSha returned []. git diff --check passed. PDF and ZIP committed bytes match local attachments; ZIP integrity and SCAD source match passed (12 entries).
 - 2026-09-26: Agent /root/email_draft sent HTML mail through SES us-east-1 to proffitt.jeremy@gmail.com, with PDF and printable ZIP attached. SES accepted message 010001a0dd695595-c8b70668-057d-437d-bc55-073aa580f00e-000000. Receipt read from C:/dev/wopr/tmp/pdfs/email-receipt.json. This confirms SES acceptance, not inbox delivery.
 - 2026-09-26: Draft 02 replaces spaced LED clusters with adjacent 84.72 mm banks, front-loading mounts with rear-loading pockets and blind screws, and closed roofs with removable pen cups. Hidden OpenSCAD build session 36630 exited 0: "PASS: all geometry and document checks". Eleven meshes are watertight; SCAD collision probes passed rear insertion, cup lift, pen well openness, 25.4 mm display clearance and hidden pilot checks. All six regenerated PDF pages visually reviewed. Physical fit and toolpaths remain unverified. No dependencies or cloud resources changed.
+- 2026-09-26: Draft 02 artifact commit 0595cdd pushed to main; gh run list returned []. ZIP integrity passed, all 16 entries match the current files. PDF and ZIP bytes match their Git blobs. PDF SHA256 ed135301334bedce4dc7f112057dcc6bedb473ac2ba382b4e548822ca9e5788f; ZIP SHA256 c12c3c66703863ca550d838f943b0a8a9c235dded53ceff8ec2cc14b2c7a158d.
+- 2026-09-26: /root/email_draft sent the corrected HTML email and attachments. SES accepted MessageId 010001a0dd7b3bc9-18b919f4-d6de-41d1-bdaf-d1bb042ffe82-000000. Receipt checked at C:/dev/wopr/tmp/pdfs/email-receipt-draft02.json. The email identifies the draft 01 corrections and physical-fit limit. No foreground console was requested; subprocesses use CREATE_NO_WINDOW.
