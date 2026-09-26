@@ -9,4 +9,5 @@ LED layout: 7 panels per side; 14 total; 840 LEDs; bank=148.485 mm; retainer=160
 Envelope: nominal 279.4 x 155 x 165 mm; display bay depth=36.9 mm (2+9.5+25.4)
 PASS: rear PCB insertion paths, cup lift paths, open pen wells, 25.4 mm display bay, hidden TFT pilots
 3MF: two material parts, one build object, valid ZIP/XML
+Bambu handoff: one wopr-parts.3mf, seven spaced build items, no printer presets
 PDF: 6 pages; text and raster renders verified by builder; visual review required

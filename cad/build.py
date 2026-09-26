@@ -85,7 +85,7 @@ resources = ET.SubElement(model, tag('resources'))
 mats = ET.SubElement(resources, tag('basematerials'), {'id':'1'})
 for name, color in [('Gray','#686E75FF'),('White','#FAFAF5FF')]:
     ET.SubElement(mats, tag('base'), {'name':name, 'displaycolor':color})
-for objid, name, material in [(2,'gray-shell',0),(3,'white-text',1)]:
+def add_mesh(objid, name, material=0):
     obj = ET.SubElement(resources, tag('object'), {'id':str(objid),'type':'model','name':name,'pid':'1','pindex':str(material)})
     body = ET.SubElement(obj,tag('mesh'))
     verts = ET.SubElement(body,tag('vertices'))
@@ -94,6 +94,8 @@ for objid, name, material in [(2,'gray-shell',0),(3,'white-text',1)]:
     faces = ET.SubElement(body,tag('triangles'))
     for face in meshes[name].faces:
         ET.SubElement(faces,tag('triangle'),dict(zip(['v1','v2','v3'],[str(a) for a in face])))
+for objid, name, material in [(2,'gray-shell',0),(3,'white-text',1)]:
+    add_mesh(objid,name,material)
 assembly = ET.SubElement(resources,tag('object'),{'id':'4','type':'model','name':'WOPR one-piece shell - assign gray and white'})
 components = ET.SubElement(assembly,tag('components'))
 for n in [2,3]: ET.SubElement(components,tag('component'),{'objectid':str(n)})
@@ -109,6 +111,25 @@ with zipfile.ZipFile(mf) as z:
     assert len(check.findall('.//'+tag('component'))) == 2
     assert len(check.findall('.//'+tag('base'))) == 2
 evidence.append('3MF: two material parts, one build object, valid ZIP/XML')
+
+# Bambu's GUI rejects a single import batch that mixes .3mf and .stl suffixes.
+# Deliver one geometry-only 3MF, with separate objects and the shell's material parts.
+for objid,name in [(5,'base'),(6,'cup-main'),(7,'cup-tower'),(8,'led-retainer'),(9,'fit-coupon')]:
+    add_mesh(objid,name)
+build=model.find(tag('build'))
+build[0].set('transform','1 0 0 0 1 0 0 0 1 10 10 0')
+for objid,x,y in [(5,310,10),(6,10,190),(7,190,190),(8,310,190),(8,310,230),(9,500,190)]:
+    ET.SubElement(build,tag('item'),{'objectid':str(objid),'transform':f'1 0 0 0 1 0 0 0 1 {x} {y} 0'})
+parts_project=KIT/'wopr-parts.3mf'
+with zipfile.ZipFile(mf) as original, zipfile.ZipFile(parts_project,'w',zipfile.ZIP_DEFLATED) as z:
+    for name in original.namelist():
+        z.writestr(name,ET.tostring(model,encoding='utf-8',xml_declaration=True) if name=='3D/3dmodel.model' else original.read(name))
+with zipfile.ZipFile(parts_project) as z:
+    assert z.testzip() is None
+    parts_xml=ET.fromstring(z.read('3D/3dmodel.model'))
+    assert len(parts_xml.findall('./'+tag('build')+'/'+tag('item')))==7
+    assert 'Metadata/project_settings.config' not in z.namelist()
+evidence.append('Bambu handoff: one wopr-parts.3mf, seven spaced build items, no printer presets')
 
 views = {
     'hero': ('430,-450,310,139,70,80','assembly',True),
@@ -236,7 +257,7 @@ start('Print kit and evidence','Install from the inside','Rear access shown with
 pic('rear-mounts',45,283,235,209)
 text(47,269,'UNDERSIDE / REAR MOUNTING ACCESS',8,ACCENT,'Helvetica-Bold')
 lines(310,488,['PRINT FILES',
-              'shell-two-color.3mf: one shell, gray + white parts.',
+              'OPEN wopr-parts.3mf alone in Bambu Studio.',
               'gray-shell.stl: one continuous structural case.',
               'white-text.stl: aligned lettering; import with gray-shell.',
               'base.stl: one continuous removable underside.',
@@ -267,7 +288,7 @@ for i,p in enumerate(doc):
 evidence.append('PDF: 6 pages; text and raster renders verified by builder; visual review required')
 (OUT/'verification.txt').write_text('\n'.join(evidence)+'\n')
 with zipfile.ZipFile(OUT/'wopr-first-draft-kit.zip','w',zipfile.ZIP_DEFLATED) as z:
-    for path in [SCAD,ROOT/'cad/README.md',ROOT/'cad/build.py',OUT/'verification.txt',mf,*[KIT/f'{n}.stl' for n in offsets]]:
+    for path in [SCAD,ROOT/'cad/README.md',ROOT/'cad/build.py',OUT/'verification.txt',mf,parts_project,*[KIT/f'{n}.stl' for n in offsets]]:
         z.write(path,path.relative_to(ROOT))
 print(f'PDF: {PDF}; pages={len(doc)}',flush=True)
 print('PASS: all geometry and document checks',flush=True)

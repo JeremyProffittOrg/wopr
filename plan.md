@@ -93,6 +93,15 @@ depends on: seven-panel-edit
 - [x] continuous-email — SES accepted draft 05 PDF and full kit; receipt recorded below.
 - [x] continuous-push — e3fd24a pushed to main; workflow check returned [] and worktree clean.
 
+## bambu-import-handoff — fix mixed-suffix GUI import failure
+depends on: unsplit-exports
+### single-file-import — one geometry-only project containing all parts
+- [x] import-reproduction — Bambu GUI reproduced "Please import multiple files with the same suffix." for the six-file mixed .3mf/.stl batch; CLI geometry checks passed, proving the failing boundary is GUI batch handling.
+- [x] combined-project — builder creates output/model/wopr-parts.3mf with seven spaced build items, grouped gray/white shell, two retainers and no printer presets.
+- [x] import-verification — private GUI probe accepts the standard geometry-only confirmation, sees "wopr-parts - BambuStudio", and reports import_pass=true; parent PID43128 exited 0.
+- [x] corrected-open — Bambu Studio PID39996 launched with wopr-parts.3mf as its only file argument.
+- [~] import-fix-delivery — commit and push corrected exporter, instructions and kit; email corrected attachment.
+
 ## Job policy
 - OpenSCAD subprocesses: captured exit code, stderr and a 180-second timeout per export; deterministic failure gets a code correction, at most two corrected retries. No background scheduler.
 - Builder is tracked by exec session ID; poll until success or failure. No silent retries.
@@ -117,3 +126,4 @@ depends on: seven-panel-edit
 - 2026-09-26: Bambu Studio launched directly as the user-requested GUI (PID38956) with shell-two-color.3mf, base.stl, cup-main.stl, cup-tower.stl, led-retainer.stl and fit-coupon.stl. No slicing or printing was started. Native build plate fit must be checked by the user; full-size shell/base need 279.4 x155 mm plus brim.
 - 2026-09-26: SES accepted regenerated draft 05 PDF and complete kit to proffitt.jeremy@gmail.com. MessageId 010001a0dfb18ba6-30511bb8-3578-4878-8181-3422786953b0-000000; receipt read at tmp/pdfs/email-receipt-draft05.json. Email sent entirely through SDK/HTTPS without local processes.
 - 2026-09-26: Commit e3fd24a pushed to main. git diff --cached --check passed. Private workflow-check parent PID16428 exited 0; gh run list returned []; git status --short returned no entries. GitHub CLI used existing configuration at C:/Users/Jeremy/AppData/Roaming/GitHub CLI without exposing credentials. No workflow is configured.
+- 2026-09-26: Import diagnosis: bambu-studio.exe --info succeeded for each input and the complete original batch. Private GUI reproduction captured "Please import multiple files with the same suffix." Replaced the mixed GUI handoff with one geometry-only 3MF. The builder now verifies seven build items and excludes printer presets. Final private GUI probe (tmp/pdfs/gui-import-probe.py via desktop-launch.py) reported import_pass=true and title "wopr-parts - BambuStudio" after geometry-only confirmation. Opened the verified file on the interactive desktop only through the explicitly authorized Bambu GUI. No console windows used.

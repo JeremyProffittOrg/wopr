@@ -21,6 +21,14 @@ Python dependencies already present on the design machine: Pillow, trimesh, nump
 
 ## Print and assembly
 
+Open `output/model/wopr-parts.3mf` by itself in Bambu Studio. It contains the complete
+parts set, with the gray/white shell grouped and the other parts separated in the workspace.
+Do not pass `.3mf` and `.stl` files together in one GUI import batch: Bambu rejects mixed
+suffixes. The project carries geometry only, not printer presets or G-code. Select the
+correct printer and arrange parts onto suitable plates before slicing. Two retainers are included.
+If Bambu displays "load geometry data only", confirm that option. This preserves the
+printer settings already selected in Bambu Studio.
+
 1. Print the gray display fit coupon first. Test the actual V2 board, holes, connectors and inset. This is a dimensional draft, not a completed physical fit test.
 2. Open `shell-two-color.3mf` as one object with two material parts. Assign gray and white explicitly in the slicer. Confirm both text lines on both long sides. A plain STL cannot store material assignments.
 3. `gray-shell.stl` plus `white-text.stl` are the alternative: import together as parts of ONE object and preserve their common origin. Do not auto-arrange the white file or print the loose letters separately.
