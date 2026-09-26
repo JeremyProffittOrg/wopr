@@ -51,7 +51,7 @@ depends on: revised-geometry
 - [x] longer-bank-pdf — all six draft 03 pages visually inspected; kit contents match current files after file-only ZIP refresh.
 ### sixteen-panel-delivery — commit and email draft 03
 depends on: sixteen-panel-model
-- [!] longer-bank-push — needs a process-free delivery path or a full launch chain independently verified to stay hidden. The current launcher is prohibited by the operator's console-visibility rule.
+- [x] longer-bank-push — superseded by draft 05 delivery, committed and pushed through the verified private-desktop chain. Retired shell launchers remain prohibited.
 - [x] longer-bank-email — SES accepted draft 03 PDF through process-free SDK signing and HTTPS. Updated ZIP became ready after transmission and was not emailed; it is available locally.
 
 ## cad-draft — parametric printable geometry
@@ -90,8 +90,8 @@ depends on: seven-panel-edit
 - [x] continuous-pdf — all six draft 05 pages visually inspected; seven panels per side and unsplit parts documented.
 - [x] bambu-open — Bambu Studio GUI PID 38956 launched directly with shell-two-color.3mf and five STL files; no shell wrapper.
 ### continuous-delivery — updated PDF and full print kit
-- [~] continuous-email — process-free SES send delegated to /root/email_draft.
-- [ ] continuous-push — focused commit and main push, then workflow check, from the private desktop.
+- [x] continuous-email — SES accepted draft 05 PDF and full kit; receipt recorded below.
+- [x] continuous-push — e3fd24a pushed to main; workflow check returned [] and worktree clean.
 
 ## Job policy
 - OpenSCAD subprocesses: captured exit code, stderr and a 180-second timeout per export; deterministic failure gets a code correction, at most two corrected retries. No background scheduler.
@@ -114,3 +114,6 @@ depends on: seven-panel-edit
 - 2026-09-26: SES accepted draft 04 source email to proffitt.jeremy@gmail.com: MessageId 010001a0df8864dc-f060276d-aa62-4f58-a8a2-226d5f57b0cd-000000. Receipt read at tmp/pdfs/email-receipt-draft04-source.json. Attached only the seven-panel SCAD and source ZIP. Email prominently states PDF/STL regeneration and validation remain pending. No local processes were launched.
 - 2026-09-26: Verified a new full launch chain without the retired shell/tool wrapper: existing Node runtime -> direct C:/Python314/pythonw.exe (PE subsystem 2; no AllocConsole import in executable or Python DLL) -> CreateDesktop/CreateProcess on WoprBuildPrivate -> child assertion of desktop name before any renderer launch. Only the explicitly requested Bambu Studio GUI runs on the interactive desktop. The old exec_command/PowerShell launcher remains prohibited.
 - 2026-09-26: Private build parent PID 15880 exited 0. tmp/pdfs/one-piece-build.log reports "PASS: all geometry and document checks". Gray shell 279.342 x155 x158.952 mm; base279.4 x155 x6; main cup169 x111 x96.952. All seven STLs watertight; each structural mesh one connected component. Mechanical probes passed. All six PDF pages visually reviewed. Obsolete generated split STLs and source-only draft04 package removed after successful replacement; current kit explicitly includes only new exports.
+- 2026-09-26: Bambu Studio launched directly as the user-requested GUI (PID38956) with shell-two-color.3mf, base.stl, cup-main.stl, cup-tower.stl, led-retainer.stl and fit-coupon.stl. No slicing or printing was started. Native build plate fit must be checked by the user; full-size shell/base need 279.4 x155 mm plus brim.
+- 2026-09-26: SES accepted regenerated draft 05 PDF and complete kit to proffitt.jeremy@gmail.com. MessageId 010001a0dfb18ba6-30511bb8-3578-4878-8181-3422786953b0-000000; receipt read at tmp/pdfs/email-receipt-draft05.json. Email sent entirely through SDK/HTTPS without local processes.
+- 2026-09-26: Commit e3fd24a pushed to main. git diff --cached --check passed. Private workflow-check parent PID16428 exited 0; gh run list returned []; git status --short returned no entries. GitHub CLI used existing configuration at C:/Users/Jeremy/AppData/Roaming/GitHub CLI without exposing credentials. No workflow is configured.
