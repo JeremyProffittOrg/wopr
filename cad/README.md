@@ -1,4 +1,4 @@
-# W.O.P.R. / draft 05: one-piece shell, base and main cup
+# W.O.P.R. / draft 06: inset base and divided cup alternatives
 
 Open `wopr.scad` in OpenSCAD. Default view is the assembled mockup. Units are millimeters.
 Run `python cad/build.py` from the repository root to export meshes, 3MF, views, and PDF.
@@ -16,8 +16,11 @@ Python dependencies already present on the design machine: Pillow, trimesh, nump
 - Rear-loading display pocket 65.6 x 53.6 mm. The front bezel has a 55.6 x 41.6 mm window and hides the PCB and mounting holes. Glass inset is 2 mm; clear rear space is 25.4 mm beyond the nominal hardware back at depth 11.5 mm. Bay ends at depth 36.9 mm and is open behind.
 - V2 mounting hole pitch 59.690 x 47.498 mm, rotated landscape. Drive M2 screws through the PCB from behind into four blind 1.8 mm pilots. The front 1 mm remains closed. Do not use a screw that reaches through the face. Check real PCB-to-glass height before tightening; the draft seat is at Y=4 mm.
 - Shell nominal 3 mm wall; white text 0.8 mm deep and flush with the gray face. No paint or stickers needed for text.
-- Main pen well: 163 x 105 mm clear opening, floor at Z=43, stepped rim at Z=128/137 (85-94 mm depth). Tower pen well: 63 x 95 mm, floor at Z=68, rim at Z=165 (97 mm nominal depth). Both have 3 mm walls and floors. Each cup drops into a 0.30 mm per-side clearance and rests on internal supports. The tower cup starts at Y=43, beyond the 36.9 mm display bay.
-- Cups lift out for rear access and isolate pens from the electronics. The main cup is printed as one piece. The tower cup stays separate and removable. The shell and base each print as one continuous part; there is no center seam or glue joint. Decorative doors remain engraved.
+- Recessed base: 272.8 x 148.4 x 6 mm. Its underside sits at Z=3, exactly 3 mm above the body edge at Z=0. Its top seats on the relocated screw bosses at Z=9. The plate is inset 3.3 mm from each outside face: 3 mm shell wall plus 0.3 mm fit clearance. The exterior skirt extends into the former base footprint so the overall 165 mm height stays unchanged. Old screw-head counterbores are removed; the 3 mm space below the plate accommodates the heads.
+- Main-cup alternatives: `cup-main-shallow-left.stl` and `cup-main-shallow-right.stl`. Choose one. Left/right is viewed from the W.O.P.R. logo side. Both have a level rim at Z=128, with overall cup size 169 x 111 x 88 mm. Each shallow half has three transverse dividers, making four 80 x 24 mm cells exactly 38.1 mm (1.5 in) deep. Each deep half has crossed dividers, making four 38.5 x 51 mm cells 85 mm deep. The central partition and all dividers are 3 mm thick.
+- The shallow floor is 3 mm thick, with its top at Z=89.9. Its underside remains accessible from below for print-support removal. The rim is level rather than following the decorative raised spine; the exterior case profile stays unchanged.
+- Tower cup: horizontal and vertical 3 mm dividers make four 30 x 46 mm cells, each nominally 97 mm deep. The floor remains at Z=68 and rim at Z=165. Both cup designs have 3 mm walls and floors and drop into 0.30 mm per-side clearance on internal supports. The tower cup starts at Y=43, beyond the 36.9 mm display bay.
+- Cups lift out for rear access and isolate stored items from the electronics. Each main-cup alternative is one piece. The tower cup stays separate and removable. The shell and inset base each print as one continuous part; there is no center seam or glue joint. Decorative doors remain engraved.
 
 ## Print and assembly
 
@@ -25,22 +28,23 @@ Open `output/model/wopr-parts.3mf` by itself in Bambu Studio. It contains the co
 parts set, with the gray/white shell grouped and the other parts separated in the workspace.
 Do not pass `.3mf` and `.stl` files together in one GUI import batch: Bambu rejects mixed
 suffixes. The project carries geometry only, not printer presets or G-code. Select the
-correct printer and arrange parts onto suitable plates before slicing. Two retainers are included.
+correct printer and arrange parts onto suitable plates before slicing. Two retainers and BOTH
+alternative main cups are included. Print only your chosen main-cup layout.
 If Bambu displays "load geometry data only", confirm that option. This preserves the
 printer settings already selected in Bambu Studio.
 
 1. Print the gray display fit coupon first. Test the actual V2 board, holes, connectors and inset. This is a dimensional draft, not a completed physical fit test.
 2. Open `shell-two-color.3mf` as one object with two material parts. Assign gray and white explicitly in the slicer. Confirm both text lines on both long sides. A plain STL cannot store material assignments.
 3. `gray-shell.stl` plus `white-text.stl` are the alternative: import together as parts of ONE object and preserve their common origin. Do not auto-arrange the white file or print the loose letters separately.
-4. Print `gray-shell`, `base`, `cup-main`, `cup-tower`, and TWO copies of `led-retainer`. Each is a single structural solid. The retainer is 160.485 x 23.78 x 2.4 mm. The shell and base require a 279.4 x 155 mm footprint; use at least 280 x 155 mm of usable bed area plus brim clearance. A standard 256 x 256 mm Bambu plate cannot hold this full-size shell. Do not scale the model to fit, since the electronics would no longer fit. Use supports for case ledges and window bridges; the open top and bottom permit removal. Start with 0.2 mm layers, a 0.4 mm nozzle and 3 perimeters.
+4. Print `gray-shell`, `base`, ONE of `cup-main-shallow-left` or `cup-main-shallow-right`, `cup-tower`, and TWO copies of `led-retainer`. Each is a single structural solid. The retainer is 160.485 x 23.78 x 2.4 mm. The shell requires a 279.4 x 155 mm footprint; the inset base is 272.8 x 148.4 mm. Use at least 280 x 155 mm of usable bed area plus brim clearance. A standard 256 x 256 mm Bambu plate cannot hold this full-size shell. Do not scale the model to fit, since the electronics would no longer fit. Use supports for case ledges, window bridges and the raised shallow floor; its underside is open for support removal. Start with 0.2 mm layers, a 0.4 mm nozzle and 3 perimeters.
 5. No splice strips or glue joints are needed. Dry-fit both removable cups and the one-piece base before installing electronics. Keep the base and cups separate from the shell for service access.
 6. Leave cups and base off. Load the fourteen LED boards from behind the two long windows. Fit the rear retaining frames, using eight M2 self-tapping screws total. With a 2.4 mm retainer and about 3.1 mm blind pilot depth, about 5 mm screw length is a starting point; verify actual engagement first. Leave the 0.30 mm board-edge gaps for splicing wires. Do not clamp a component or solder pad.
 7. Load the TFT from behind its bezel. Fit four M2 screws from the PCB rear into the blind pilots. Measure the actual PCB and any washer/spacer stack before choosing screw length; the plastic pilot has only 3 mm usable depth. Do not pierce the front face. Check the glass inset and full 25.4 mm rear connector space.
-8. Check wiring, then lower the main and tower cups into their top openings. Attach the base with eight M3 self-tapping screws (2.5 mm shell pilots, 3.3 mm base clearance). About 10 mm screw length is a starting point. Do not force a tight pilot. These cups are dry pen holders, not liquid containers.
+8. Check wiring, then lower the chosen main cup and tower cup into their top openings. Insert the base from below until its top seats at Z=9. Attach it with eight M3 self-tapping screws (2.5 mm shell pilots, 3.3 mm base clearance). Use screw heads no taller than 3 mm. About 10 mm shank length is a starting point; verify engagement through the 6 mm plate. Do not force a tight pilot. These cups are dry organizers, not liquid containers.
 
 ## Scope and limits
 
-All printed structural parts are gray except the white text. Seven adjacent boards form each continuous light bank; PCB margins still create small dark seams. The model does not contain firmware, a controller mount, a power supply design, or an electrical/thermal validation. The builder checks watertight meshes, single connected structural solids, overall dimensions and mechanical clearances. Physical printing, hardware fit and slicer toolpaths remain untested.
+All printed structural parts are gray except the white text. Seven adjacent boards form each continuous light bank; PCB margins still create small dark seams. The model does not contain firmware, a controller mount, a power supply design, or an electrical/thermal validation. The builder checks watertight meshes, single connected structural solids, actual compartment depths in both main-cup STLs, divider material, base recess and insertion, screw-head space and electronics clearances. Physical printing, hardware fit and slicer toolpaths remain untested.
 
 ## Sources (accessed 2026-09-26)
 

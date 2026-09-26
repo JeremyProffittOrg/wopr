@@ -1,11 +1,16 @@
 // W.O.P.R. first draft. Millimeters. Electronics are reference geometry only.
 // Export part choices: assembly, gray-shell, white-text,
-// base, section, fit-coupon, cup-main,
+// base, section, fit-coupon, cup-main-shallow-left, cup-main-shallow-right,
 // cup-tower, led-retainer, rear-mounts. check-clearances is a build-only probe.
 part = "assembly";
 electronics = true;
+main_shallow_left = true;
 $fn = 32;
 L=279.4; W=155; H=165; wall=3; ink=0.8;
+base_inset=3.3; base_bottom=3; base_thickness=6;
+base_top=base_bottom+base_thickness;
+main_rim=128; shallow_depth=38.1; shallow_floor=main_rim-shallow_depth;
+divider=3;
 board_x=20.955; board_z=17.780; clearance=0.3;
 panels_per_side=7;
 led_pitch=board_x+0.3; bank_x=95;
@@ -22,7 +27,8 @@ module rounded_box(p,s,r=5) {
             translate([x,y,z]) sphere(r=r);
 }
 module outline() {
-    rounded_box([0,0,0],[L,W,84],6);
+    // Extend the skirt into the old base footprint, then trim it flat at Z=0.
+    rounded_box([0,0,-6],[L,W,90],6);
     rounded_box([0,5,72],[199,W-10,56],8);
     rounded_box([0,54,75],[204,47,62],10);
     rounded_box([190,0,6],[L-190,W,H-6],10);
@@ -90,15 +96,38 @@ module cup_cutouts() {
     translate([13.7,21.7,39.7]) cube([169.6,111.6,140]);
     translate([198.7,42.7,64.7]) cube([69.6,101.6,115]);
 }
-module pen_cup(tower=false) {
-    difference() {
+module pen_cup(tower=false,shallow_left=true) {
+    if(!tower && !shallow_left) translate([197,0,0]) mirror([1,0,0]) pen_cup(false,true);
+    else if(tower) union() {
+        difference() {
+            intersection() { outline(); translate([199,43,65]) cube([69,101,110]); }
+            translate([202,46,68]) cube([63,95,110]);
+        }
         intersection() {
             outline();
-            if(tower) translate([199,43,65]) cube([69,101,110]);
-            else translate([14,22,40]) cube([169,111,110]);
+            union() {
+                translate([232,46,68]) cube([divider,95,H-68]);
+                translate([202,92,68]) cube([63,divider,H-68]);
+            }
         }
-        if(tower) translate([202,46,68]) cube([63,95,110]);
-        else translate([17,25,43]) cube([163,105,140]);
+    } else difference() {
+        union() {
+            // A level rim gives the shallow half an exact 38.1 mm depth.
+            difference() {
+                translate([14,22,40]) cube([169,111,main_rim-40]);
+                translate([17,25,43]) cube([163,105,main_rim]);
+            }
+            translate([17,25,shallow_floor-wall]) cube([83,105,wall]);
+            translate([97,25,43]) cube([divider,105,main_rim-43]);
+            // Three transverse dividers make four shallow compartments.
+            for(y=[49,76,103]) translate([17,y,shallow_floor])
+                cube([80,divider,shallow_depth]);
+            // Crossed dividers make four deep compartments in the other half.
+            translate([138.5,25,43]) cube([divider,105,main_rim-43]);
+            translate([100,76,43]) cube([80,divider,main_rim-43]);
+        }
+        // Keep the raised tray underside accessible for support removal.
+        translate([17,25,39]) cube([80,105,4]);
     }
 }
 module cup_supports() {
@@ -130,8 +159,8 @@ module door_grooves() {
 module base_bosses() {
     for(x=[12,128,151,L-12],back=[false,true]) side(back)
         difference() {
-            translate([x-5,0,6]) cube([10,19,10]);
-            translate([x,13,5]) cylinder(h=12,d=2.5);
+            translate([x-5,0,base_top]) cube([10,19,10]);
+            translate([x,13,base_top-1]) cylinder(h=12,d=2.5);
         }
 }
 module gray() {
@@ -145,18 +174,19 @@ module gray() {
         white(); door_grooves();
         for(dx=[-29.845,29.845],dz=[-23.749,23.749])
             translate([tft_x+dx,1,tft_z+dz]) rotate([-90,0,0]) cylinder(h=4,d=1.8);
-        translate([-1,-1,-1]) cube([L+2,W+2,7]);
+        translate([-1,-1,-7]) cube([L+2,W+2,7]);
     }
 }
 module base() {
     difference() {
-        linear_extrude(6) offset(r=5) translate([5,5]) square([L-10,W-10]);
+        translate([base_inset,base_inset,base_bottom])
+            linear_extrude(base_thickness) offset(r=3) translate([3,3])
+                square([L-2*base_inset-6,W-2*base_inset-6]);
         for(x=[12,128,151,L-12],y=[13,W-13]) {
-            translate([x,y,-1]) cylinder(h=8,d=3.3);
-            translate([x,y,-0.1]) cylinder(h=2.1,d=6.4);
+            translate([x,y,base_bottom-1]) cylinder(h=base_thickness+2,d=3.3);
         }
         // Bottom vent slots. No provision for high-power electronics in this draft.
-        for(x=[35:10:115],y=[50,92]) translate([x,y,-1]) cube([3,20,8]);
+        for(x=[35:10:115],y=[50,92]) translate([x,y,base_bottom-1]) cube([3,20,base_thickness+2]);
     }
 }
 module reference_parts() {
@@ -179,7 +209,7 @@ module assembly() {
     color([0.98,0.98,0.96]) white();
     color([0.31,0.34,0.37]) base();
     color([0.40,0.43,0.46]) {
-        pen_cup(); pen_cup(true);
+        pen_cup(false,main_shallow_left); pen_cup(true);
         for(back=[false,true]) side(back) translate([bank_x,0,led_z]) led_retainer();
     }
     if(electronics) reference_parts();
@@ -202,9 +232,41 @@ module clearance_checks() {
         union() { gray(); pen_cup(); pen_cup(true); }
         union() {
             translate([tft_x-32.5,11.51,tft_z-26.5]) cube([65,25.38,53]);
-            translate([17.01,25.01,43.01]) cube([162.98,104.98,140]);
-            translate([202.01,46.01,68.01]) cube([62.98,94.98,110]);
+            for(y=[25,52,79,106]) translate([17.01,y+0.01,shallow_floor+0.01]) cube([79.98,23.98,100]);
+            for(x=[100,141.5],y=[25,79]) translate([x+0.01,y+0.01,43.01]) cube([38.48,50.98,140]);
+            for(x=[202,235],y=[46,95]) translate([x+0.01,y+0.01,68.01]) cube([29.98,45.98,110]);
         }
+    }
+    // The inset plate, its insertion path and the 3 mm screw-head space stay clear.
+    // Exclude the intended zero-volume contact at the screw-boss seating face.
+    intersection() {
+        gray(); base();
+        translate([-1,-1,base_bottom+0.01]) cube([L+2,W+2,base_thickness-0.02]);
+    }
+    intersection() {
+        gray();
+        translate([base_inset,base_inset,-1]) cube([L-2*base_inset,W-2*base_inset,base_top+0.99]);
+    }
+    intersection() {
+        union() { gray(); base(); }
+        for(x=[12,128,151,L-12],y=[13,W-13]) translate([x,y,0.01]) cylinder(h=2.98,d=6.4);
+    }
+    // Require solid dividers rather than merely checking that the cells are empty.
+    difference() {
+        union() {
+            for(y=[49,76,103]) translate([17.1,y+0.1,shallow_floor+0.1]) cube([79.8,2.8,shallow_depth-0.2]);
+            translate([97.1,25.1,43.1]) cube([2.8,104.8,main_rim-43.2]);
+            translate([138.6,25.1,43.1]) cube([2.8,104.8,main_rim-43.2]);
+            translate([100.1,76.1,43.1]) cube([79.8,2.8,main_rim-43.2]);
+        }
+        pen_cup();
+    }
+    difference() {
+        union() {
+            translate([232.1,46.1,68.1]) cube([2.8,94.8,96.7]);
+            translate([202.1,92.1,68.1]) cube([62.8,2.8,96.7]);
+        }
+        pen_cup(true);
     }
     // Blind TFT screws must leave solid plastic over the front of every hole.
     difference() {
@@ -218,8 +280,17 @@ else if(part=="check-clearances") clearance_checks();
 else if(part=="gray-shell") gray();
 else if(part=="white-text") white();
 else if(part=="base") base();
-else if(part=="cup-main") pen_cup();
-else if(part=="cup-tower") pen_cup(true);
+else if(part=="cup-main-shallow-left") color([0.40,0.43,0.46]) pen_cup(false,true);
+else if(part=="cup-main-shallow-right") color([0.40,0.43,0.46]) pen_cup(false,false);
+else if(part=="cup-tower") color([0.40,0.43,0.46]) pen_cup(true);
+else if(part=="cup-plan-left") color([0.40,0.43,0.46]) projection(cut=true) translate([0,0,-127]) pen_cup(false,true);
+else if(part=="cup-plan-right") color([0.40,0.43,0.46]) projection(cut=true) translate([0,0,-127]) pen_cup(false,false);
+else if(part=="plan-section") color([0.40,0.43,0.46]) projection(cut=true) translate([0,0,-127]) assembly();
+else if(part=="cup-main-section") color([0.40,0.43,0.46]) intersection(){pen_cup(false,main_shallow_left);translate([0,60,-1]) cube([L,0.5,H+2]);}
+else if(part=="base-section") {
+    color([0.40,0.43,0.46]) intersection(){gray();translate([11.75,-1,-1]) cube([0.5,33,29]);}
+    color([0.72,0.74,0.77]) intersection(){base();translate([11.75,-1,-1]) cube([0.5,33,29]);}
+}
 else if(part=="led-retainer") rotate([90,0,0]) led_retainer();
 else if(part=="rear-mounts") {
     color([0.4,0.43,0.46]) gray();

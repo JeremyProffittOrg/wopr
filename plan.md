@@ -15,6 +15,8 @@
 - 2026-09-26: "make it 8 rgb led pannels per side, try that" supersedes the earlier four-per-side count.
 - 2026-09-26: "change it to 7 rgb led pannels per side, then email it to me" supersedes the eight-per-side count.
 - 2026-09-26: "gray left and grry right should be one piece, and combine base and cup too, redo that and then open at bambu labs"
+- 2026-09-26: "the bottom needs to be inset inside of the body and leave 3mm clearance from the bottom of the base plate to the bottom edge of the body for the scre heads. Also, add a divider horizontally and vertically in cup-tower, and in cup-main, half of that should only be 1.5 inches deep, and have 3 dividers in it, the other half should have a horizontal and veritcal divider in it as well. update these and show me a new pdf"
+- 2026-09-26: "create stl's for both" confirms both shallow-left and shallow-right main-cup alternatives.
 
 ## Verified facts
 - C:/dev/wopr/deploy.md: delivery through main only. Repository currently has no GitHub workflow.
@@ -25,7 +27,7 @@
 - Existing C:/dev/adafruit-pannel/scripts/send_case_pdf_mail.py configures jeremy@jeremy.ninja to proffitt.jeremy@gmail.com, reply to proffitt.jeremy@gmail.com, SES us-east-1.
 
 ## Assumptions
-- Current draft 05: fourteen Seeed boards total, seven adjacent boards per side. Centers X=31.235+i*21.255 for i=0 through 6; Z=101. A 0.30 mm assembly gap separates PCB edges. Shell, base and main cup each export as one continuous part; tower cup remains separately removable.
+- Current draft 06: fourteen Seeed boards total, seven adjacent boards per side. Shell and inset base remain one piece each. Main cup has shallow-left and shallow-right alternatives, one piece each; tower cup has crossed dividers. See divided-cups-inset-base for verified storage and base dimensions.
 - Side text corrected to War Operation Plan Response. One TFT above primary W.O.P.R. logo.
 - Overall 279.4 x 155 x 165 mm. Gray structure and flush white material volumes; colored electronics are render-only.
 - First-draft mounts use measured PCB envelopes plus clearance; hardware fit and print tolerance require a physical trial.
@@ -73,6 +75,20 @@ depends on: model-export
 - Missing credentials or delivery recipient that cannot be resolved from existing configuration.
 - An unapproved irreversible change or genuine scope expansion.
 - Physical fit cannot be verified without actual components; deliver the first draft with that limitation.
+
+## divided-cups-inset-base — recess the removable base and partition storage
+depends on: unsplit-exports
+### inset-organizer-geometry — meet the new dimensions
+- [x] recessed-base — 6 mm plate seated at Z=3..9 inside a shell whose bottom edge is Z=0; 3.3 mm XY inset (3 mm wall plus 0.3 mm clearance). Shift screw bosses to Z=9, remove old head counterbores; overall envelope stays 279.4 x155 x165.
+- [x] tower-cross-dividers — 3 mm horizontal and vertical dividers form four deep cells.
+- [x] main-cup-alternatives — export shallow-left and shallow-right STLs. A level Z=128 main-cup rim gives exactly 38.1 mm depth above the raised shallow floor; three dividers form four shallow cells, crossed dividers form four 85 mm deep cells. Main cup remains one piece per alternative; print one alternative.
+- [x] organizer-proof — python C:/dev/wopr/cad/build.py through the verified private desktop exits 0; mesh ray checks prove compartment depths, CSG probes prove dividers, base seating/head clearance and unchanged electronics clearances.
+### organizer-pdf-delivery — show the revised organizer and base section
+depends on: inset-organizer-geometry
+- [x] organizer-pdf — all eight rendered pages inspected, including both cup variants and the 3 mm base recess section.
+- [ ] organizer-push — focused commit and main push, workflow terminal check using the private desktop.
+
+Scope: base seating, cup storage and their derived files only. LED/TFT layout, colors and outer dimensions remain. Files: cad/wopr.scad, cad/build.py, cad/README.md, plan.md and current generated outputs. Proof: existing mesh checks plus targeted physical-depth/clearance probes and visual PDF review. No dependencies or services added.
 
 ## seven-panel-source — revise and email the editable seven-panel model
 depends on: sixteen-panel-model
@@ -129,3 +145,4 @@ depends on: unsplit-exports
 - 2026-09-26: Import diagnosis: bambu-studio.exe --info succeeded for each input and the complete original batch. Private GUI reproduction captured "Please import multiple files with the same suffix." Replaced the mixed GUI handoff with one geometry-only 3MF. The builder now verifies seven build items and excludes printer presets. Final private GUI probe (tmp/pdfs/gui-import-probe.py via desktop-launch.py) reported import_pass=true and title "wopr-parts - BambuStudio" after geometry-only confirmation. Opened the verified file on the interactive desktop only through the explicitly authorized Bambu GUI. No console windows used.
 - 2026-09-26: Import fix committed/pushed as dbd93ae. git diff --cached --check passed; gh run list returned []. Bambu CLI's generated result.json was identified by timestamp and export fields and removed. SES accepted the corrected PDF and 13-file kit, MessageId 010001a0dfc4d49b-64207c92-1ad0-4fc3-bb38-f2b7e0f7d517-000000; receipt read at tmp/pdfs/email-receipt-import-fix.json.
 - 2026-09-26: Operator could not see LCD mounting holes. File-only ray intersections against the actual gray-shell.stl verified all four: centers at X=206.155/265.845, print-coordinate Z=94.251/141.749; bore floors at Y=1 and surrounding seats at Y=4. Thus all four blind holes are present and 3 mm deep (SCAD diameter1.8 mm). No design changes were needed. Rendered output/views/lcd-rear-mounts.png as an angled rear detail with the deep clearance walls cut away so the holes can be seen. Private render parent PID28632 exited 0, manifold NoError.
+- 2026-09-26: Draft 06 private build parent PID38048 exited 0 with "PASS: all geometry and document checks". Eight watertight STLs; structural parts each one component. Measured base272.8 x148.4 x6 and 3.00 mm recess. Both main-cup variants measured169 x111 x88, four shallow cells at38.10 mm and four deep cells at85 mm; tower has four nominal97 mm cells. CSG probes verified divider material, cell voids, plate insertion and screw-head clearance; only the intentional zero-volume seating contact at Z=9 is excluded from collision checks. All eight PDF pages visually inspected. Removed superseded cup-main.stl after replacement passed; ZIP14entries match current sources/meshes and contains both alternatives. Physical print/fit remains untested.
