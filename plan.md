@@ -9,6 +9,8 @@
 - 2026-09-26: "inset, with 1 inch deep mount cut out ont he back of the led"
 - 2026-09-26: "about 11 inches in length and porprtionaql othewise"
 - 2026-09-26: "gray and white" and "Create a first draft incliduign both mock ups and drawings from multiple agnles from scad in a pdf, and email it to me"
+- 2026-09-26: "DON\"T START CONSOLEE APPS IN THE FORGROUND"
+- 2026-09-26: "no, the led arrays need to be side by side and everythign needs to mount from the back, and the top needs to be open for a pen holder"
 
 ## Verified facts
 - C:/dev/wopr/deploy.md: delivery through main only. Repository currently has no GitHub workflow.
@@ -19,10 +21,24 @@
 - Existing C:/dev/adafruit-pannel/scripts/send_case_pdf_mail.py configures jeremy@jeremy.ninja to proffitt.jeremy@gmail.com, reply to proffitt.jeremy@gmail.com, SES us-east-1.
 
 ## Assumptions
-- Eight Seeed boards total, four per long side, confirmed by user. Centers X=37,79,121,163; Z=101.
+- Eight Seeed boards total, four adjacent boards per side. Draft 02 centers X=60.1175,81.3725,102.6275,123.8825; Z=101. A 0.30 mm assembly gap separates PCB edges.
 - Side text corrected to War Operation Plan Response. One TFT above primary W.O.P.R. logo.
 - Overall 279.4 x 155 x 165 mm. Gray structure and flush white material volumes; colored electronics are render-only.
 - First-draft mounts use measured PCB envelopes plus clearance; hardware fit and print tolerance require a physical trial.
+- Draft 02 uses rear-loading pockets with hidden rear screws, plus removable main and tower pen cups. Removable cups allow screwdriver access before installation and keep pens away from electronics.
+
+## rear-mount-pen-holder — correct LED layout, mounting direction and open top
+depends on: model-export
+### revised-geometry — adjacent arrays and open pen storage
+- [x] adjacent-led-banks — four adjacent boards behind each continuous window, rear retaining frames and blind pilots.
+- [x] rear-tft-mount — rear loading and rear screw heads; closed front bezel.
+- [x] open-pen-cups — removable, isolated pen cups with 3 mm floors and vertical removal paths.
+- [x] hidden-console-build — OpenSCAD subprocess uses CREATE_NO_WINDOW and openscad.exe; no foreground console.
+- [x] revision-proof — python C:/dev/wopr/cad/build.py exits 0, eleven watertight STLs and mechanical clearance probes pass; six PDF pages inspected.
+### revised-delivery — publish and email the corrected packet
+depends on: revised-geometry
+- [ ] revision-push — git -C C:/dev/wopr push origin main exits 0 and gh run list checks triggered workflows.
+- [ ] revision-email — SES accepts updated PDF and kit to proffitt.jeremy@gmail.com; record MessageId.
 
 ## cad-draft — parametric printable geometry
 depends on: none
@@ -54,3 +70,4 @@ depends on: model-export
 - 2026-09-26: Final builder session 20668: exit 0, "PASS: all geometry and document checks". Final section and coupon pages visually checked. Trimesh loaded the 3MF with 2 geometries; bounds [[0,0,0],[139.371094,155,158.951843]]. Initial artifact commit a611cc5. gh workflow list returned no configured workflows. Font cache moved into ignored temporary directory; no scratch files staged.
 - 2026-09-26: Pushed main at 59d07c7a4bf9a4199fe1b4e0441948a0bb492a9d; git ls-remote confirmed the remote SHA. gh run list --limit 5 --json databaseId,status,conclusion,headSha returned []. git diff --check passed. PDF and ZIP committed bytes match local attachments; ZIP integrity and SCAD source match passed (12 entries).
 - 2026-09-26: Agent /root/email_draft sent HTML mail through SES us-east-1 to proffitt.jeremy@gmail.com, with PDF and printable ZIP attached. SES accepted message 010001a0dd695595-c8b70668-057d-437d-bc55-073aa580f00e-000000. Receipt read from C:/dev/wopr/tmp/pdfs/email-receipt.json. This confirms SES acceptance, not inbox delivery.
+- 2026-09-26: Draft 02 replaces spaced LED clusters with adjacent 84.72 mm banks, front-loading mounts with rear-loading pockets and blind screws, and closed roofs with removable pen cups. Hidden OpenSCAD build session 36630 exited 0: "PASS: all geometry and document checks". Eleven meshes are watertight; SCAD collision probes passed rear insertion, cup lift, pen well openness, 25.4 mm display clearance and hidden pilot checks. All six regenerated PDF pages visually reviewed. Physical fit and toolpaths remain unverified. No dependencies or cloud resources changed.

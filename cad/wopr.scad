@@ -1,12 +1,15 @@
 // W.O.P.R. first draft. Millimeters. Electronics are reference geometry only.
 // Export part choices: assembly, gray-left, gray-right, white-right,
-// base-left, base-right, splice, section, fit-coupon.
+// base-left, base-right, splice, section, fit-coupon, cup-left, cup-right,
+// cup-tower, led-retainer, rear-mounts. check-clearances is a build-only probe.
 part = "assembly";
 electronics = true;
 $fn = 32;
 L=279.4; W=155; H=165; split=140; wall=3; ink=0.8;
-board_x=21; board_z=17.8; clearance=0.3;
-led_centers=[37,79,121,163]; led_z=101;
+board_x=20.955; board_z=17.780; clearance=0.3;
+led_pitch=board_x+0.3; bank_x=92;
+led_centers=[for(i=[0:3]) bank_x+(i-1.5)*led_pitch]; led_z=101;
+bank_w=4*board_x+3*0.3;
 tft_x=236; tft_z=124;
 tft_w=65; tft_h=53; tft_thick=9.5;
 tft_inset=2; rear_clearance=25.4;
@@ -46,31 +49,64 @@ module lettering(back=false) {
 }
 module white() { lettering(); lettering(true); }
 module light_cuts() {
-    for(back=[false,true]) side(back) for(cx=led_centers) {
-        // Full board aperture. The board drops onto ledges from the outside.
-        translate([cx-board_x/2-clearance,3.8,led_z-board_z/2-clearance])
-            cube([board_x+2*clearance,12,board_z+2*clearance]);
-    }
+    for(back=[false,true]) side(back)
+        translate([bank_x-bank_w/2-5.8,4,led_z-board_z/2-2.8])
+            cube([bank_w+11.6,13,board_z+5.6]);
 }
 module light_mounts() {
-    for(back=[false,true]) side(back) for(cx=led_centers)
+    for(back=[false,true]) side(back) translate([bank_x,0,led_z])
         difference() {
-            translate([cx-board_x/2-2.3,5,led_z-board_z/2-2.3]) cube([board_x+4.6,7,board_z+4.6]);
-            translate([cx-board_x/2-clearance,3,led_z-board_z/2-clearance]) cube([board_x+2*clearance,6.5,board_z+2*clearance]);
-            // Rear opening leaves a 1 mm seat at depth 9.5 mm.
-            translate([cx-board_x/2+1,9.49,led_z-board_z/2+1]) cube([board_x-2,5,board_z-2]);
+            translate([-bank_w/2-6,5,-board_z/2-3]) cube([bank_w+12,4.6,board_z+6]);
+            // A continuous front window and a full-size rear-loading PCB pocket.
+            translate([-bank_w/2+0.8,4,-board_z/2+2]) cube([bank_w-1.6,5,board_z-4]);
+            translate([-bank_w/2-clearance,8,-board_z/2-clearance]) cube([bank_w+2*clearance,5,board_z+2*clearance]);
+            for(x=[-bank_w/2-3,bank_w/2+3],z=[-5,5])
+                translate([x,6.5,z]) rotate([-90,0,0]) cylinder(h=4,d=1.6);
         }
+}
+module led_retainer() {
+    // One removable frame per bank. All screw heads are inside the case.
+    difference() {
+        translate([-bank_w/2-6,9.6,-board_z/2-3]) cube([bank_w+12,2.4,board_z+6]);
+        translate([-bank_w/2+1,9,-board_z/2+1]) cube([bank_w-2,4,board_z-2]);
+        for(x=[-bank_w/2-3,bank_w/2+3],z=[-5,5])
+            translate([x,9,z]) rotate([-90,0,0]) cylinder(h=4,d=2.2);
+    }
 }
 module display_bay() {
     difference() {
         translate([tft_x-35,0,tft_z-29]) cube([70,bay_end,58]);
-        translate([tft_x-32.8,-1,tft_z-26.8]) cube([65.6,bay_end+2,53.6]);
+        translate([tft_x-27.8,-1,tft_z-20.8]) cube([55.6,6,41.6]);
+        translate([tft_x-32.8,4,tft_z-26.8]) cube([65.6,bay_end,53.6]);
     }
-    // Four front support ears. Mount from inside using M2.5 bolts and nuts.
+    // Hidden front supports with blind pilots. Drive M2 screws from the rear.
     // Hole pitch 59.69 x 47.498 from manufacturer V2 Eagle file, rotated landscape.
     for(dx=[-29.845,29.845],dz=[-23.749,23.749])
-        translate([tft_x+dx,2,tft_z+dz]) rotate([-90,0,0])
-            difference(){ cylinder(h=2,r=3.8); translate([0,0,-1]) cylinder(h=4,d=2.7); }
+        translate([tft_x+dx,0,tft_z+dz]) rotate([-90,0,0])
+            cylinder(h=4,r=3.8);
+}
+module cup_cutouts() {
+    translate([13.7,21.7,39.7]) cube([169.6,111.6,140]);
+    translate([198.7,42.7,64.7]) cube([69.6,101.6,115]);
+}
+module pen_cup(tower=false) {
+    difference() {
+        intersection() {
+            outline();
+            if(tower) translate([199,43,65]) cube([69,101,110]);
+            else translate([14,22,40]) cube([169,111,110]);
+        }
+        if(tower) translate([202,46,68]) cube([63,95,110]);
+        else translate([17,25,43]) cube([163,105,140]);
+    }
+}
+module cup_supports() {
+    for(x=[20,166],back=[false,true]) side(back)
+        translate([x,0,37]) cube([10,28,3]);
+    for(x=[205,259]) {
+        translate([x,0,62]) cube([8,49,3]);
+        translate([x,140,62]) cube([8,15,3]);
+    }
 }
 module door_grooves() {
     for(back=[false,true]) side(back) {
@@ -100,12 +136,14 @@ module base_bosses() {
 module gray() {
     difference() {
         union() {
-            difference(){ outline(); inside(); light_cuts();
+            difference(){ outline(); inside(); light_cuts(); cup_cutouts();
                 translate([tft_x-32.8,-1,tft_z-26.8]) cube([65.6,40,53.6]);
             }
-            light_mounts(); display_bay(); base_bosses();
+            light_mounts(); display_bay(); base_bosses(); cup_supports();
         }
         white(); door_grooves();
+        for(dx=[-29.845,29.845],dz=[-23.749,23.749])
+            translate([tft_x+dx,1,tft_z+dz]) rotate([-90,0,0]) cylinder(h=4,d=1.8);
         translate([-1,-1,-1]) cube([L+2,W+2,7]);
     }
 }
@@ -128,10 +166,10 @@ module half(right=false) {
 }
 module reference_parts() {
     for(back=[false,true]) side(back) for(cx=led_centers) {
-        color([0.09,0.10,0.11]) translate([cx-10.5,7.9,led_z-8.9]) cube([21,1.6,17.8]);
+        color([0.09,0.10,0.11]) translate([cx-board_x/2,8,led_z-board_z/2]) cube([board_x,1.6,board_z]);
         for(i=[0:9],j=[0:5])
             color((i*7+j*3)%5<2 ? [1,0.23,0.04] : [0.36,0.12,0.06])
-                translate([cx-9+i*2,6.85,led_z-5+j*2]) cube([1,1.05,1]);
+                translate([cx-9+i*2,6.95,led_z-5+j*2]) cube([1,1.05,1]);
     }
     // Screen face inset 2 mm; hardware envelope extends another 9.5 mm inward.
     color([0.08,0.09,0.10]) translate([tft_x-32.5,4.01,tft_z-26.5]) cube([65,7.49,53]);
@@ -145,14 +183,59 @@ module assembly() {
     color([0.40,0.43,0.46]) gray();
     color([0.98,0.98,0.96]) white();
     color([0.31,0.34,0.37]) base();
+    color([0.40,0.43,0.46]) {
+        pen_cup(); pen_cup(true);
+        for(back=[false,true]) side(back) translate([bank_x,0,led_z]) led_retainer();
+    }
     if(electronics) reference_parts();
 }
+module clearance_checks() {
+    // A successful check exports only this 1 mm cube; any interference adds volume.
+    translate([-20,-20,-20]) cube(1);
+    intersection() {
+        gray();
+        union() {
+            for(back=[false,true]) side(back) for(cx=led_centers)
+                translate([cx-board_x/2,8.01,led_z-board_z/2]) cube([board_x,27,board_z]);
+            translate([tft_x-32.5,4.01,tft_z-26.5]) cube([65,61,53]);
+            // Cups must lift straight out after removing electronics fasteners.
+            translate([14,22,40.01]) cube([169,111,140]);
+            translate([199,43,65.01]) cube([69,101,115]);
+        }
+    }
+    intersection() {
+        union() { gray(); pen_cup(); pen_cup(true); }
+        union() {
+            translate([tft_x-32.5,11.51,tft_z-26.5]) cube([65,25.38,53]);
+            translate([17.01,25.01,43.01]) cube([162.98,104.98,140]);
+            translate([202.01,46.01,68.01]) cube([62.98,94.98,110]);
+        }
+    }
+    // Blind TFT screws must leave solid plastic over the front of every hole.
+    difference() {
+        union() for(dx=[-29.845,29.845],dz=[-23.749,23.749])
+            translate([tft_x+dx-0.5,0.2,tft_z+dz-0.5]) cube([1,0.5,1]);
+        gray();
+    }
+}
 if(part=="assembly") assembly();
+else if(part=="check-clearances") clearance_checks();
 else if(part=="gray-left") half(false) gray();
 else if(part=="gray-right") half(true) gray();
 else if(part=="white-right") half(true) white();
 else if(part=="base-left") half(false) base();
 else if(part=="base-right") half(true) base();
 else if(part=="splice") cube([25,12,3]);
+else if(part=="cup-left") half(false) pen_cup();
+else if(part=="cup-right") half(true) pen_cup();
+else if(part=="cup-tower") pen_cup(true);
+else if(part=="led-retainer") rotate([90,0,0]) led_retainer();
+else if(part=="rear-mounts") {
+    color([0.4,0.43,0.46]) gray();
+    color([0.98,0.98,0.96]) white();
+    reference_parts();
+    color([0.65,0.68,0.7]) for(back=[false,true]) side(back)
+        translate([bank_x,0,led_z]) led_retainer();
+}
 else if(part=="section") color([0.40,0.43,0.46]) intersection(){ assembly(); translate([tft_x,-1,-1]) cube([0.5,W+2,H+2]); }
 else if(part=="fit-coupon") color([0.40,0.43,0.46]) intersection(){ gray(); translate([tft_x-37,-1,tft_z-31]) cube([74,39,62]); }

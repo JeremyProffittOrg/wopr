@@ -19,7 +19,8 @@ OUT = ROOT / 'output'
 KIT = OUT / 'model'
 VIEWS = OUT / 'views'
 TMP = ROOT / 'tmp/pdfs'
-EXE = os.environ.get('OPENSCAD', 'C:/Users/Jeremy/tools/openscad-nightly/openscad.com')
+EXE = os.environ.get('OPENSCAD', 'C:/Users/Jeremy/tools/openscad-nightly/openscad.exe')
+HIDDEN = {'creationflags': subprocess.CREATE_NO_WINDOW} if os.name == 'nt' else {}
 for folder in [KIT, VIEWS, TMP, OUT / 'pdf']:
     folder.mkdir(parents=True, exist_ok=True)
 
@@ -31,7 +32,7 @@ evidence = []
 
 def scad(path, part='assembly', extra=()):
     args = [EXE, '--backend', 'Manifold', '--hardwarnings', '-o', str(path), '-D', f'part="{part}"', *extra, str(SCAD)]
-    result = subprocess.run(args, capture_output=True, text=True, env=ENV, timeout=180)
+    result = subprocess.run(args, capture_output=True, text=True, env=ENV, timeout=180, **HIDDEN)
     if result.returncode or 'ERROR:' in result.stderr or 'WARNING:' in result.stderr:
         raise RuntimeError(f'OpenSCAD {part}: {result.stderr}')
     if not path.exists() or not path.stat().st_size:
@@ -39,7 +40,9 @@ def scad(path, part='assembly', extra=()):
 
 meshes = {}
 offsets = {'gray-left':[0,0,6], 'gray-right':[140,0,6], 'white-right':[140,0,6],
-           'base-left':[0,0,0], 'base-right':[140,0,0], 'splice':[0,0,0], 'fit-coupon':[199,0,93]}
+           'base-left':[0,0,0], 'base-right':[140,0,0], 'splice':[0,0,0], 'fit-coupon':[199,0,93],
+           'cup-left':[14,22,40], 'cup-right':[140,22,40], 'cup-tower':[199,43,65],
+           'led-retainer':None}
 for part, offset in offsets.items():
     raw = TMP / f'{part}.stl'
     scad(raw, part, ['--export-format', 'binstl'])
@@ -47,7 +50,7 @@ for part, offset in offsets.items():
     assert mesh.is_watertight and mesh.is_winding_consistent and mesh.volume > 0, part
     if part != 'white-right':
         assert len(mesh.split()) == 1, f'{part} contains disconnected structure'
-    mesh.apply_translation(-np.array(offset))
+    mesh.apply_translation(-np.array(offset if offset is not None else mesh.bounds[0]))
     mesh.export(KIT / f'{part}.stl')
     meshes[part] = mesh
     line = f'{part}: watertight=True; bounds_mm=' + ' x '.join(f'{n:.3f}' for n in mesh.extents)
@@ -61,6 +64,13 @@ assert np.allclose(envelope,[279.4,155,165],atol=.06), envelope
 assert np.allclose(meshes['fit-coupon'].extents,[74,36.9,62],atol=.01)
 assert all(m.extents[0] <= 165 and m.extents[1] <= 155.01 for m in meshes.values())
 evidence.append('Envelope: nominal 279.4 x 155 x 165 mm; display bay depth=36.9 mm (2+9.5+25.4)')
+probe_path = TMP / 'clearance-probe.stl'
+scad(probe_path, 'check-clearances', ['--export-format', 'binstl'])
+probe = trimesh.load(probe_path, force='mesh')
+assert np.allclose(probe.bounds,[[-20,-20,-20],[-19,-19,-19]],atol=1e-5), 'Mechanical clearance failed'
+assert abs(probe.volume-1) < 1e-5, 'Mechanical interference detected'
+evidence.append('PASS: rear PCB insertion paths, cup lift paths, open pen wells, 25.4 mm display bay, hidden TFT pilots')
+print(evidence[-1],flush=True)
 
 # Standard 3MF material parts preserve the common origin of gray and white.
 NS = 'http://schemas.microsoft.com/3dmanufacturing/core/2015/02'
@@ -108,6 +118,7 @@ views = {
     'bottom': ('139.7,77.5,-800,139.7,77.5,0','assembly',False),
     'section': ('-500,77.5,82.5,236,77.5,82.5','section',True),
     'coupon': ('330,-150,220,236,15,124','fit-coupon',False),
+    'rear-mounts': ('330,-400,-290,139,70,80','rear-mounts',True),
 }
 for name, (camera, part, electronic) in views.items():
     path = VIEWS / f'{name}.png'
@@ -139,7 +150,7 @@ def start(kicker,title,subtitle):
     text(36,548,title,25,NAVY,'Helvetica-Bold')
     text(36,527,subtitle,10,GRAY)
     c.setStrokeColor(HexColor('#CBD5E1')); c.line(36,39,756,39)
-    text(36,24,'W.O.P.R. / DRAFT 01 / 2026-09-26 / dimensions in mm / not to print scale',8,GRAY)
+    text(36,24,'W.O.P.R. / DRAFT 02 / 2026-09-26 / dimensions in mm / not to print scale',8,GRAY)
     text(714,24,f'{page:02d} / 06',8,GRAY)
 def pic(name,x,y,w,h):
     im=Image.open(VIEWS/f'{name}.png'); iw,ih=im.size
@@ -157,20 +168,20 @@ def dim_v(x,y,h,label):
     c.saveState(); c.translate(x-6,y+h/2); c.rotate(90); c.setFont('Helvetica',9); c.drawCentredString(0,0,label); c.restoreState()
 def end(): c.showPage()
 
-start('Design review','A small W.O.P.R., built around real boards','Gray case. Flush white lettering. Eight side-light modules. One inset touchscreen.')
+start('Design review','W.O.P.R. / the open-top revision','Side-by-side LED banks. Rear-mounted electronics. Removable pen cups. Gray and flush white text.')
 pic('hero',34,116,724,395)
 lines(40,91,['279.4 x 155 x 165 mm  |  11.00 x 6.10 x 6.50 in  |  3 mm nominal shell',
              'OpenSCAD model render. Colored LEDs and display are hardware previews, not printed material.'],10,17)
 end()
-start('Mockups','The same design, around the back','Eight boards total: four on each long side. The small LED clusters are shown at their real size.')
+start('Mockups','Continuous banks, hidden fasteners','Eight boards total: four adjacent boards behind one long window on each side.')
 pic('rear',40,251,410,254); pic('empty',455,279,295,209)
 text(460,264,'CASE WITHOUT ELECTRONICS',9,ACCENT,'Helvetica-Bold')
-lines(40,222,['The silhouette follows the low central case, rounded shoulders, raised spine and tall end tower.',
+lines(40,222,['The open top contains two removable pen wells, isolated from the electronics.',
               'Both long sides carry white W.O.P.R. / War Operation Plan Response lettering.',
               'The main touchscreen is on one side, directly above its logo.',
-              'Four separate clusters light up on each side; there are 480 LEDs across all eight boards.',
-              'The underside opens for installation and support removal. The panel doors are decorative.'],11,23)
-text(40,73,'User-confirmed layout: four boards per long side, eight total. Board spacing is a first-draft choice.',9,GRAY)
+              'Each row spans 84.72 mm; only 0.30 mm separates neighboring PCB edges.',
+              'Every board loads from behind its bezel. No mounting screws are exposed on the front.'],11,23)
+text(40,73,'Remove the pen cups and base for rear access. Fit the electronics first, then lower the cups into place.',9,GRAY)
 end()
 start('Orthographic drawings','Overall envelope and panel placement','All views below come from the same SCAD geometry. Dimensions are nominal, not a film-prop measurement.')
 fx,fy,fw,fh=pic('front',64,240,410,242)
@@ -178,23 +189,23 @@ text(64,495,'PRIMARY LONG SIDE',9,ACCENT,'Helvetica-Bold')
 dim_h(fx,fy-20,fw,'279.4 / 11.00 in'); dim_v(fx-18,fy,fh,'165 / 6.50 in')
 sx,sy,sw,sh=pic('right',526,240,220,242)
 text(526,495,'TOWER END',9,ACCENT,'Helvetica-Bold'); dim_h(sx,sy-20,sw,'155 / 6.10 in')
-lines(64,182,['Main light centers: X = 37, 79, 121 and 163; Z = 101.',
+lines(64,182,['LED centers: X = 60.118, 81.373, 102.628, 123.883.',
               'TFT center: X = 236; Z = 124. Lower case top: Z = 128.',
               'Spine top: Z = 137. Tower top: Z = 165.',
               'Case splits at X = 140 for a smaller printer.'],10,21)
-lines(526,182,['Front display pocket:', '65.6 wide x 53.6 high', 'Seeed pocket, each:', '21.6 wide x 18.4 high'],10,21)
+lines(526,182,['Rear TFT pocket: 65.6 x 53.6.', 'Front TFT window: 55.6 x 41.6.', 'Rear LED bank pocket:', '85.32 wide x 18.38 high.'],10,21)
 end()
 start('Orthographic drawings','Top, rear and service access','Common axes: X along the 11-inch length, Y front to rear, Z up from the base.')
 tx,ty,tw,th=pic('top',47,284,342,201)
 text(47,500,'TOP',9,ACCENT,'Helvetica-Bold'); dim_h(tx,ty-18,tw,'279.4'); dim_v(tx-12,ty,th,'155')
 pic('back',420,275,331,207); text(420,500,'OPPOSITE LONG SIDE',9,ACCENT,'Helvetica-Bold')
 pic('bottom',49,70,330,170); text(420,239,'BOTTOM / TWO REMOVABLE HALVES',9,ACCENT,'Helvetica-Bold')
-lines(420,218,['Eight M3 base screw clearances: diameter 3.3.',
-               'Shell pilot holes: diameter 2.5; fit-test first.',
-               'Bottom vent slots: 3 x 20.',
-               'Rear cable opening: 12 x 7.',
-               'Shell and base seams are glued using splice strips.',
-               'No controller or power supply is specified yet.'],10,22)
+lines(420,218,['Main pen well: 163 x 105 inside; floor at Z = 43.',
+               'Tower pen well: 63 x 95 inside; floor at Z = 68.',
+               'Both cups have 3 mm walls and floors.',
+               'Lift the cups out to reach the rear fasteners.',
+               'Eight M3 base screws; 3.3 clearance / 2.5 pilots.',
+               'Cup-to-case clearance: 0.30 mm per side.'],10,22)
 end()
 start('Mount drawing','A full inch behind the display','Section through X = 236. The bay is open at the rear for wires and installation from below.')
 sx,sy,sw,sh=pic('section',44,183,330,306)
@@ -209,29 +220,30 @@ dim_h(x0+2*factor,yy-22,9.5*factor,'9.5 hardware')
 dim_h(x0+11.5*factor,yy+129,25.4*factor,'25.4 / 1.00 in clear')
 text(425,yy+47,'OUTSIDE',8,GRAY); text(x0+16*factor,yy+47,'CLEAR REAR BAY',9,GRAY)
 dim_h(x0,yy-54,36.9*factor,'36.9 from exterior face to bay rear')
-lines(420,231,['Pocket: 65.6 x 53.6, around a nominal 65 x 53 board.',
-               'Four mounting ears: diameter 2.7 clearance.',
+lines(420,231,['Rear-loading pocket: 65.6 x 53.6; front bezel hides PCB.',
+               'Four hidden blind pilots: diameter 1.8 for M2 screws.',
                'V2 hole pitch: 59.690 x 47.498 (landscape).',
                'Front glass is nominally 2 mm below the case face.',
-               'Fit-test glass-to-PCB stack and connector clearance.',
+               'Tower cup starts at Y = 43, beyond the 36.9 mm bay.',
                'The 25.4 mm bay excludes the 9.5 mm hardware depth.'],9,20)
 text(44,93,'Mount positions follow manufacturer CAD; assembly thickness and tolerances still need a physical check.',10,GRAY)
 end()
-start('Print kit and evidence','Gray + white, in the same print','First-draft geometry verified digitally. Physical fit and slicer toolpaths are not yet verified.')
-pic('coupon',45,283,235,209)
-text(47,269,'PRINT THE DISPLAY FIT COUPON FIRST',8,ACCENT,'Helvetica-Bold')
+start('Print kit and evidence','Install from the inside','Rear access shown with the base and removable pen cups removed. Physical fit remains untested.')
+pic('rear-mounts',45,283,235,209)
+text(47,269,'UNDERSIDE / REAR MOUNTING ACCESS',8,ACCENT,'Helvetica-Bold')
 lines(310,488,['PRINT FILES',
               'right-shell-two-color.3mf: one object, gray + white parts.',
               'gray-left.stl / gray-right.stl: split structural case.',
               'white-right.stl: aligned lettering; import with gray-right.',
               'base-left.stl / base-right.stl: removable underside.',
-              'splice.stl: print four. fit-coupon.stl: test the display mount.',
+              'cup-left / cup-right / cup-tower.stl: removable pen cups.',
+              'led-retainer.stl: print two; screws enter from inside.',
               'Nominal shell: 3 mm. White text: 0.8 mm deep, flush.',
-              'Use internal supports; remove them through the open bottom.',
+              'splice.stl: print six. Test fit-coupon.stl before the case.',
               'Start at 0.2 mm layers. Use a bed at least 180 x 180 mm.',
               'Assign the two filament colors explicitly in the slicer.'],10,20)
-lines(44,238,['CHECKED: Seven STL exports are watertight. Structural parts are connected solids.',
-              'CHECKED: 3MF contains two material parts. PDF has six pages with SCAD views.',
+lines(44,238,['CHECKED: Eleven STL exports are watertight. Structural parts are connected solids.',
+              'CHECKED: Rear insertion, cup removal, open pen wells and display clearance pass geometry probes.',
               'NOT CHECKED: Actual print, hardware fit, touch access, electrical power or operating temperature.',
               'Proportions are adapted from visual references. This is a review draft, not a measured replica.'],10,19)
 text(44,143,'SOURCES / MANUFACTURER DATA AND VISUAL REFERENCE',8,ACCENT,'Helvetica-Bold')
