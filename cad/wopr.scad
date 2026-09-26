@@ -1,15 +1,16 @@
 // W.O.P.R. first draft. Millimeters. Electronics are reference geometry only.
-// Export part choices: assembly, gray-left, gray-right, white-right,
-// base-left, base-right, splice, section, fit-coupon, cup-left, cup-right,
+// Export part choices: assembly, gray-shell, white-text,
+// base, section, fit-coupon, cup-main,
 // cup-tower, led-retainer, rear-mounts. check-clearances is a build-only probe.
 part = "assembly";
 electronics = true;
 $fn = 32;
-L=279.4; W=155; H=165; split=140; wall=3; ink=0.8;
+L=279.4; W=155; H=165; wall=3; ink=0.8;
 board_x=20.955; board_z=17.780; clearance=0.3;
-led_pitch=board_x+0.3; bank_x=92;
-led_centers=[for(i=[0:3]) bank_x+(i-1.5)*led_pitch]; led_z=101;
-bank_w=4*board_x+3*0.3;
+panels_per_side=7;
+led_pitch=board_x+0.3; bank_x=95;
+led_centers=[for(i=[0:panels_per_side-1]) bank_x+(i-(panels_per_side-1)/2)*led_pitch]; led_z=101;
+bank_w=panels_per_side*board_x+(panels_per_side-1)*0.3;
 tft_x=236; tft_z=124;
 tft_w=65; tft_h=53; tft_thick=9.5;
 tft_inset=2; rear_clearance=25.4;
@@ -158,12 +159,6 @@ module base() {
         for(x=[35:10:115],y=[50,92]) translate([x,y,-1]) cube([3,20,8]);
     }
 }
-module half(right=false) {
-    intersection() {
-        children();
-        translate([right?split:-1,-1,-2]) cube([right?L-split+2:split+1,W+2,H+5]);
-    }
-}
 module reference_parts() {
     for(back=[false,true]) side(back) for(cx=led_centers) {
         color([0.09,0.10,0.11]) translate([cx-board_x/2,8,led_z-board_z/2]) cube([board_x,1.6,board_z]);
@@ -220,14 +215,10 @@ module clearance_checks() {
 }
 if(part=="assembly") assembly();
 else if(part=="check-clearances") clearance_checks();
-else if(part=="gray-left") half(false) gray();
-else if(part=="gray-right") half(true) gray();
-else if(part=="white-right") half(true) white();
-else if(part=="base-left") half(false) base();
-else if(part=="base-right") half(true) base();
-else if(part=="splice") cube([25,12,3]);
-else if(part=="cup-left") half(false) pen_cup();
-else if(part=="cup-right") half(true) pen_cup();
+else if(part=="gray-shell") gray();
+else if(part=="white-text") white();
+else if(part=="base") base();
+else if(part=="cup-main") pen_cup();
 else if(part=="cup-tower") pen_cup(true);
 else if(part=="led-retainer") rotate([90,0,0]) led_retainer();
 else if(part=="rear-mounts") {

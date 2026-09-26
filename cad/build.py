@@ -39,16 +39,16 @@ def scad(path, part='assembly', extra=()):
         raise RuntimeError(f'No output: {path}')
 
 meshes = {}
-offsets = {'gray-left':[0,0,6], 'gray-right':[140,0,6], 'white-right':[140,0,6],
-           'base-left':[0,0,0], 'base-right':[140,0,0], 'splice':[0,0,0], 'fit-coupon':[199,0,93],
-           'cup-left':[14,22,40], 'cup-right':[140,22,40], 'cup-tower':[199,43,65],
+offsets = {'gray-shell':[0,0,6], 'white-text':[0,0,6],
+           'base':[0,0,0], 'fit-coupon':[199,0,93],
+           'cup-main':[14,22,40], 'cup-tower':[199,43,65],
            'led-retainer':None}
 for part, offset in offsets.items():
     raw = TMP / f'{part}.stl'
     scad(raw, part, ['--export-format', 'binstl'])
     mesh = trimesh.load(raw, force='mesh')
     assert mesh.is_watertight and mesh.is_winding_consistent and mesh.volume > 0, part
-    if part != 'white-right':
+    if part != 'white-text':
         assert len(mesh.split()) == 1, f'{part} contains disconnected structure'
     mesh.apply_translation(-np.array(offset if offset is not None else mesh.bounds[0]))
     mesh.export(KIT / f'{part}.stl')
@@ -58,11 +58,15 @@ for part, offset in offsets.items():
     print(line, flush=True)
 
 body_bounds = np.array([meshes[name].bounds + offsets[name] for name in
-                        ['gray-left','gray-right','white-right','base-left','base-right']])
+                        ['gray-shell','white-text','base']])
 envelope = body_bounds[:,1,:].max(axis=0) - body_bounds[:,0,:].min(axis=0)
 assert np.allclose(envelope,[279.4,155,165],atol=.06), envelope
 assert np.allclose(meshes['fit-coupon'].extents,[74,36.9,62],atol=.01)
-assert all(m.extents[0] <= 165 and m.extents[1] <= 155.01 for m in meshes.values())
+assert all(m.extents[0] <= 279.41 and m.extents[1] <= 155.01 for m in meshes.values())
+assert np.allclose(meshes['base'].extents,[279.4,155,6],atol=.01)
+assert np.allclose(meshes['cup-main'].extents,[169,111,96.952],atol=.01)
+assert np.allclose(meshes['led-retainer'].extents,[160.485,23.78,2.4],atol=.01)
+evidence.append('LED layout: 7 panels per side; 14 total; 840 LEDs; bank=148.485 mm; retainer=160.485 mm')
 evidence.append('Envelope: nominal 279.4 x 155 x 165 mm; display bay depth=36.9 mm (2+9.5+25.4)')
 probe_path = TMP / 'clearance-probe.stl'
 scad(probe_path, 'check-clearances', ['--export-format', 'binstl'])
@@ -81,7 +85,7 @@ resources = ET.SubElement(model, tag('resources'))
 mats = ET.SubElement(resources, tag('basematerials'), {'id':'1'})
 for name, color in [('Gray','#686E75FF'),('White','#FAFAF5FF')]:
     ET.SubElement(mats, tag('base'), {'name':name, 'displaycolor':color})
-for objid, name, material in [(2,'gray-right',0),(3,'white-right',1)]:
+for objid, name, material in [(2,'gray-shell',0),(3,'white-text',1)]:
     obj = ET.SubElement(resources, tag('object'), {'id':str(objid),'type':'model','name':name,'pid':'1','pindex':str(material)})
     body = ET.SubElement(obj,tag('mesh'))
     verts = ET.SubElement(body,tag('vertices'))
@@ -90,11 +94,11 @@ for objid, name, material in [(2,'gray-right',0),(3,'white-right',1)]:
     faces = ET.SubElement(body,tag('triangles'))
     for face in meshes[name].faces:
         ET.SubElement(faces,tag('triangle'),dict(zip(['v1','v2','v3'],[str(a) for a in face])))
-assembly = ET.SubElement(resources,tag('object'),{'id':'4','type':'model','name':'WOPR right shell - assign gray and white'})
+assembly = ET.SubElement(resources,tag('object'),{'id':'4','type':'model','name':'WOPR one-piece shell - assign gray and white'})
 components = ET.SubElement(assembly,tag('components'))
 for n in [2,3]: ET.SubElement(components,tag('component'),{'objectid':str(n)})
 ET.SubElement(ET.SubElement(model,tag('build')),tag('item'),{'objectid':'4'})
-mf = KIT / 'right-shell-two-color.3mf'
+mf = KIT / 'shell-two-color.3mf'
 with zipfile.ZipFile(mf,'w',zipfile.ZIP_DEFLATED) as z:
     z.writestr('[Content_Types].xml','<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="model" ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/></Types>')
     z.writestr('_rels/.rels','<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Target="/3D/3dmodel.model" Id="rel0" Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/></Relationships>')
@@ -150,7 +154,7 @@ def start(kicker,title,subtitle):
     text(36,548,title,25,NAVY,'Helvetica-Bold')
     text(36,527,subtitle,10,GRAY)
     c.setStrokeColor(HexColor('#CBD5E1')); c.line(36,39,756,39)
-    text(36,24,'W.O.P.R. / DRAFT 02 / 2026-09-26 / dimensions in mm / not to print scale',8,GRAY)
+    text(36,24,'W.O.P.R. / DRAFT 05 / 2026-09-26 / dimensions in mm / not to print scale',8,GRAY)
     text(714,24,f'{page:02d} / 06',8,GRAY)
 def pic(name,x,y,w,h):
     im=Image.open(VIEWS/f'{name}.png'); iw,ih=im.size
@@ -168,18 +172,18 @@ def dim_v(x,y,h,label):
     c.saveState(); c.translate(x-6,y+h/2); c.rotate(90); c.setFont('Helvetica',9); c.drawCentredString(0,0,label); c.restoreState()
 def end(): c.showPage()
 
-start('Design review','W.O.P.R. / the open-top revision','Side-by-side LED banks. Rear-mounted electronics. Removable pen cups. Gray and flush white text.')
+start('Design review','W.O.P.R. / seven panels per side','Fourteen RGB panels. Rear-mounted electronics. Open pen wells. Gray and flush white text.')
 pic('hero',34,116,724,395)
 lines(40,91,['279.4 x 155 x 165 mm  |  11.00 x 6.10 x 6.50 in  |  3 mm nominal shell',
              'OpenSCAD model render. Colored LEDs and display are hardware previews, not printed material.'],10,17)
 end()
-start('Mockups','Continuous banks, hidden fasteners','Eight boards total: four adjacent boards behind one long window on each side.')
+start('Mockups','Seven-panel banks, the same case','Fourteen boards total: seven adjacent boards behind one continuous window on each side.')
 pic('rear',40,251,410,254); pic('empty',455,279,295,209)
 text(460,264,'CASE WITHOUT ELECTRONICS',9,ACCENT,'Helvetica-Bold')
 lines(40,222,['The open top contains two removable pen wells, isolated from the electronics.',
               'Both long sides carry white W.O.P.R. / War Operation Plan Response lettering.',
               'The main touchscreen is on one side, directly above its logo.',
-              'Each row spans 84.72 mm; only 0.30 mm separates neighboring PCB edges.',
+              'Each row spans 148.485 mm; 0.30 mm separates PCB edges. Fourteen panels provide 840 LEDs.',
               'Every board loads from behind its bezel. No mounting screws are exposed on the front.'],11,23)
 text(40,73,'Remove the pen cups and base for rear access. Fit the electronics first, then lower the cups into place.',9,GRAY)
 end()
@@ -189,17 +193,17 @@ text(64,495,'PRIMARY LONG SIDE',9,ACCENT,'Helvetica-Bold')
 dim_h(fx,fy-20,fw,'279.4 / 11.00 in'); dim_v(fx-18,fy,fh,'165 / 6.50 in')
 sx,sy,sw,sh=pic('right',526,240,220,242)
 text(526,495,'TOWER END',9,ACCENT,'Helvetica-Bold'); dim_h(sx,sy-20,sw,'155 / 6.10 in')
-lines(64,182,['LED centers: X = 60.118, 81.373, 102.628, 123.883.',
+lines(64,182,['LED centers: X = 31.235 + i x 21.255; i = 0 through 6.',
               'TFT center: X = 236; Z = 124. Lower case top: Z = 128.',
               'Spine top: Z = 137. Tower top: Z = 165.',
-              'Case splits at X = 140 for a smaller printer.'],10,21)
-lines(526,182,['Rear TFT pocket: 65.6 x 53.6.', 'Front TFT window: 55.6 x 41.6.', 'Rear LED bank pocket:', '85.32 wide x 18.38 high.'],10,21)
+              'One-piece shell and base: 279.4 mm long; no center seam.'],10,21)
+lines(526,182,['Rear TFT pocket: 65.6 x 53.6.', 'Front TFT window: 55.6 x 41.6.', 'Rear LED bank pocket:', '149.085 wide x 18.38 high.'],10,21)
 end()
 start('Orthographic drawings','Top, rear and service access','Common axes: X along the 11-inch length, Y front to rear, Z up from the base.')
 tx,ty,tw,th=pic('top',47,284,342,201)
 text(47,500,'TOP',9,ACCENT,'Helvetica-Bold'); dim_h(tx,ty-18,tw,'279.4'); dim_v(tx-12,ty,th,'155')
 pic('back',420,275,331,207); text(420,500,'OPPOSITE LONG SIDE',9,ACCENT,'Helvetica-Bold')
-pic('bottom',49,70,330,170); text(420,239,'BOTTOM / TWO REMOVABLE HALVES',9,ACCENT,'Helvetica-Bold')
+pic('bottom',49,70,330,170); text(420,239,'BOTTOM / ONE REMOVABLE BASE',9,ACCENT,'Helvetica-Bold')
 lines(420,218,['Main pen well: 163 x 105 inside; floor at Z = 43.',
                'Tower pen well: 63 x 95 inside; floor at Z = 68.',
                'Both cups have 3 mm walls and floors.',
@@ -232,17 +236,17 @@ start('Print kit and evidence','Install from the inside','Rear access shown with
 pic('rear-mounts',45,283,235,209)
 text(47,269,'UNDERSIDE / REAR MOUNTING ACCESS',8,ACCENT,'Helvetica-Bold')
 lines(310,488,['PRINT FILES',
-              'right-shell-two-color.3mf: one object, gray + white parts.',
-              'gray-left.stl / gray-right.stl: split structural case.',
-              'white-right.stl: aligned lettering; import with gray-right.',
-              'base-left.stl / base-right.stl: removable underside.',
-              'cup-left / cup-right / cup-tower.stl: removable pen cups.',
+              'shell-two-color.3mf: one shell, gray + white parts.',
+              'gray-shell.stl: one continuous structural case.',
+              'white-text.stl: aligned lettering; import with gray-shell.',
+              'base.stl: one continuous removable underside.',
+              'cup-main.stl / cup-tower.stl: two removable pen cups.',
               'led-retainer.stl: print two; screws enter from inside.',
               'Nominal shell: 3 mm. White text: 0.8 mm deep, flush.',
-              'splice.stl: print six. Test fit-coupon.stl before the case.',
-              'Start at 0.2 mm layers. Use a bed at least 180 x 180 mm.',
+              'No splice strips. Test fit-coupon.stl before the case.',
+              'Shell and base need a 280 x 155 mm area, plus brim.',
               'Assign the two filament colors explicitly in the slicer.'],10,20)
-lines(44,238,['CHECKED: Eleven STL exports are watertight. Structural parts are connected solids.',
+lines(44,238,['CHECKED: Seven STL exports are watertight. Shell, base and main cup are single solids.',
               'CHECKED: Rear insertion, cup removal, open pen wells and display clearance pass geometry probes.',
               'NOT CHECKED: Actual print, hardware fit, touch access, electrical power or operating temperature.',
               'Proportions are adapted from visual references. This is a review draft, not a measured replica.'],10,19)
@@ -263,7 +267,7 @@ for i,p in enumerate(doc):
 evidence.append('PDF: 6 pages; text and raster renders verified by builder; visual review required')
 (OUT/'verification.txt').write_text('\n'.join(evidence)+'\n')
 with zipfile.ZipFile(OUT/'wopr-first-draft-kit.zip','w',zipfile.ZIP_DEFLATED) as z:
-    for path in [SCAD,ROOT/'cad/README.md',ROOT/'cad/build.py',OUT/'verification.txt',*KIT.glob('*')]:
+    for path in [SCAD,ROOT/'cad/README.md',ROOT/'cad/build.py',OUT/'verification.txt',mf,*[KIT/f'{n}.stl' for n in offsets]]:
         z.write(path,path.relative_to(ROOT))
 print(f'PDF: {PDF}; pages={len(doc)}',flush=True)
 print('PASS: all geometry and document checks',flush=True)

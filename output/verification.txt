@@ -1,14 +1,11 @@
-gray-left: watertight=True; bounds_mm=139.971 x 155.000 x 130.952
-gray-right: watertight=True; bounds_mm=139.371 x 155.000 x 158.952
-white-right: watertight=True; bounds_mm=70.494 x 155.000 x 21.660
-base-left: watertight=True; bounds_mm=140.000 x 155.000 x 6.000
-base-right: watertight=True; bounds_mm=139.400 x 155.000 x 6.000
-splice: watertight=True; bounds_mm=25.000 x 12.000 x 3.000
+gray-shell: watertight=True; bounds_mm=279.342 x 155.000 x 158.952
+white-text: watertight=True; bounds_mm=70.494 x 155.000 x 21.660
+base: watertight=True; bounds_mm=279.400 x 155.000 x 6.000
 fit-coupon: watertight=True; bounds_mm=74.000 x 36.900 x 62.000
-cup-left: watertight=True; bounds_mm=126.000 x 111.000 x 96.952
-cup-right: watertight=True; bounds_mm=43.000 x 111.000 x 96.952
+cup-main: watertight=True; bounds_mm=169.000 x 111.000 x 96.952
 cup-tower: watertight=True; bounds_mm=69.000 x 101.000 x 99.952
-led-retainer: watertight=True; bounds_mm=96.720 x 23.780 x 2.400
+led-retainer: watertight=True; bounds_mm=160.485 x 23.780 x 2.400
+LED layout: 7 panels per side; 14 total; 840 LEDs; bank=148.485 mm; retainer=160.485 mm
 Envelope: nominal 279.4 x 155 x 165 mm; display bay depth=36.9 mm (2+9.5+25.4)
 PASS: rear PCB insertion paths, cup lift paths, open pen wells, 25.4 mm display bay, hidden TFT pilots
 3MF: two material parts, one build object, valid ZIP/XML
