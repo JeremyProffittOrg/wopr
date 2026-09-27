@@ -1,0 +1,3 @@
+PASS: wopr-body-single-filament.3mf: one body, 1 material part(s), native Bambu round-trip exit 0, mesh extents/volume preserved within decimal precision, watertight
+PASS: wopr-body-multi-color.3mf: one body, 2 material part(s), native Bambu round-trip exit 0, mesh extents/volume preserved within decimal precision, watertight
+H2D 0.4 mm, Generic PLA, 0.20 mm layers, three walls, automatic supports enabled. Single filament has recessed lettering; multi-color has flush white lettering. Editable projects are unsliced; verify supports, plate placement and actual spool mapping before printing.

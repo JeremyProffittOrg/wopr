@@ -1,6 +1,7 @@
 # WOPR first-draft model
 
 ## Locked decisions (user-confirmed; do not revisit)
+- 2026-09-27: "create a single filament version and a multi-color version of the body, both 3mf files"
 - 2026-09-27: "great the lcd fits perfect." confirms the current LCD fit coupon.
 - 2026-09-27: "create a two color / two filament test pannel for the wopr working and open as a 3mf file in bambulabs, for dual color printing"
 - 2026-09-27: "open the 3mf test when done"
@@ -177,3 +178,11 @@ depends on: unsplit-exports
 - 2026-09-27: Wording panel meshes and native filament assignments verified. Bambu CLI capture changed to files to avoid waiting on inherited pipe handles after export. Explicit H2D standard-nozzle counts and a prime-tower location in the common printable area resolved the actual slice failures without disabling checks. Slice parent PID26224 exited0; report confirms filament1 gray7.68 g and filament2 white0.59 g, both used for the object, outside=false, estimated1506 seconds. The slicer logs diagnostics for factory H2D special T commands but reports successful validated export; factory G-code is preserved. Physical printing has not started. Final builder now contains these slice assertions.
 - 2026-09-27: Final integrated wording builder parent PID34840 exited0. Geometry, native Bambu round-trip and slice assertions all passed. Layer ranges0..10 use gray; layers11..14 use gray and white. Output/wording-test contains the editable two-filament 3MF, separate material STLs, preview and verification/estimated-usage summary. Final project reopened in Bambu Studio after verification. Printer output was not started; actual spool/AMS mapping remains the operator's choice.
 - 2026-09-27: Final Bambu GUI PID19924 opened wopr-two-filament-test.3mf alone. Commitc862532 pushed successfully; gh run list returned[]. Bambu-created runtime data under output/model/%SystemDrive%/ProgramData/Microsoft is excluded from source control and preserved locally; no runtime/identity data was read or committed.
+
+## body-filament-projects — body-only Bambu projects
+- [x] body-project-export — python cad/build-body-projects.py exits0; one gray body with recessed lettering and one gray/white body with flush lettering. Preserve current mechanical geometry.
+- [x] body-project-delivery — native Bambu round-trip preserves part assignments and geometry; both editable files saved under output/body-projects.
+
+Files: cad/build-body-projects.py, cad/README.md, plan.md, output/body-projects. Use existing checked body meshes and the same factory H2D profiles as the wording test. No base/cup changes, PDF, email, or physical print. Native exports have180-second timeouts, maximum two corrected retries; tracked private-desktop worker logs success and failure.
+
+- 2026-09-27: Body-project builder private parent PID38040 exited0. Both native Bambu round-trips exited0. Single version contains one gray part with recessed lettering; multi-color contains gray1/white2 parts. Packaged meshes are watertight and retain source extents and volume within decimal-coordinate precision (single volume425301.001 versus425300.687 mm3). Both projects are unsliced, H2D0.4 Generic PLA with three walls and automatic supports. No physical print or foreground application launch.

@@ -74,3 +74,19 @@ It is face-up, with a flush 0.8 mm white inlay over 2.2 mm of gray backing.
 
 The operator confirmed on 2026-09-27 that the LCD fit coupon fits perfectly. Other physical
 assembly and lettering print results have not been confirmed.
+
+## Body-only filament projects
+
+- `output/body-projects/wopr-body-single-filament.3mf`: one gray body, with the existing
+  0.8 mm lettering recesses left open so the wording remains visible in one material.
+- `output/body-projects/wopr-body-multi-color.3mf`: one body with gray structure on filament 1
+  and flush white lettering on filament 2. Both material parts retain their shared alignment.
+
+Open as a project in Bambu Studio. These files use the H2D 0.4 mm profile, Generic PLA,
+0.20 mm layers, three walls and automatic supports. They contain only the body; the base,
+cups and retainers remain separate parts in the existing kit. The current LCD opening,
+mounts and seven-panel banks are unchanged. The projects are editable and unsliced.
+Review support placement and slicing, and confirm actual spool mapping before printing.
+`python cad/build-body-projects.py` packages the current verified body exports and checks
+native Bambu round-trip, material assignments, watertight meshes, dimensions and volume.
+Run through the verified private-desktop launcher under the console-visibility rule.
