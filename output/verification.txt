@@ -6,6 +6,7 @@ cup-main-shallow-left: watertight=True; bounds_mm=169.000 x 111.000 x 88.000
 cup-main-shallow-right: watertight=True; bounds_mm=169.000 x 111.000 x 88.000
 cup-tower: watertight=True; bounds_mm=69.000 x 101.000 x 99.952
 led-retainer: watertight=True; bounds_mm=160.485 x 23.780 x 2.400
+PASS: LCD opening 50.10 x 39.60 mm; left +4.5, right -1.0, top -2.0, bottom unchanged
 PASS: 3.00 mm base underside recess; inset base 272.8 x 148.4 x 6 mm
 PASS: both main-cup variants: four 38.10 mm shallow cells and four 85 mm deep cells; tower four 97 mm cells
 LED layout: 7 panels per side; 14 total; 840 LEDs; bank=148.485 mm; retainer=160.485 mm

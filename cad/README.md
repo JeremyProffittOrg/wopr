@@ -1,4 +1,4 @@
-# W.O.P.R. / draft 06: inset base and divided cup alternatives
+# W.O.P.R. / draft 07: adjusted LCD opening
 
 Open `wopr.scad` in OpenSCAD. Default view is the assembled mockup. Units are millimeters.
 Run `python cad/build.py` from the repository root to export meshes, 3MF, views, and PDF.
@@ -13,7 +13,7 @@ Python dependencies already present on the design machine: Pillow, trimesh, nump
 - Each seven-board row is 148.485 mm long. One uninterrupted front window is 146.885 x 13.78 mm; a rear-loading pocket is 149.085 x 18.38 mm. Manufacturer Eagle outline is 20.955 x 17.780 mm per board. The small front rim supports the PCB edges without masking the nominal LED grid.
 - Boards load from inside against the front seat at Y=8 mm. A removable retaining frame bears against the PCB backs at Y=9.6 mm. Four rear-facing M2 screws per bank pass through 2.2 mm retainer holes into blind 1.6 mm case pilots. No front screw heads. Check component and solder-pad clearance before tightening.
 - One Adafruit #3315 V2 touchscreen over the primary logo; nominal board 65 x 53 x 9.5 mm.
-- Rear-loading display pocket 65.6 x 53.6 mm. The front bezel has a 55.6 x 41.6 mm window and hides the PCB and mounting holes. Glass inset is 2 mm; clear rear space is 25.4 mm beyond the nominal hardware back at depth 11.5 mm. Bay ends at depth 36.9 mm and is open behind.
+- Rear-loading display pocket remains 65.6 x 53.6 mm. The visible front window is now 50.1 x 39.6 mm: viewed from the logo side, its left edge moves inward 4.5 mm, right edge inward 1 mm, and top edge down 2 mm. Bottom edge stays fixed. The window spans X=212.7..262.8 and Z=103.2..142.8. Behind the 2 mm front lip, the existing 55.6 x 41.6 mm glass relief is preserved; the PCB seat and mounting-hole positions stay fixed. Clear rear space remains 25.4 mm beyond the nominal hardware back at depth 11.5 mm. Bay ends at depth 36.9 mm and is open behind.
 - V2 mounting hole pitch 59.690 x 47.498 mm, rotated landscape. Drive M2 screws through the PCB from behind into four blind 1.8 mm pilots. The front 1 mm remains closed. Do not use a screw that reaches through the face. Check real PCB-to-glass height before tightening; the draft seat is at Y=4 mm.
 - Shell nominal 3 mm wall; white text 0.8 mm deep and flush with the gray face. No paint or stickers needed for text.
 - Recessed base: 272.8 x 148.4 x 6 mm. Its underside sits at Z=3, exactly 3 mm above the body edge at Z=0. Its top seats on the relocated screw bosses at Z=9. The plate is inset 3.3 mm from each outside face: 3 mm shell wall plus 0.3 mm fit clearance. The exterior skirt extends into the former base footprint so the overall 165 mm height stays unchanged. Old screw-head counterbores are removed; the 3 mm space below the plate accommodates the heads.

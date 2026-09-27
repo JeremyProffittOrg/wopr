@@ -1,6 +1,7 @@
 # WOPR first-draft model
 
 ## Locked decisions (user-confirmed; do not revisit)
+- 2026-09-27: "okay, the lcd cut out requries adjustmeent, bring the left side in 4.5mm, top 2mm down and the right side 1mm in."
 - 2026-09-26: "create a 3d pirntable mock up of the W.O.P.R. computer in war games"
 - 2026-09-26: "4 for the longer side lights"
 - 2026-09-26: "Four per long side: eight total"
@@ -27,7 +28,7 @@
 - Existing C:/dev/adafruit-pannel/scripts/send_case_pdf_mail.py configures jeremy@jeremy.ninja to proffitt.jeremy@gmail.com, reply to proffitt.jeremy@gmail.com, SES us-east-1.
 
 ## Assumptions
-- Current draft 06: fourteen Seeed boards total, seven adjacent boards per side. Shell and inset base remain one piece each. Main cup has shallow-left and shallow-right alternatives, one piece each; tower cup has crossed dividers. See divided-cups-inset-base for verified storage and base dimensions.
+- Current draft 07: fourteen Seeed boards total, seven adjacent boards per side. Shell and inset base remain one piece each. Main cup has shallow-left and shallow-right alternatives, one piece each; tower cup has crossed dividers. The front LCD window is50.1 x39.6 mm with the requested asymmetric edge trims. See lcd-aperture-adjustment and divided-cups-inset-base for verified dimensions.
 - Side text corrected to War Operation Plan Response. One TFT above primary W.O.P.R. logo.
 - Overall 279.4 x 155 x 165 mm. Gray structure and flush white material volumes; colored electronics are render-only.
 - First-draft mounts use measured PCB envelopes plus clearance; hardware fit and print tolerance require a physical trial.
@@ -75,6 +76,15 @@ depends on: model-export
 - Missing credentials or delivery recipient that cannot be resolved from existing configuration.
 - An unapproved irreversible change or genuine scope expansion.
 - Physical fit cannot be verified without actual components; deliver the first draft with that limitation.
+
+## lcd-aperture-adjustment — trim the visible opening to the measured screen
+depends on: inset-organizer-geometry
+### front-window-trim — apply the three requested edge changes
+- [x] lcd-front-edges — front view left +4.5 mm, right -1 mm, top -2 mm, bottom fixed. Result50.1 x39.6 mm, X212.7..262.8, Z103.2..142.8. Preserve 2 mm glass inset, rear glass relief, board pocket and screw positions.
+- [x] lcd-window-proof — python C:/dev/wopr/cad/build.py on verified private desktop exits0; slice of actual fit-coupon front lip verifies new dimensions and offsets; existing mesh/clearance checks pass.
+- [ ] lcd-window-delivery — update/review derived PDF and parts, commit/push main, check workflow result.
+
+Scope: cad/wopr.scad, relevant checks/labels in cad/build.py, cad/README.md, plan.md and derived exports. No change to cups, base, LED layout or rear mounting dimensions. Front aperture is the interpretation of "LCD cut out"; no unnecessary hardware relocation.
 
 ## divided-cups-inset-base — recess the removable base and partition storage
 depends on: unsplit-exports
@@ -147,3 +157,4 @@ depends on: unsplit-exports
 - 2026-09-26: Operator could not see LCD mounting holes. File-only ray intersections against the actual gray-shell.stl verified all four: centers at X=206.155/265.845, print-coordinate Z=94.251/141.749; bore floors at Y=1 and surrounding seats at Y=4. Thus all four blind holes are present and 3 mm deep (SCAD diameter1.8 mm). No design changes were needed. Rendered output/views/lcd-rear-mounts.png as an angled rear detail with the deep clearance walls cut away so the holes can be seen. Private render parent PID28632 exited 0, manifold NoError.
 - 2026-09-26: Draft 06 private build parent PID38048 exited 0 with "PASS: all geometry and document checks". Eight watertight STLs; structural parts each one component. Measured base272.8 x148.4 x6 and 3.00 mm recess. Both main-cup variants measured169 x111 x88, four shallow cells at38.10 mm and four deep cells at85 mm; tower has four nominal97 mm cells. CSG probes verified divider material, cell voids, plate insertion and screw-head clearance; only the intentional zero-volume seating contact at Z=9 is excluded from collision checks. All eight PDF pages visually inspected. Removed superseded cup-main.stl after replacement passed; ZIP14entries match current sources/meshes and contains both alternatives. Physical print/fit remains untested.
 - 2026-09-26: Bambu Studio --info output/model/wopr-parts.3mf completed successfully on the private desktop and reported manifold=yes for the imported items. Commit9a0a321 pushed to main. git diff --cached --check passed; gh run list returned []. Removed Bambu's generated root result.json after inspecting its return_code. Delivered PDF contains eight pages, both layout alternatives on page5 and dimensioned base clearance on page6.
+- 2026-09-27: LCD revision build parent PID10980 exited0 with "PASS: all geometry and document checks". Section of the exported front lip measured50.10 x39.60 mm, at coupon-local lower corner13.7 x10.2 (global X212.7,Z103.2); this proves the requested left/right/top trims and fixed bottom edge. Preserved glass relief behind the2 mm front lip, rear PCB pocket and screw positions. All eight STLs watertight; existing base/cup/depth/electronics clearance probes pass. All eight updated PDF pages visually reviewed. Physical fit remains untested.

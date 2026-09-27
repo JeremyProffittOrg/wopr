@@ -83,7 +83,11 @@ module led_retainer() {
 module display_bay() {
     difference() {
         translate([tft_x-35,0,tft_z-29]) cube([70,bay_end,58]);
-        translate([tft_x-27.8,-1,tft_z-20.8]) cube([55.6,6,41.6]);
+        // Front view: left edge +4.5 mm, right edge -1 mm, top edge -2 mm.
+        // The bottom edge and the rear hardware seat remain fixed.
+        translate([tft_x-27.8+4.5,-1,tft_z-20.8]) cube([55.6-4.5-1,6,41.6-2]);
+        // Preserve glass clearance behind the 2 mm front lip.
+        translate([tft_x-27.8,2,tft_z-20.8]) cube([55.6,3,41.6]);
         translate([tft_x-32.8,4,tft_z-26.8]) cube([65.6,bay_end,53.6]);
     }
     // Hidden front supports with blind pilots. Drive M2 screws from the rear.
@@ -223,6 +227,8 @@ module clearance_checks() {
             for(back=[false,true]) side(back) for(cx=led_centers)
                 translate([cx-board_x/2,8.01,led_z-board_z/2]) cube([board_x,27,board_z]);
             translate([tft_x-32.5,4.01,tft_z-26.5]) cube([65,61,53]);
+            translate([212.71,0.01,103.21]) cube([50.08,1.98,39.58]);
+            translate([208.51,2.01,103.51]) cube([54.98,1.98,40.98]);
             // Cups must lift straight out after removing electronics fasteners.
             translate([14,22,40.01]) cube([169,111,140]);
             translate([199,43,65.01]) cube([69,101,115]);

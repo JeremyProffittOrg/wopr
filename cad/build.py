@@ -62,6 +62,14 @@ body_bounds = np.array([meshes[name].bounds + offsets[name] for name in
 envelope = body_bounds[:,1,:].max(axis=0) - body_bounds[:,0,:].min(axis=0)
 assert np.allclose(envelope,[279.4,155,165],atol=.06), envelope
 assert np.allclose(meshes['fit-coupon'].extents,[74,36.9,62],atol=.01)
+# Slice the actual front lip, before the rear glass relief and blind screw holes.
+lcd_section=meshes['fit-coupon'].section(plane_origin=[0,0.5,0],plane_normal=[0,1,0])
+assert lcd_section is not None,'Missing LCD front section'
+lcd_openings=[loop for loop in lcd_section.discrete
+              if np.allclose(np.ptp(loop[:,[0,2]],axis=0),[50.1,39.6],atol=.01)]
+assert len(lcd_openings)==1,'LCD opening must measure 50.1 x 39.6 mm'
+assert np.allclose(lcd_openings[0][:,[0,2]].min(axis=0),[13.7,10.2],atol=.01),'LCD edge offsets incorrect'
+evidence.append('PASS: LCD opening 50.10 x 39.60 mm; left +4.5, right -1.0, top -2.0, bottom unchanged')
 assert all(m.extents[0] <= 279.41 and m.extents[1] <= 155.01 for m in meshes.values())
 assert np.allclose(meshes['base'].extents,[272.8,148.4,6],atol=.01)
 assert abs((meshes['base'].bounds[0,2]+offsets['base'][2])-meshes['gray-shell'].bounds[0,2]-3)<.01
@@ -213,7 +221,7 @@ def start(kicker,title,subtitle):
     text(36,548,title,25,NAVY,'Helvetica-Bold')
     text(36,527,subtitle,10,GRAY)
     c.setStrokeColor(HexColor('#CBD5E1')); c.line(36,39,756,39)
-    text(36,24,'W.O.P.R. / DRAFT 06 / 2026-09-26 / dimensions in mm / not to print scale',8,GRAY)
+    text(36,24,'W.O.P.R. / DRAFT 07 / 2026-09-27 / dimensions in mm / not to print scale',8,GRAY)
     text(714,24,f'{page:02d} / 08',8,GRAY)
 def pic(name,x,y,w,h):
     im=Image.open(VIEWS/f'{name}.png'); iw,ih=im.size
@@ -256,7 +264,7 @@ lines(64,182,['LED centers: X = 31.235 + i x 21.255; i = 0 through 6.',
               'TFT center: X = 236; Z = 124. Lower case top: Z = 128.',
               'Spine top: Z = 137. Tower top: Z = 165.',
               'Shell: 279.4 mm long. Inset base: 272.8 x 148.4 mm.'],10,21)
-lines(526,182,['Rear TFT pocket: 65.6 x 53.6.', 'Front TFT window: 55.6 x 41.6.', 'Rear LED bank pocket:', '149.085 wide x 18.38 high.'],10,21)
+lines(526,182,['Rear TFT pocket: 65.6 x 53.6.', 'Front TFT window: 50.1 x 39.6.', 'Rear LED bank pocket:', '149.085 wide x 18.38 high.'],10,21)
 end()
 start('Orthographic drawings','Top, rear and service access','Common axes: X along the 11-inch length, Y front to rear, Z up from the base.')
 tx,ty,tw,th=pic('top',47,284,342,201)
@@ -314,6 +322,7 @@ dim_h(x0+11.5*factor,yy+129,25.4*factor,'25.4 / 1.00 in clear')
 text(425,yy+47,'OUTSIDE',8,GRAY); text(x0+16*factor,yy+47,'CLEAR REAR BAY',9,GRAY)
 dim_h(x0,yy-54,36.9*factor,'36.9 from exterior face to bay rear')
 lines(420,231,['Rear-loading pocket: 65.6 x 53.6; front bezel hides PCB.',
+               'Front opening: 50.1 x 39.6; left +4.5, right -1, top -2.',
                'Four hidden blind pilots: diameter 1.8 for M2 screws.',
                'V2 hole pitch: 59.690 x 47.498 (landscape).',
                'Front glass is nominally 2 mm below the case face.',
