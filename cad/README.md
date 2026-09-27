@@ -54,3 +54,23 @@ All printed structural parts are gray except the white text. Seven adjacent boar
 - https://www.adafruit.com/product/3315
 - https://github.com/adafruit/Adafruit-2.4-TFT-FeatherWing-PCB
 - https://www.miniatua.com/work/wopr/ (visual reference only; no third-party mesh reused)
+
+## Two-filament wording test
+
+Open `output/wording-test/wopr-two-filament-test.3mf` as a project in Bambu Studio so its
+filament assignments are retained. This separate 90 x 34 x 3 mm test panel reuses the exact
+production lettering: `W.O.P.R.` and `War Operation Plan Response`, at the same font and size.
+It is face-up, with a flush 0.8 mm white inlay over 2.2 mm of gray backing.
+
+- Filament 1: gray panel. Filament 2: white wording.
+- One object contains two material parts; do not separate or independently arrange the lettering.
+- Configured for the currently selected Bambu Lab H2D 0.4 mm profile, two standard nozzles,
+  Generic PLA and 0.20 mm Standard layers. Confirm the actual loaded spool/AMS mapping before printing.
+- The prime tower is placed inside both H2D toolheads' common printable area.
+- `python cad/build-wording-test.py` validates the two meshes, native Bambu material assignments,
+  and a full two-filament slice. Run only through a launch chain allowed by agents.md.
+- The editable delivered 3MF is unsliced. Validation G-code remains in temporary storage;
+  no print is started by the builder. Estimates and material usage are in `slice-summary.json`.
+
+The operator confirmed on 2026-09-27 that the LCD fit coupon fits perfectly. Other physical
+assembly and lettering print results have not been confirmed.

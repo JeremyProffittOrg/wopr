@@ -55,6 +55,16 @@ module lettering(back=false) {
     }
 }
 module white() { lettering(); lettering(true); }
+// Small face-up print test using the production lettering at its actual scale.
+module wording_test_white() {
+    translate([45,16.2,3]) rotate([-90,0,0]) translate([-tft_x,0,-72]) lettering(false);
+}
+module wording_test_blank() {
+    linear_extrude(3) offset(r=2) translate([2,2]) square([86,30]);
+}
+module wording_test_gray() {
+    difference() { wording_test_blank(); wording_test_white(); }
+}
 module light_cuts() {
     for(back=[false,true]) side(back)
         translate([bank_x-bank_w/2-5.8,4,led_z-board_z/2-2.8])
@@ -282,6 +292,13 @@ module clearance_checks() {
     }
 }
 if(part=="assembly") assembly();
+else if(part=="wording-gray") wording_test_gray();
+else if(part=="wording-white") wording_test_white();
+else if(part=="wording-solid") wording_test_blank();
+else if(part=="wording-preview") {
+    color([0.40,0.43,0.46]) wording_test_gray();
+    color([0.98,0.98,0.96]) wording_test_white();
+}
 else if(part=="check-clearances") clearance_checks();
 else if(part=="gray-shell") gray();
 else if(part=="white-text") white();

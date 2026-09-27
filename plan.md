@@ -1,6 +1,9 @@
 # WOPR first-draft model
 
 ## Locked decisions (user-confirmed; do not revisit)
+- 2026-09-27: "great the lcd fits perfect." confirms the current LCD fit coupon.
+- 2026-09-27: "create a two color / two filament test pannel for the wopr working and open as a 3mf file in bambulabs, for dual color printing"
+- 2026-09-27: "open the 3mf test when done"
 - 2026-09-27: "okay, the lcd cut out requries adjustmeent, bring the left side in 4.5mm, top 2mm down and the right side 1mm in."
 - 2026-09-26: "create a 3d pirntable mock up of the W.O.P.R. computer in war games"
 - 2026-09-26: "4 for the longer side lights"
@@ -76,6 +79,18 @@ depends on: model-export
 - Missing credentials or delivery recipient that cannot be resolved from existing configuration.
 - An unapproved irreversible change or genuine scope expansion.
 - Physical fit cannot be verified without actual components; deliver the first draft with that limitation.
+
+## two-filament-wording-test — print the production lettering on a small test panel
+depends on: front-window-trim
+### wording-panel-geometry — reuse production lettering and inlay depth
+- [x] lettering-panel — 90 x34 x3 mm gray panel with production font/size, white wording flush at Z2.2..3.0; both meshes watertight and combined volume fills the blank panel.
+- [x] native-filament-assignments — native Bambu 3MF round-trip retains one object with gray part on filament1 and white part on filament2. H2D0.4 standard-nozzle profile and Generic PLA match the selected application setup.
+- [x] wording-slice-proof — builder-integrated Bambu slice exited0, used both filaments for the object, and reported no outside-area paths. Four top layers contain both colors.
+### wording-test-delivery — open the verified editable project
+- [x] wording-test-open — final slice-verified project opened alone in Bambu Studio; gray=filament1, white=filament2.
+- [ ] wording-test-push — focused commit/main push and workflow check on the verified private desktop.
+
+Scope: wording test modules in cad/wopr.scad, focused cad/build-wording-test.py, README/plan and output/wording-test only. Main enclosure geometry stays unchanged; no print command is sent to the printer. Direct GUI launch is authorized for Bambu Studio; all CAD/slicer/CLI work stays on WoprBuildPrivate. Native export and slicing have 180-second ceilings; deterministic failures require a correction before retry, at most two corrected retries per failing stage.
 
 ## lcd-aperture-adjustment — trim the visible opening to the measured screen
 depends on: inset-organizer-geometry
@@ -159,3 +174,5 @@ depends on: unsplit-exports
 - 2026-09-26: Bambu Studio --info output/model/wopr-parts.3mf completed successfully on the private desktop and reported manifold=yes for the imported items. Commit9a0a321 pushed to main. git diff --cached --check passed; gh run list returned []. Removed Bambu's generated root result.json after inspecting its return_code. Delivered PDF contains eight pages, both layout alternatives on page5 and dimensioned base clearance on page6.
 - 2026-09-27: LCD revision build parent PID10980 exited0 with "PASS: all geometry and document checks". Section of the exported front lip measured50.10 x39.60 mm, at coupon-local lower corner13.7 x10.2 (global X212.7,Z103.2); this proves the requested left/right/top trims and fixed bottom edge. Preserved glass relief behind the2 mm front lip, rear PCB pocket and screw positions. All eight STLs watertight; existing base/cup/depth/electronics clearance probes pass. All eight updated PDF pages visually reviewed. Physical fit remains untested.
 - 2026-09-27: Bambu --info accepted updated wopr-parts.3mf (return_code0). Commit1c2f991 pushed to main; git diff --cached --check passed and gh run list returned []. Kit14entries match current source files and meshes. Removed generated root result.json after checking its successful status.
+- 2026-09-27: Wording panel meshes and native filament assignments verified. Bambu CLI capture changed to files to avoid waiting on inherited pipe handles after export. Explicit H2D standard-nozzle counts and a prime-tower location in the common printable area resolved the actual slice failures without disabling checks. Slice parent PID26224 exited0; report confirms filament1 gray7.68 g and filament2 white0.59 g, both used for the object, outside=false, estimated1506 seconds. The slicer logs diagnostics for factory H2D special T commands but reports successful validated export; factory G-code is preserved. Physical printing has not started. Final builder now contains these slice assertions.
+- 2026-09-27: Final integrated wording builder parent PID34840 exited0. Geometry, native Bambu round-trip and slice assertions all passed. Layer ranges0..10 use gray; layers11..14 use gray and white. Output/wording-test contains the editable two-filament 3MF, separate material STLs, preview and verification/estimated-usage summary. Final project reopened in Bambu Studio after verification. Printer output was not started; actual spool/AMS mapping remains the operator's choice.

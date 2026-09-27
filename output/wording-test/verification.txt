@@ -1,0 +1,7 @@
+PASS: panel 90 x 34 x 3 mm; production font/size and wording reused
+PASS: 0.8 mm flush white inlay, face up, backed by 2.2 mm gray
+PASS: both material meshes watertight; gray base one solid; volumes fill the panel
+PASS: Bambu re-export retains two filament assignments: 1 gray, 2 white
+PASS: Bambu slice succeeds with both filaments used for the object and no outside-area toolpaths
+Printer preset: Bambu Lab H2D 0.4 nozzle; two standard nozzles; Generic PLA; 0.20 mm Standard
+No physical print has been run. Confirm loaded filament/AMS mapping before printing.

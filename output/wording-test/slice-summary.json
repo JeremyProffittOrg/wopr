@@ -1,0 +1,22 @@
+{
+  "slicer_exit": 0,
+  "outside_printable_area": false,
+  "estimated_seconds": 1506,
+  "estimated_grams": 8.27,
+  "filaments": [
+    {
+      "id": "1",
+      "color": "#686E75",
+      "used_m": "2.58",
+      "used_g": "7.68",
+      "nozzle_diameter": "0.40"
+    },
+    {
+      "id": "2",
+      "color": "#FFFFFF",
+      "used_m": "0.20",
+      "used_g": "0.59",
+      "nozzle_diameter": "0.40"
+    }
+  ]
+}
