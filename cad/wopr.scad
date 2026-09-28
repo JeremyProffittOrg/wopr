@@ -30,13 +30,13 @@ module outline() {
     // Extend the skirt into the old base footprint, then trim it flat at Z=0.
     rounded_box([0,0,-6],[L,W,90],6);
     rounded_box([0,5,72],[199,W-10,56],8);
-    rounded_box([0,54,75],[204,47,62],10);
+    rounded_box([0,(W-47)/2,75],[204,47,62],10);
     rounded_box([190,0,6],[L-190,W,H-6],10);
 }
 module inside() {
     translate([3,3,-1]) cube([L-6,W-6,82]);
     rounded_box([3,8,72],[193,W-16,53],5);
-    rounded_box([3,57,76],[198,41,58],7);
+    rounded_box([3,(W-41)/2,76],[198,41,58],7);
     rounded_box([193,3,70],[L-196,W-6,H-73],7);
 }
 // Coordinates on either long side, with local depth pointing inward.

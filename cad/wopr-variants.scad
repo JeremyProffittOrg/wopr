@@ -50,22 +50,22 @@ module robot_floor() { difference() {
     for(x=[92,178],y=[39,116]) translate([x-5,y-5,55]) cylinder(d=2.5,h=15);
     for(x=[110,163],y=[37,113]) translate([x+2,y,11]) cube([8,8,3]);
 } }
-module hatch_cut() { translate([9,15,116]) cube([178,125,70]); }
-module lid_screws(d=3.3) { for(x=[15,181],y=[21,134]) translate([x,y,108]) cylinder(d=d,h=50); }
-module robot_raw_shell() { difference() {
+module hatch_cut() { translate([9,15,116]) cube([178,W-30,70]); }
+module lid_screws(d=3.3) { for(x=[15,181],y=[21,W-21]) translate([x,y,108]) cylinder(d=d,h=50); }
+module robot_raw_shell(wheel_cuts=true, bottom_bosses=true) { difference() {
     union() {
         difference() { outline(); inside(); light_cuts();
             translate([tft_x-32.8,-1,tft_z-26.8]) cube([65.6,40,53.6]); }
-        light_mounts(); display_bay(); base_bosses();
+        light_mounts(); display_bay(); if(bottom_bosses) base_bosses();
         // Main lid ledges attached to the existing side wall.
-        for(x=[9,175],y=[5,130]) translate([x,y,107]) cube([12,20,9]);
+        for(x=[9,175],y=[5,W-25]) translate([x,y,107]) cube([12,20,9]);
     }
     white();
-    translate([-1,77.5,55]) rotate([0,90,0]) cylinder(d=12.3,h=7); // filled by latching motor-power switch
+    translate([-1,W/2,55]) rotate([0,90,0]) cylinder(d=12.3,h=7); // filled by latching motor-power switch
     for(dx=[-29.845,29.845],dz=[-23.749,23.749]) translate([tft_x+dx,1,tft_z+dz]) rotate([-90,0,0]) cylinder(h=4,d=1.8);
     translate([-1,-1,-7]) cube([L+2,W+2,7]);
     // No pen apertures, cable slot, vents or exposed bottom openings.
-    wheel_voids(2.4);
+    if(wheel_cuts) wheel_voids(2.4);
 } }
 module robot_shell() { difference() { robot_raw_shell(); hatch_cut(); lid_screws(2.5);
     // Floor wheel guards seat outside shell with a running assembly gap.
@@ -73,10 +73,10 @@ module robot_shell() { difference() { robot_raw_shell(); hatch_cut(); lid_screws
 } }
 module robot_lid() { difference() {
     union() {
-        intersection() { robot_raw_shell(); translate([9.3,15.3,116.3]) cube([177.4,124.4,70]); }
+        intersection() { robot_raw_shell(); translate([9.3,15.3,116.3]) cube([177.4,W-30.6,70]); }
         // Flat inner lid closes the hollow center below the original raised spine.
-        translate([9.3,15.3,116.3]) cube([177.4,124.4,4]);
-        intersection() { outline(); difference() { translate([9.3,15.3,119]) cube([177.4,124.4,12]); translate([12.3,18.3,118]) cube([171.4,118.4,15]); } }
+        translate([9.3,15.3,116.3]) cube([177.4,W-30.6,4]);
+        intersection() { outline(); difference() { translate([9.3,15.3,119]) cube([177.4,W-30.6,12]); translate([12.3,18.3,118]) cube([171.4,W-36.6,15]); } }
     } lid_screws();
 } }
 module electronics_tray() { difference() {

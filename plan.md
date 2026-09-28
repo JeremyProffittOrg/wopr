@@ -222,3 +222,28 @@ Stop conditions remain those above; physical fit/durability explicitly unverifie
 
 - 2026-09-28: commit5b4d0b0a8215a6a820ac38cbcd99908262801f45 pushed to main. git diff --cached --check exited0; gh run list --limit3 --json status,conclusion,headSha returned[]. Repository has no workflow. Preserved unrelated modified output/wording-test/wopr-two-filament-test.3mf.
 - 2026-09-28: delegated /root/email_variants sent final22-page PDF plus2.2MB kit via SES us-east-1 to proffitt.jeremy@gmail.com. SES MessageId010001a0ea106eb4-3880f089-eaa1-4e93-927a-31dd26474675-000000; receipt output/variants/email-receipt.json read back. Email states physical fit, durability and phone popup/driving remain untested.
+
+## concealed-drive — add two robots with wheels recessed inside the body
+Depends on: variant-geometry.
+## Locked decisions (user-confirmed; do not revisit)
+- 2026-09-28: "keep that variant, but make one with only 4 wheels and 4 motors and the wheels tucked up under the unit".
+- 2026-09-28: "and make one more variant with 4 motors, 8 wheels with all the wheels under the unit, but widden the unit to hide all the wheels".
+Outcome: preserve existing exports; add155mm-wide four-wheel and210mm-wide eight-wheel robots, four upright motors each, axle18mm above skirt and13.5mm tire projection below. Keep six RGB modules per side, LCD dimensions and WOPR captive-portal firmware.
+Non-goals: new electronics, firmware changes, physical fabrication, changing delivered eight-wheel variant.
+Files: minimal shared CAD parameter changes in cad/wopr.scad and cad/wopr-variants.scad; cad/wopr-concealed.scad, cad/build-concealed.py, cad/CONCEALED.md, output/concealed, output/pdf/wopr-concealed.pdf, plan.md.
+Verified facts: existing #3766 wheel63x29mm and #3777 motor/shaft geometry are retained from earlier checked manufacturer drawings. Existing windowless Node->pythonw->desktop-launch.py->WoprBuildPrivate assertion remains the required launch path.
+Assumptions:13.5mm ground clearance is suitable for a low indoor model; no hardware test is available.
+### concealed-geometry — printable solids and collision proof
+- [x] concealed-solids — python C:/dev/wopr/cad/build-concealed.py exits0; all structural meshes watertight/single component; probes prove wheel/motor/electronics clearance, wheel count and width. Existing eight-wheel shell and lid regression comparison passes.
+### concealed-packet — drawings and assembly differences
+- [x] concealed-drawings — same builder exits0; eight-angle views and all PDF pages visually reviewed.
+### concealed-delivery — commit, push and email
+- [ ] concealed-push — focused commit/push exits0; workflow terminal state checked.
+- [ ] concealed-email — SES MessageId for final PDF/kit recorded.
+Restart policy: each export180s; watcher checks exit/log for both PASS and traceback/errors; deterministic fixes precede retries; two corrected retries per failing check. Existing stop conditions apply. No scheduling or foreground applications.
+
+- 2026-09-28: Assembly-path review requires removable upper wheel hoods and open shaft slots. Keep lower tubs and reinforced cradles on floor; insert motors with wheels already fitted from above, then screw on hoods and motor clamps. Two M3x12 fasteners per hood. Add wheel top-insertion probes; nominal tire clearance1mm. No new electronics or firmware.
+
+## Execution log
+- 2026-09-28: concealed final build parent34148 ran C:/Python314/pythonw.exe C:/dev/wopr/tmp/pdfs/desktop-launch.py C:/dev/wopr/tmp/pdfs/concealed-worker.py and exited0. Worker ran cad/build-concealed.py on WoprBuildPrivate.22 watertight STL exports; each structural mesh one connected component. Four-wheel width155, wide-eight-wheel width210; all wheels inside body;13.5mm tire projection. Motor/shaft/wheel top-insertion and removable hood placement probes passed, excluding intentional zero-area motor shoulder seating at Z42. Previous eight-wheel shell/lid volume, extents and face counts unchanged; every prior deliverable and firmware file byte-for-byte preserved.
+- 2026-09-28: final output/pdf/wopr-concealed.pdf has26pages; every rendered page inspected. Both matching print folders, aligned shell3MFs, standalone SCADs, motor-fit coupons, instructions and unchanged WOPR captive-portal firmware are in output/concealed/wopr-concealed-kit.zip; ZIP check passed. Physical fit, driving and durability remain untested.

@@ -1,0 +1,27 @@
+four-wheel/concealed-shell: watertight; components=1; dimensions_mm=[279.4, 155.0, 164.952]
+four-wheel/white-text: watertight; components=66; dimensions_mm=[70.494, 155.0, 21.66]
+four-wheel/concealed-floor: watertight; components=1; dimensions_mm=[272.8, 148.4, 77.0]
+four-wheel/robot-lid: watertight; components=1; dimensions_mm=[177.4, 124.4, 20.652]
+four-wheel/concealed-tray: watertight; components=1; dimensions_mm=[102.0, 88.0, 3.0]
+four-wheel/robot-cap: watertight; components=1; dimensions_mm=[48.0, 30.0, 4.0]
+four-wheel/wheel-hood-front: watertight; components=1; dimensions_mm=[77.0, 37.0, 37.2]
+four-wheel/wheel-hood-rear: watertight; components=1; dimensions_mm=[77.0, 37.0, 37.2]
+four-wheel/concealed-pod-test: watertight; components=1; dimensions_mm=[77.6, 96.0, 77.0]
+four-wheel/led-retainer: watertight; components=1; dimensions_mm=[139.23, 23.78, 2.4]
+four-wheel/fit-coupon: watertight; components=1; dimensions_mm=[74.0, 36.9, 62.0]
+PASS four-wheel: 4 wheels,4 motors; all wheels inside 155mm width;13.5mm tire projection; wheel top-insertion path clear; no wheel/shaft/battery/tray/shell/LCD/LED interference
+wide-eight-wheel/concealed-shell: watertight; components=1; dimensions_mm=[279.4, 210.0, 164.952]
+wide-eight-wheel/white-text: watertight; components=66; dimensions_mm=[70.494, 210.0, 21.66]
+wide-eight-wheel/concealed-floor: watertight; components=1; dimensions_mm=[272.8, 203.4, 77.0]
+wide-eight-wheel/robot-lid: watertight; components=1; dimensions_mm=[177.4, 179.4, 20.652]
+wide-eight-wheel/concealed-tray: watertight; components=1; dimensions_mm=[102.0, 88.0, 3.0]
+wide-eight-wheel/robot-cap: watertight; components=1; dimensions_mm=[48.0, 30.0, 4.0]
+wide-eight-wheel/wheel-hood-front: watertight; components=1; dimensions_mm=[77.0, 37.0, 37.2]
+wide-eight-wheel/wheel-hood-rear: watertight; components=1; dimensions_mm=[77.0, 37.0, 37.2]
+wide-eight-wheel/concealed-pod-test: watertight; components=1; dimensions_mm=[77.6, 96.0, 77.0]
+wide-eight-wheel/led-retainer: watertight; components=1; dimensions_mm=[139.23, 23.78, 2.4]
+wide-eight-wheel/fit-coupon: watertight; components=1; dimensions_mm=[74.0, 36.9, 62.0]
+PASS wide-eight-wheel: 8 wheels,4 motors; all wheels inside 210mm width;13.5mm tire projection; wheel top-insertion path clear; no wheel/shaft/battery/tray/shell/LCD/LED interference
+PASS: delivered eight-wheel shell/lid volume, extents and face counts unchanged
+PASS: every previous variant deliverable byte-for-byte unchanged
+PDF: 26 pages; eight-angle assemblies and part catalog; text extraction and rasterization passed
