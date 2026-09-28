@@ -199,8 +199,8 @@ Verified facts: original CAD 279.4 x155 x165; motor manufacturer drawing 70 x22.
 ### variant-packet — eight views and build guide
 - [x] variant-pdf — same build exits0; every rendered PDF page inspected.
 ### variant-delivery — publish and email
-- [ ] variant-push — focused git commit/push succeeds; workflow terminal state checked.
-- [ ] variant-email — SES MessageId recorded for attached PDF.
+- [x] variant-push — focused git commit/push succeeds; workflow terminal state checked.
+- [x] variant-email — SES MessageId recorded for attached PDF.
 Runtime: existing Node -> pythonw -> desktop-launch.py -> WoprBuildPrivate child assertion. No exec_command. Track parent PID and log; each CAD export180s max; failed result or traceback halts batch; deterministic failures fixed first; at most two corrected retries per stage. No automatic restart.
 Stop conditions remain those above; physical fit/durability explicitly unverified.
 
@@ -219,3 +219,6 @@ Stop conditions remain those above; physical fit/durability explicitly unverifie
 ## Execution log
 - 2026-09-28: final captive-portal compile parent29248 / worker9084 exited0: "Sketch uses 960055 bytes (73%) of program storage space. Maximum is 1310720 bytes." and "Global variables use 47252 bytes (14%) of dynamic memory, leaving 280428 bytes for local variables. Maximum is 327680 bytes." Core3.3.8, WOPR SSID, wildcard DNS, DHCP captive-portal advertisement and /portal controller. Hardware popup/driving untested.
 - 2026-09-28: full CAD builder parent3856 exited0; all17STLs and interference checks passed, two aligned shell3MFs and standalone default-correct SCADs generated. Eight views for both assembled variants and each unique printed part. Final packet refreshed from verified renders after AP/captive portal steering;22pages visually reviewed. Final archive checks require WOPR, DNSServer, DHCP portal and validZIP.
+
+- 2026-09-28: commit5b4d0b0a8215a6a820ac38cbcd99908262801f45 pushed to main. git diff --cached --check exited0; gh run list --limit3 --json status,conclusion,headSha returned[]. Repository has no workflow. Preserved unrelated modified output/wording-test/wopr-two-filament-test.3mf.
+- 2026-09-28: delegated /root/email_variants sent final22-page PDF plus2.2MB kit via SES us-east-1 to proffitt.jeremy@gmail.com. SES MessageId010001a0ea106eb4-3880f089-eaa1-4e93-927a-31dd26474675-000000; receipt output/variants/email-receipt.json read back. Email states physical fit, durability and phone popup/driving remain untested.
