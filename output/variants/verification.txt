@@ -1,0 +1,22 @@
+replica/gray-shell: watertight; components=1; dimensions=[279.342, 155.0, 164.952]
+replica/white-text: watertight; components=66; dimensions=[70.494, 155.0, 21.66]
+replica/base: watertight; components=1; dimensions=[272.8, 148.4, 6.0]
+replica/cup-main-shallow-left: watertight; components=1; dimensions=[169.0, 111.0, 88.0]
+replica/cup-main-shallow-right: watertight; components=1; dimensions=[169.0, 111.0, 88.0]
+replica/cup-tower: watertight; components=1; dimensions=[69.0, 101.0, 99.952]
+replica/led-retainer: watertight; components=1; dimensions=[139.23, 23.78, 2.4]
+replica/fit-coupon: watertight; components=1; dimensions=[74.0, 36.9, 62.0]
+robot/robot-shell: watertight; components=1; dimensions=[279.342, 155.0, 164.952]
+robot/white-text: watertight; components=66; dimensions=[70.494, 155.0, 21.66]
+robot/robot-floor: watertight; components=1; dimensions=[272.8, 190.0, 106.0]
+robot/robot-lid: watertight; components=1; dimensions=[177.4, 124.4, 20.652]
+robot/robot-tray: watertight; components=1; dimensions=[102.0, 88.0, 3.0]
+robot/robot-cap: watertight; components=1; dimensions=[48.0, 30.0, 4.0]
+robot/robot-pod-test: watertight; components=1; dimensions=[80.0, 95.5, 89.0]
+robot/led-retainer: watertight; components=1; dimensions=[139.23, 23.78, 2.4]
+robot/fit-coupon: watertight; components=1; dimensions=[74.0, 36.9, 62.0]
+PASS: wheel, shell/floor/lid/tray and battery interference checks
+PASS: six panels each side, twelve boards; 127.23 mm bank
+PASS: ESP32 firmware compiled for esp32:esp32:esp32; AP SSID WOPR; no device flashed
+PASS: ESP32 firmware compiled for esp32:esp32:esp32; AP SSID WOPR; no device flashed
+PDF: 22 pages; eight views per unique printed part and both assembled variants; text and page rendering passed

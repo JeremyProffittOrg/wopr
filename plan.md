@@ -186,3 +186,36 @@ depends on: unsplit-exports
 Files: cad/build-body-projects.py, cad/README.md, plan.md, output/body-projects. Use existing checked body meshes and the same factory H2D profiles as the wording test. No base/cup changes, PDF, email, or physical print. Native exports have180-second timeouts, maximum two corrected retries; tracked private-desktop worker logs success and failure.
 
 - 2026-09-27: Body-project builder private parent PID38040 exited0. Both native Bambu round-trips exited0. Single version contains one gray part with recessed lettering; multi-color contains gray1/white2 parts. Packaged meshes are watertight and retain source extents and volume within decimal-coordinate precision (single volume425301.001 versus425300.687 mm3). Both projects are unsliced, H2D0.4 Generic PLA with three walls and automatic supports. No physical print or foreground application launch.
+
+## robot-variants — six-per-side replica and eight-wheel robot
+2026-09-28. Depends on: front-window-trim.
+Outcome: preserve base design in a six-per-side RGB replica; robot has no pen wells, main removable lid, fixed LCD tower, four upright #3777 motors and eight #3766 wheels, battery/controller space, eight-angle PDF and assembly instructions emailed to proffitt.jeremy@gmail.com.
+Non-goals: original geometry changes, physical fabrication, cloud changes.
+Files: cad/wopr-variants.scad, cad/build-variants.py, cad/VARIANTS.md, firmware/wopr-robot/wopr-robot.ino, output/variants, output/pdf/wopr-variants.pdf, plan.md.
+Locked scope: six modules per side; phone Wi-Fi control through WOPR AP and captive portal. Selected ESP32-DevKitC V4, two DRV8833 drivers and Anker A1259 pack.
+Verified facts: original CAD 279.4 x155 x165; motor manufacturer drawing 70 x22.44 x18.6, shaft span36.6; wheels63 x29. Worktree main; preserve modified output/wording-test/wopr-two-filament-test.3mf.
+### variant-solids — create and check printable models
+- [x] variant-geometry — python cad/build-variants.py exits0 with watertight solids and clearance probes.
+### variant-packet — eight views and build guide
+- [x] variant-pdf — same build exits0; every rendered PDF page inspected.
+### variant-delivery — publish and email
+- [ ] variant-push — focused git commit/push succeeds; workflow terminal state checked.
+- [ ] variant-email — SES MessageId recorded for attached PDF.
+Runtime: existing Node -> pythonw -> desktop-launch.py -> WoprBuildPrivate child assertion. No exec_command. Track parent PID and log; each CAD export180s max; failed result or traceback halts batch; deterministic failures fixed first; at most two corrected retries per stage. No automatic restart.
+Stop conditions remain those above; physical fit/durability explicitly unverified.
+
+## Locked decisions (user-confirmed; do not revisit)
+- 2026-09-28: "Six per side". Supersedes six-total assumption above. Both new variants use twelve modules.
+- 2026-09-28: "Select parts; phone over Wi-Fi".
+
+## Execution log
+- 2026-09-28: variant geometry passed: 17 watertight STL files; all structural parts one component. Wheel/shell/floor/lid/tray/battery interference probe exactly1mm3 sentinel. Replica retainer139.23 x23.78 x2.4 and six-per-side bank127.23 verified. PDF22pages built; visual review improved top/bottom angles and lettering face isolation.
+- 2026-09-28: firmware compile through private desktop parent31100 / worker33868 exited0. Arduino CLI compile --fqbn esp32:esp32:esp32 --build-path C:/dev/wopr/tmp/variants/firmware-build C:/dev/wopr/firmware/wopr-robot. Existing core3.3.8; program936987 bytes, global47108 bytes. No hardware flashed. Temporary official portable compiler used; no machine PATH or project dependency changed.
+
+## Locked decisions (user-confirmed; do not revisit)
+- 2026-09-28: "the esp32 firmware needs to have an AP called WOPR you connect to". Access-point SSID is exactly WOPR.
+- 2026-09-28: "and use dns and that approval page you can pop up when attaching to wifi, to put the controller on it". Add wildcard DNS, DHCP captive-portal advertisement and controller at /portal; preserve manual IP access. Reuse installed core3.3.8 DNSServer example/API; no new runtime dependency.
+
+## Execution log
+- 2026-09-28: final captive-portal compile parent29248 / worker9084 exited0: "Sketch uses 960055 bytes (73%) of program storage space. Maximum is 1310720 bytes." and "Global variables use 47252 bytes (14%) of dynamic memory, leaving 280428 bytes for local variables. Maximum is 327680 bytes." Core3.3.8, WOPR SSID, wildcard DNS, DHCP captive-portal advertisement and /portal controller. Hardware popup/driving untested.
+- 2026-09-28: full CAD builder parent3856 exited0; all17STLs and interference checks passed, two aligned shell3MFs and standalone default-correct SCADs generated. Eight views for both assembled variants and each unique printed part. Final packet refreshed from verified renders after AP/captive portal steering;22pages visually reviewed. Final archive checks require WOPR, DNSServer, DHCP portal and validZIP.
