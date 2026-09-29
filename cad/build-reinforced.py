@@ -8,7 +8,7 @@ ROOT=Path(__file__).resolve().parents[1];OUT=ROOT/'output/reinforced';TMP=ROOT/'
 for p in [OUT,TMP,OUT/'views']:p.mkdir(parents=True,exist_ok=True)
 SCAD=ROOT/'cad/wopr-reinforced.scad';EXE='C:/Users/Jeremy/tools/openscad-nightly/openscad.exe'
 ENV=dict(os.environ,FONTCONFIG_FILE=str(ROOT/'tmp/pdfs/fonts.conf'))
-variants={'seven':(155,7),'six':(155,6),'exposed':(220,6),'four':(155,6),'wide':(220,6)}
+variants={'seven':(155,7),'six':(155,6),'exposed':(220,6),'four':(158,6),'wide':(220,6)}
 common=['r-shell','r-white','r-frame','r-retainer','r-lcd-coupon']
 parts={v:common+(['r-cup-left','r-cup-right','r-cup-tower'] if v in ['seven','six'] else ['r-lid','r-tray','r-cap','r-frame-zip']) for v in variants}
 meshes={};evidence=[]

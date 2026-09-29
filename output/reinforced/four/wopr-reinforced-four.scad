@@ -8,7 +8,7 @@ part = "r-assembly";
 electronics = true;
 main_shallow_left = true;
 $fn = 32;
-L=279.4; W=155; H=165; wall=3; ink=0.8;
+L=279.4; W=158; H=165; wall=3; ink=0.8;
 base_inset=3.3; base_bottom=3; base_thickness=6;
 base_top=base_bottom+base_thickness;
 main_rim=128; shallow_depth=38.1; shallow_floor=main_rim-shallow_depth;
@@ -639,6 +639,11 @@ module r_check(zip_ties=false){
     if(r_robot){
         assert(len(r_wheels)==(edition=="four"?4:8));
         assert(len(r_bottom_leds)==12);
+        // Include hardware-to-hardware clearance, especially unused inner shafts.
+        for(x=r_xs){
+            intersection(){translate([x,r_ys[0],0])r_motor_hardware();translate([x,r_ys[1],0])r_motor_hardware();}
+            assert(r_ys[1]-r_ys[0]>37.2,"Motor insertion envelopes require separate inner shafts");
+        }
         intersection(){union(){r_sensor_space();r_sensor_led_space();}union(){r_shell();r_frame(zip_ties);r_tray();r_lid();r_pods()r_motor_hardware();}}
         assert(27+r_service-14.5>18.3+.3,"Wheel starts clear of shaft tip");
         intersection(){r_frame(zip_ties);r_motor_insert();}

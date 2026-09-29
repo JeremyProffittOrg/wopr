@@ -360,3 +360,8 @@ Front=low X end, rear=tower X end. End sensors Y40/W-40,Z64; side sensors X85/17
 - 2026-09-29: committed5867ea70df1af8e40677681150ca35e2de0772aa and pushed main. git diff --cached --check exited0. gh run list --limit3 --json status,conclusion,headSha returned[] (no workflow). Final39-page PDF and archive reviewed; unrelated wording-test edit, old untracked Bambu projects and root result.json preserved.
 
 - 2026-09-29: /root/email_reinforced sent final39-page PDF and immutable kit/native Bambu links. SES MessageId010001a0ed86b805-4222f804-95e8-425a-91dc-409c74927655-000000; receipt read back. Parent36576 exited0 on WoprBuildPrivate. Message states mechanical-only additions for sensors/LEDs and physical fit/retention/driving/durability untested.
+
+- 2026-09-29 correction: final hardware-pair audit identified0.2mm overlap of unused inner shaft tips in the155mm four-wheel layout. Four-wheel body widened to158mm, giving2.8mm shaft-tip gap and preserving5mm skins. Added hardware-pair intersection and >37.2mm insertion-envelope separation assertions. The earlier39-page delivery email stated155mm; a corrected packet and explicit email correction will supersede it. Eight-wheel bodies remain220mm.
+
+- 2026-09-29: corrected four-wheel export passes both retention assembly checks,20 five-mm bores,44 sensor/end-face bores, motor-pair intersections and shaft insertion spacing. Updated STL bounds279.4x158mm case;147.6mm chassis. Eight-wheel hardware-pair checks also pass. All affected drawings and39-page PDF reviewed again; ZIP current-STL equality passes.
+- [ ] shaft-gap-correction-email — send corrected39-page packet and explicitly supersede155mm four-wheel width.

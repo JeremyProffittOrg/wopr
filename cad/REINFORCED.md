@@ -14,7 +14,7 @@ The shell has a continuous support ledge, larger base bosses and thicker lid sup
 
 ## Edition dimensions
 
-All bodies remain 279.4 mm long and nominally 165 mm high. Organizers and the four-wheel robot are 155 mm wide. BOTH eight-wheel bodies are now 220 mm wide. All robot side walls run continuously to the bottom edge; the wheel wells sit behind the 5 mm skins, with no wheel arches cut into the outer sides.
+All bodies remain 279.4 mm long and nominally 165 mm high. Organizers remain 155 mm wide. The four-wheel robot is 158 mm wide, giving 2.8 mm clearance between the unused inner shaft tips. BOTH eight-wheel bodies are now 220 mm wide. All robot side walls run continuously to the bottom edge; the wheel wells sit behind the 5 mm skins, with no wheel arches cut into the outer sides.
 
 The low-axle eight-wheel chassis is 209.6 mm wide inside its 220 mm body. Its axles remain 22 mm below the body edge; total nominal height is 218.5 mm. The tucked versions keep axles 18 mm above the body edge, exposing 13.5 mm of tire and giving a nominal total height of 178.5 mm.
 
@@ -44,7 +44,7 @@ Use PETG or ASA for structural parts, with the same material family for inlays. 
 
 Print the shell upright. Print tray, retainers and chassis in orientations that give broad supported faces; inspect the tall chassis posts before slicing. The one-piece chassis needs careful support placement beneath the plate and inside the fixed wheel wells. Print motor caps with their roof on the plate and cheeks upward. Inspect and clear all motor pockets, counterbores and wheel openings.
 
-Parts need about 280 x 155 mm or 280 x 220 mm of usable bed area plus brim, according to the edition. Do not scale parts to fit a smaller printer. No slicer toolpath or physical strength test has been completed for this revision.
+Parts need about 280 x 155 mm, 280 x 158 mm or 280 x 220 mm of usable bed area plus brim, according to the edition. Do not scale parts to fit a smaller printer. No slicer toolpath or physical strength test has been completed for this revision.
 
 ## Fasteners
 
