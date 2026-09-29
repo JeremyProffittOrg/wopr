@@ -289,8 +289,8 @@ Assembly approach: bare motors insert from above; wheels insert from below at an
 ### unified-delivery — correct native Bambu projects and guide
 - [x] unified-projects — Bambu native import/export roundtrip passes; projects contain one chassis and no loose motor-mount/wheel-well parts; open all four eight-wheel/retention choices in separate windows.
 - [x] unified-packet — updated PDF pages reviewed and kit verified.
-- [ ] unified-push — scoped commit/push passes; workflow terminal state checked.
-- [ ] unified-email — SES receipt for updated PDF recorded.
+- [x] unified-push — scoped commit/push passes; workflow terminal state checked.
+- [x] unified-email — SES receipt for updated PDF recorded.
 Process policy: verified Node->pythonw->WoprBuildPrivate chain; direct Bambu GUI only as authorized by current session. Per-export180s timeout; failures and success monitored; deterministic fixes before retries, two corrected retries per failing check. No print command. Previous stop conditions apply.
 
 - 2026-09-29 (locked user decision): "open in bambu labs wqhen done, and make a second version of the base that allows me to use zip ties to secure the motors". Create screw-cap and zip-tie editions of the integrated chassis for all three robots; open both retention choices of both eight-wheel models in Bambu Studio. Zip-tie slots are1.8mm x4.6mm through reinforced motor posts at two motor-can heights, leaving5.4mm or more vertical webs. Use two3.6mm ties per motor; physical retention remains untested.
@@ -299,3 +299,7 @@ Process policy: verified Node->pythonw->WoprBuildPrivate chain; direct Bambu GUI
 - 2026-09-29: reinforced geometry and section checks passed for43 STL exports. All six robot chassis are watertight single solids. Motor/wheel insertion sweeps, wheel-well roofs/end walls5mm, motor feet/base10mm and zip-slot web5.4mm passed. Exposed chassis width209mm; tucked widths155/220mm; motor feet ground clearance7.1mm. Organizers retain identical geometry.
 - 2026-09-29: cad/build-eight-wheel-projects.py via WoprBuildPrivate exited0: all four native Bambu import/export roundtrips passed, cap projects10 objects and zip projects6, unsliced. Native --info printed mesh details but failed to exit; native export roundtrip now proves a complete successful load/save. GUI windows verified for exposed cap PID536, exposed zip PID46908, wide cap PID35836, wide zip PID11524. Earlier open projects preserved.
 - 2026-09-29: updated37-page PDF fully visually reviewed; eight angles per unique printed part, integrated chassis and zip alternatives included. ZIP integrity passed. Physical fit, zip retention, durability and driving remain untested.
+
+- 2026-09-29: commit ddb40c461e3c87d01970e97fd5c9f20f7bc5dfed pushed to main. git diff --cached --check exited0; gh run list --limit3 --json status,conclusion,headSha returned[] (no workflow). Existing modified wording-test3MF, old untracked Bambu projects and root result.json preserved.
+
+- 2026-09-29: /root/email_reinforced sent updated37-page PDF and immutable kit/native-project links to proffitt.jeremy@gmail.com. SES MessageId010001a0ed2d3c6c-b275de76-c090-4aba-b605-0d42a0732cbd-000000; receipt read back. Parent48676 exited0 on verified private desktop.

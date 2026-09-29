@@ -1,10 +1,11 @@
 {
-  "MessageId": "010001a0ec9004df-56f2aab8-15a9-496b-b71d-17ae961afc9e-000000",
+  "MessageId": "010001a0ed2d3c6c-b275de76-c090-4aba-b605-0d42a0732cbd-000000",
   "recipient": "proffitt.jeremy@gmail.com",
-  "subject": "WOPR reinforced \u2014 all five editions now have 5 mm walls and 10 mm bases",
+  "subject": "WOPR one-piece chassis \u2014 motor mounts and wheel wells now print together",
   "attachments": [
     "wopr-reinforced.pdf"
   ],
-  "kit_download_url": "https://github.com/JeremyProffittOrg/wopr/raw/d80eaeede3af0e1519453574ff8baa690669d6ab/output/reinforced/wopr-reinforced-kit.zip",
-  "sent_at": "2026-09-29T05:47:36.783264-04:00"
+  "kit_download_url": "https://raw.githubusercontent.com/JeremyProffittOrg/wopr/ddb40c461e3c87d01970e97fd5c9f20f7bc5dfed/output/reinforced/wopr-reinforced-kit.zip",
+  "bambu_projects_url": "https://github.com/JeremyProffittOrg/wopr/tree/ddb40c461e3c87d01970e97fd5c9f20f7bc5dfed/output/reinforced/bambu-projects",
+  "sent_at": "2026-09-29T08:39:20.149962-04:00"
 }
