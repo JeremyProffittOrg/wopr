@@ -409,10 +409,10 @@ module r_raw(){difference(){
 }}
 module r_shell(){difference(){r_raw();
     if(r_robot){r_hatch();r_lid_holes(2.5);
-        if(!r_exposed) for(p=r_wheels,x=[-35.5,35.5]) translate([p[0]+x-5.3,p[1]-6.3,r_top-.01]) cube([10.6,12.6,r_axle-r_top+.32]);
+
     }
     else r_cup_cuts();
-    if(r_exposed) for(p=r_wheels) translate(p) r_axc(38,42);
+    if(r_robot) r_well_outer(.3);
 }}
 module r_lid(){difference(){
     intersection(){outline();translate([9.3,15.3,116.3]) cube([177.4,W-30.6,70]);}
@@ -434,17 +434,15 @@ module r_cup(tower=false,reverse=false){
 module r_axc(r,h){rotate([90,0,0]) cylinder(r=r,h=h,center=true,$fn=64);}
 module r_wheel_space(gap=0,up=false){for(p=r_wheels){translate(p) r_axc(31.5+gap,29+2*gap);if(up) translate([p[0]-31.5-gap,p[1]-14.5-gap,-100]) cube([63+2*gap,29+2*gap,250]);}}
 module r_pods(){for(x=r_xs,y=r_ys) translate([x,y,0]) children();}
-module r_pod(){difference(){union(){
-    // Ten-millimeter bearing foot and bolting flange; all side cheeks are five.
+module r_motor_mount(zip_ties=false){difference(){union(){
+    // Ten-millimeter bearing foot; five-millimeter cheeks join the chassis directly.
     translate([-16.7,-11.5,r_mbottom-10]) cube([33.4,23,10]);
     for(x=[-16.7,11.7]) translate([x,-11.5,r_mbottom]) cube([5,23,r_axle+60-r_mbottom]);
     for(x=[-22,22]) translate([x-6.5,-6.5,r_mbottom-5]) cube([13,13,r_axle+65-r_mbottom]);
-    translate([-41,-11.5,r_bottom-10]) cube([82,23,10]);
-    for(z=[r_mbottom+5,r_axle+42]) for(x=[-24,16]) translate([x,-5,z]) cube([8,10,5]);
+    for(z=[r_mbottom+5,r_axle+42]) for(x=[-24,16]) translate([x,-6,z]) cube([8,12,5]);
 }
     translate([-11.7,-11.7,r_mbottom]) cube([23.4,23.4,100]);
-    for(x=[-22,22]) translate([x,0,r_axle+47]) cylinder(d=2.5,h=20);
-    for(x=[-36,36]){translate([x,0,r_bottom-11]) cylinder(d=3.3,h=12);translate([x,0,r_bottom-10.01]) cylinder(d=6.5,h=3.21);}
+    if(!zip_ties) for(x=[-22,22]) translate([x,0,r_axle+47]) cylinder(d=2.5,h=20);
 }}
 module r_cap(){difference(){union(){
     translate([-33,-16.7,r_cap_z]) cube([66,33.4,5]);
@@ -453,31 +451,51 @@ module r_cap(){difference(){union(){
     for(x=[-22,22]) translate([x,0,r_cap_z-1]) cylinder(d=3.3,h=7);
     translate([-6,-5,r_cap_z-1]) cube([12,10,7]);
 }}
-module r_hood(front=true){if(!front) mirror([0,1,0]) r_hood(true);else difference(){union(){
-    intersection(){translate([0,0,r_axle]) r_axc(37.5,40.4);translate([-42,-22,r_axle+.3]) cube([84,44,40]);}
-    for(x=[-35.5,35.5]) translate([x-5,-6,r_axle+.3]) cube([10,12,5]);
+// Each outer well includes 6.5mm axial fitting travel. The two inner tires
+// share one arched well, so no thin divider obstructs installation.
+r_service=6.5;
+r_well_ranges=concat([[r_ys[0]-49,r_ys[0]-11.5],[r_ys[1]+11.5,r_ys[1]+49]],edition=="four"?[]:[[r_ys[0]+11.5,r_ys[1]-11.5]]);
+module r_well_outer(clear=0){
+    intersection(){
+        union() for(x=r_xs,range=r_well_ranges){
+            translate([x,(range[0]+range[1])/2,r_axle]) r_axc(37.5+clear,range[1]-range[0]+10+2*clear);
+            if(r_axle>r_bottom) translate([x-37.5-clear,range[0]-5-clear,r_bottom-clear]) cube([75+2*clear,range[1]-range[0]+10+2*clear,r_axle-r_bottom+clear]);
+        }
+        translate([-50,-60,r_bottom-clear]) cube([400,W+120,150]);
+    }
 }
-    translate([0,0,r_axle]) r_axc(32.5,30.4);
-    translate([-17,15.2,r_axle]) cube([34,40,80]);
-    for(x=[-35.5,35.5]) translate([x,0,r_axle]) cylinder(d=3.3,h=9);
+module r_well_void(){for(x=r_xs,range=r_well_ranges){
+    translate([x,(range[0]+range[1])/2,r_axle]) r_axc(32.5,range[1]-range[0]);
+    translate([x-32.5,range[0],-120]) cube([65,range[1]-range[0],r_axle+120]);
 }}
-function r_front(p)=p[1]==r_ys[0]-27 || p[1]==r_ys[1]-27;
-module r_hoods(){for(p=r_wheels) translate([p[0],p[1],0]) r_hood(r_front(p));}
-module r_frame(){difference(){union(){
-    translate([5.3,r_exposed?-20.5:5.3,r_bottom]) linear_extrude(r_base) offset(r=2) translate([2,2]) square([L-14.6,r_exposed?W+37:W-14.6]);
-    if(r_exposed) intersection(){for(p=r_wheels) translate(p) r_axc(37.5,41);translate([0,-25,r_bottom]) cube([L,W+50,30]);}
+module r_motor_void(){r_pods(){
+    translate([-11.7,-11.7,r_mbottom]) cube([23.4,23.4,180]);
+    // Open U-slots admit the motor's fixed double-ended shaft from above.
+    translate([-3.5,-18.6,r_axle-3.5]) cube([7,37.2,140]);
+}}
+module r_motor_insert(){r_pods(){
+    translate([-11.3,-9.4,r_axle-14.2]) cube([22.6,18.8,180]);
+    translate([-10.1,-11.3,r_axle+24]) cube([20.2,22.6,150]);
+    translate([-2.8,-18.4,r_axle-2.8]) cube([5.6,36.8,150]);
+}}
+module r_wheel_install(){for(x=r_xs,y=r_ys,side=(edition=="four"?[y<W/2?-1:1]:[-1,1])){
+    cy=y+side*27;sy=cy+side*r_service;
+    // First raise the tire clear of the shaft, then press it axially onto it.
+    hull(){translate([x,sy,r_axle]) r_axc(31.7,29.4);translate([x,sy,r_axle-100]) r_axc(31.7,29.4);}
+    hull(){translate([x,sy,r_axle]) r_axc(31.7,29.4);translate([x,cy,r_axle]) r_axc(31.7,29.4);}
+}}
+module r_frame(zip_ties=false){difference(){union(){
+    translate([5.3,r_exposed?-27:5.3,r_bottom]) linear_extrude(r_base) offset(r=2) translate([2,2]) square([L-14.6,r_exposed?W+50:W-14.6]);
     if(r_robot){
+        r_well_outer();r_pods() r_motor_mount(zip_ties);
         for(p=r_tray_holes) translate([p[0],p[1],r_top]) cylinder(d=13,h=67-r_top);
         for(x=[114,163],y=[W/2-40,W/2+40]) translate([x-9,y-7.5,r_top]) cube([18,15,15]);
-        if(!r_exposed) for(p=r_wheels,x=[-35.5,35.5]) translate([p[0]+x-5,p[1]-6,r_top-.5]) cube([10,12,r_axle-r_top+.5]);
     }
 }
     for(p=r_holes) translate([p[0],p[1],r_bottom-1]) cylinder(d=3.3,h=r_base+2);
     if(r_robot){
-        r_wheel_space(1,!r_exposed);
-        r_pods() translate([-28.8,-12,r_bottom-.1]) cube([57.6,24,150]);
-        for(x=r_xs,y=r_ys,dx=[-36,36]) translate([x+dx,y,r_bottom-.1]) cylinder(d=2.5,h=8.1);
-        if(!r_exposed) for(p=r_wheels,x=[-35.5,35.5]) translate([p[0]+x,p[1],r_top-5]) cylinder(d=2.5,h=r_axle-r_top+6);
+        r_well_void();r_motor_void();
+        if(zip_ties) r_pods() for(z=[r_axle+42,r_axle+52]) translate([-30,-.9,z-2.3]) cube([60,1.8,4.6]);
         for(p=r_tray_holes) translate([p[0],p[1],55]) cylinder(d=2.5,h=15);
         for(x=[114,163],y=[W/2-40,W/2+40]) translate([x-4,y-8.5,r_top+6]) cube([8,17,3]);
     }
@@ -500,41 +518,37 @@ module r_hardware(){
         for(x=[100,133]) color([.1,.35,.65]) translate([x,W/2+5,77.3]) cube([26,18,9]);
     }
 }
-module r_assembly(explode=false){
+module r_assembly(explode=false,zip_ties=false){
     color([.40,.43,.46]) translate([0,0,explode?100:0]) r_shell();
     color([.98,.98,.96]) translate([0,0,explode?100:0]) r_white();
-    color([.31,.34,.37]) r_frame();
+    color([.31,.34,.37]) r_frame(zip_ties);
     if(r_robot){
         color([.40,.43,.46]) translate([0,0,explode?170:0]) r_lid();
-        color([.50,.53,.56]) r_pods(){r_pod();r_cap();}
+        if(!zip_ties) color([.50,.53,.56]) r_pods() r_cap();
         color([.65,.68,.70]) translate([0,0,explode?60:0]) r_tray();
-        if(!r_exposed) color([.47,.50,.53]) r_hoods();
     }else color([.4,.43,.46]){r_cup();r_cup(true);}
     if(electronics) r_hardware();
 }
-module r_check(){
+module r_check(zip_ties=false){
     assert(r_wall==5 && r_base==10);
     translate([-100,-100,-100]) cube(1);
     if(r_robot){
         assert(len(r_wheels)==(edition=="four"?4:8));
-        intersection(){union(){r_shell();r_frame();r_pods(){r_pod();r_cap();}if(!r_exposed) r_hoods();r_tray();}r_wheel_space(.2);}
-        intersection(){r_frame();r_pods() r_pod();translate([-50,-50,r_bottom+.01]) cube([400,400,170]);}
-        intersection(){r_shell();r_frame();translate([-50,-50,r_top+.01]) cube([400,400,170]);}
+        assert(27+r_service-14.5>18.3+.3,"Wheel starts clear of shaft tip");
+        intersection(){r_frame(zip_ties);r_motor_insert();}
+        intersection(){r_frame(zip_ties);r_wheel_install();}
+        intersection(){union(){r_shell();r_frame(zip_ties);r_pods() r_cap();r_tray();}r_wheel_space(.2);}
+        intersection(){r_shell();r_frame(zip_ties);translate([-50,-50,r_top+.01]) cube([400,400,170]);}
         intersection(){r_shell();r_lid();}
-        intersection(){r_tray();r_pods(){r_pod();r_cap();}}
-        if(!r_exposed) intersection(){r_hoods();union(){r_frame();r_pods(){r_pod();r_cap();}r_shell();r_tray();}}
-        intersection(){union(){r_frame();r_pods(){r_pod();r_cap();}r_tray();if(!r_exposed) r_hoods();}translate([87.5,W/2-26.15,r_top+1]) cube([104,52.3,26]);}
-        // Motor cassettes insert from below; caps and hoods are installed afterward.
-        for(dz=[-100,-60,-30,-10,0]){
-            intersection(){r_frame();translate([0,0,dz]) r_pods() r_pod();translate([-50,-50,r_bottom+.01]) cube([400,400,180]);}
-            intersection(){r_frame();translate([0,0,dz]) r_wheel_space(.2);}
-        }
-        if(!r_exposed) for(dz=[0,10,30,60,90]) intersection(){translate([0,0,dz]) r_hoods();union(){r_frame();r_pods() r_pod();}}
+        intersection(){r_tray();r_frame(zip_ties);}
+        intersection(){r_frame(zip_ties);r_pods() r_cap();}
+        intersection(){r_tray();r_pods() r_cap();}
+        intersection(){union(){r_frame(zip_ties);r_pods() r_cap();r_tray();}translate([87.5,W/2-26.15,r_top+1]) cube([104,52.3,26]);}
+        if(zip_ties) intersection(){r_frame(true);r_pods() for(z=[r_axle+42,r_axle+52]) translate([-29.9,-.8,z-2.2]) cube([59.8,1.6,4.4]);}
     }else{
         intersection(){r_shell();r_cup();translate([0,0,40.01]) cube([L,W,150]);}intersection(){r_shell();r_cup(true);translate([0,0,65.01]) cube([L,W,150]);}
     }
-    // Actual PCB/glass and rear display bay are protected in every edition.
-    intersection(){union(){r_shell();r_frame();if(r_robot){r_lid();r_tray();r_pods(){r_pod();r_cap();}}else{r_cup();r_cup(true);}}
+    intersection(){union(){r_shell();r_frame(zip_ties);if(r_robot){r_lid();r_tray();r_pods() r_cap();}else{r_cup();r_cup(true);}}
         union(){
             translate([203.5,7.01,97.5]) cube([65,32.88,53]);
             translate([208.5,5.01,103.5]) cube([55,1.98,41]);
@@ -543,19 +557,19 @@ module r_check(){
     }
 }
 if(part=="r-assembly") r_assembly();
+else if(part=="r-assembly-zip") r_assembly(false,true);
 else if(part=="r-exploded") r_assembly(true);
 else if(part=="r-shell") r_shell();
 else if(part=="r-white") r_white();
 else if(part=="r-frame") r_frame();
+else if(part=="r-frame-zip") r_frame(true);
 else if(part=="r-lid") r_lid();
 else if(part=="r-tray") r_tray();
-else if(part=="r-pod") r_pod();
 else if(part=="r-cap") r_cap();
-else if(part=="r-hood-front") r_hood(true);
-else if(part=="r-hood-rear") r_hood(false);
 else if(part=="r-retainer") rotate([90,0,0]) r_retainer();
 else if(part=="r-cup-left") r_cup();
 else if(part=="r-cup-right") r_cup(false,true);
 else if(part=="r-cup-tower") r_cup(true);
 else if(part=="r-check") r_check();
+else if(part=="r-check-zip") r_check(true);
 else if(part=="r-lcd-coupon") intersection(){r_shell();translate([197,-1,90]) cube([79,43,68]);}

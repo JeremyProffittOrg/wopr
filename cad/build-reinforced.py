@@ -10,7 +10,7 @@ SCAD=ROOT/'cad/wopr-reinforced.scad';EXE='C:/Users/Jeremy/tools/openscad-nightly
 ENV=dict(os.environ,FONTCONFIG_FILE=str(ROOT/'tmp/pdfs/fonts.conf'))
 variants={'seven':(155,7),'six':(155,6),'exposed':(155,6),'four':(155,6),'wide':(220,6)}
 common=['r-shell','r-white','r-frame','r-retainer','r-lcd-coupon']
-parts={v:common+(['r-cup-left','r-cup-right','r-cup-tower'] if v in ['seven','six'] else ['r-lid','r-tray','r-pod','r-cap']+([] if v=='exposed' else ['r-hood-front','r-hood-rear'])) for v in variants}
+parts={v:common+(['r-cup-left','r-cup-right','r-cup-tower'] if v in ['seven','six'] else ['r-lid','r-tray','r-cap','r-frame-zip']) for v in variants}
 meshes={};evidence=[]
 def scad(path,part,variant,extra=(),source=SCAD):
     width,panels=variants[variant]
@@ -25,12 +25,16 @@ for variant in variants:
         m=trimesh.load(raw,force='mesh');assert m.is_watertight and m.is_winding_consistent and m.volume>0,(variant,name)
         if name!='r-white':assert len(m.split())==1,(variant,name,'components',len(m.split()))
         meshes[(variant,name)]=m
-        export=m.copy();export.apply_translation([0,0,0] if name in ['r-shell','r-solid-shell','r-white'] else -m.bounds[0]);export.export(OUT/variant/(name+'.stl'))
+        export=m.copy();export.apply_translation([0,0,0] if name in ['r-shell','r-white'] else -m.bounds[0]);export.export(OUT/variant/(name+'.stl'))
         line=f'{variant}/{name}: watertight; components={len(m.split())}; bounds_mm={np.round(m.extents,3).tolist()}'
         print(line,flush=True);evidence.append(line)
     probe=TMP/(variant+'-check.stl');scad(probe,'r-check',variant,['--export-format','binstl']);m=trimesh.load(probe,force='mesh')
     assert np.allclose(m.bounds,[[-100,-100,-100],[-99,-99,-99]],atol=.001) and abs(m.volume-1)<.001,(variant,'interference',m.bounds,m.volume)
     print('PASS',variant,'assembly clearances',flush=True);evidence.append('PASS '+variant+' assembly clearances')
+    if variant not in ['seven','six']:
+        scad(probe,'r-check-zip',variant,['--export-format','binstl']);m=trimesh.load(probe,force='mesh')
+        assert np.allclose(m.bounds,[[-100,-100,-100],[-99,-99,-99]],atol=.001) and abs(m.volume-1)<.001,(variant,'zip-chassis interference',m.bounds,m.volume)
+        evidence.append('PASS '+variant+': standard and zip-tie chassis are single solids; complete motor/wheel installation sweeps clear')
 (OUT/'verification.txt').write_text('\n'.join(evidence)+'\n')
 # Measure thickness on exported triangles, independently of parameter assertions.
 def hits(mesh,axis,a,b):
@@ -57,24 +61,25 @@ for v,(width,panels) in variants.items():
     thickness(v,'r-frame',2,139,width/2,10)
     thickness(v,'r-retainer',2,0,12,5)
     if robot:
-        foot=hits(meshes[(v,'r-pod')],2,0,0);assert foot[1]-foot[0]>=9.99,(v,'motor foot below10mm',foot)
-        thickness(v,'r-pod',2,36,4,10)
-        thickness(v,'r-pod',0,9,axle+40,5)
+        mx=54 if v=='four' else 46.3;my=28 if v=='exposed' else 54
+        for frame in ['r-frame','r-frame-zip']:
+            foot=hits(meshes[(v,frame)],2,mx,my);assert foot[1]-foot[0]>=9.99,(v,'motor foot below10mm',foot)
+            thickness(v,frame,0,my+9,axle+40,5)
+            roof=hits(meshes[(v,frame)],2,mx,my-27-6.5);assert abs(roof[-1]-roof[-2]-5)<.06,(v,'wheel roof',roof)
+            thickness(v,frame,1,mx+20,1 if v=='exposed' else axle+7,5)
+        zip_post=hits(meshes[(v,'r-frame-zip')],2,mx+22,my);assert any(abs((b-a)-5.4)<.06 for a,b in zip(zip_post[::2],zip_post[1::2])),(v,'zip slot web',zip_post)
         thickness(v,'r-cap',2,18,8,5)
         thickness(v,'r-cap',1,0,axle+45,5)
         thickness(v,'r-tray',2,122,width/2,5)
         thickness(v,'r-lid',2,120,30,5)
         roof=hits(meshes[(v,'r-lid')],2,120,30);assert abs(roof[-1]-roof[-2]-5)<.06,(v,'roof',roof)
-        if v!='exposed':
-            thickness(v,'r-hood-front',1,25,25,5)
-            h=hits(meshes[(v,'r-hood-front')],2,0,0);assert abs(h[-1]-h[-2]-5)<.06,(v,'hood roof',h)
     else:
         thickness(v,'r-cup-left',2,50,40,5)
         thickness(v,'r-cup-left',2,120,40,5)
         thickness(v,'r-cup-left',1,50,110,5)
         thickness(v,'r-cup-tower',2,220,70,5)
         thickness(v,'r-cup-tower',0,70,110,5)
-    evidence.append('PASS '+v+': exported structural5mm sections and '+('10mm chassis/foot/flange' if robot else '5mm cup floors/dividers and10mm base')+' measured')
+    evidence.append('PASS '+v+': exported structural5mm sections and '+('10mm one-piece chassis/motor base' if robot else '5mm cup floors/dividers and10mm base')+' measured')
 (OUT/'verification.txt').write_text('\n'.join(evidence)+'\n')
 print('PASS: all reinforced geometry and thickness checks',flush=True)
 
@@ -110,14 +115,13 @@ header='include <'+str(SCAD).replace('\\','/')+'>\n'
 def imp(v,n,col='[.40,.43,.46]',move=''):
     return move+'color('+col+') import("'+str(TMP/(v+'-'+n+'.stl')).replace('\\','/')+'");\n'
 scenes={}
-catalog=[('seven','r-shell'),('six','r-shell'),('exposed','r-shell'),('four','r-shell'),('wide','r-shell'),('seven','r-frame'),('exposed','r-frame'),('four','r-frame'),('wide','r-frame'),('seven','r-retainer'),('six','r-retainer'),('seven','r-lcd-coupon'),('seven','r-cup-left'),('seven','r-cup-right'),('seven','r-cup-tower'),('four','r-lid'),('wide','r-lid'),('four','r-tray'),('exposed','r-pod'),('four','r-pod'),('four','r-cap'),('four','r-hood-front'),('four','r-hood-rear'),('four','r-white'),('wide','r-white')]
+catalog=[('seven','r-shell'),('six','r-shell'),('exposed','r-shell'),('four','r-shell'),('wide','r-shell'),('seven','r-frame'),('exposed','r-frame'),('four','r-frame'),('wide','r-frame'),('seven','r-retainer'),('six','r-retainer'),('seven','r-lcd-coupon'),('seven','r-cup-left'),('seven','r-cup-right'),('seven','r-cup-tower'),('four','r-lid'),('wide','r-lid'),('four','r-tray'),('exposed','r-frame-zip'),('four','r-frame-zip'),('wide','r-frame-zip'),('four','r-cap'),('four','r-white'),('wide','r-white')]
 for v,n in catalog:scenes[v+'-'+n]=(v,header+imp(v,n),meshes[(v,n)].bounds.mean(axis=0))
 for v,(width,panels) in variants.items():
     robot=v not in ['seven','six']
     fixed=imp(v,'r-frame')
     if robot:
-        fixed+=imp(v,'r-tray','[.65,.68,.70]')+imp(v,'r-pod','[.43,.46,.49]','r_pods() ')+imp(v,'r-cap','[.53,.56,.59]','r_pods() ')
-        if v!='exposed':fixed+='color([.47,.50,.53]) r_hoods();'
+        fixed+=imp(v,'r-tray','[.65,.68,.70]')+imp(v,'r-cap','[.53,.56,.59]','r_pods() ')
     else:fixed+=imp(v,'r-cup-left')+imp(v,'r-cup-tower')
     assembly=imp(v,'r-shell')+imp(v,'r-white','[.98,.98,.96]')+fixed+(imp(v,'r-lid') if robot else '')+'r_hardware();'
     scenes[v+'-assembly']=(v,header+assembly,np.array([139.7,width/2,65]))
@@ -157,18 +161,18 @@ def grid(key):
         x=37+(i%4)*181;y=285 if i<4 else 66
         pic(key,i,x,y,170,174);c.setFillColor(HexColor('#334155'));c.setFont('Helvetica-Bold',9);c.drawString(x,y+181,label)
     c.showPage()
-title('Current print kits','All five WOPR editions reinforced','5 mm structural walls and panels. 10 mm bases and motor mounting flanges.')
-pic('seven-assembly',6,40,177,338,300);pic('wide-assembly',6,414,177,338,300)
+title('Current print kits','One-piece WOPR chassis','5 mm structural walls. 10 mm bases and motor feet. Screw-cap and zip-tie choices.')
+pic('wide-r-frame-zip',6,40,177,338,300);pic('wide-assembly',6,414,177,338,300)
 c.setFillColor(HexColor('#334155'));c.setFont('Helvetica',10)
-for j,line in enumerate(['Both organizers and all three robots are included.', 'Motor feet, cheeks, posts, caps, tray, cups and wheel housings are reinforced.', 'Use matching reinforced parts. Earlier thin-wall exports are historical references.', 'Fit coupons and assembly checks are supplied; no load, drop or driving test is claimed.']):c.drawString(44,135-j*19,line)
+for j,line in enumerate(['Both organizers and all three robots are included.', 'Robot chassis, motor mounts and wheel wells form one structural print.', 'Use matching reinforced parts. Earlier thin-wall exports are historical references.', 'Fit coupons and assembly checks are supplied; no load, drop or driving test is claimed.']):c.drawString(44,135-j*19,line)
 c.showPage()
 for v,(width,panels) in variants.items():
     title('Eight-angle assembly',labels[v],f'Body 279.4 x {width} x 165 mm; {panels} RGB modules per side. Nominal walls 5 mm, base 10 mm.');grid(v+'-assembly')
 for v in ['exposed','four','wide']:
-    title('Printed assembly breakdown',labels[v],'Shell and lid lifted. Printed parts only; removable motor units install from below.')
-    pic(v+'-exploded',6,40,70,450,425);pic(v+'-r-pod' if v=='exposed' else 'four-r-pod',6,520,247,220,215)
+    title('Printed assembly breakdown',labels[v],'Shell and lid lifted. Motor mounts and wheel wells are integral with the single-piece chassis.')
+    pic(v+'-exploded',6,40,70,450,425);pic(v+'-r-frame-zip',6,520,247,220,215)
     c.setFillColor(HexColor('#334155'));c.setFont('Helvetica',10)
-    for j,line in enumerate(['10 mm motor bearing foot','10 mm mounting flange','5 mm side cheeks','13 mm braced posts','5 mm retaining cap and cheeks','Recessed mounting screw heads',('Integral wheel roofs; fit caps last' if v=='exposed' else 'Install wheel covers before caps')]):c.drawString(508,218-j*20,line)
+    for j,line in enumerate(['One structural chassis','Integral motor mounts and wells','10 mm base and motor feet','5 mm case and wheel-well walls','Bare motors fit from above','Wheels fit below, then slide inward','Alternative: two zip ties per motor']):c.drawString(508,218-j*20,line)
     c.showPage()
 for v,n in catalog:
     dims=' x '.join(f'{a:.2f}' for a in meshes[(v,n)].extents)
