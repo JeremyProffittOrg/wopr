@@ -1,11 +1,11 @@
 {
-  "MessageId": "010001a0ed2d3c6c-b275de76-c090-4aba-b605-0d42a0732cbd-000000",
+  "MessageId": "010001a0ed527b74-2cafc993-7079-4927-b373-250d14825b53-000000",
   "recipient": "proffitt.jeremy@gmail.com",
-  "subject": "WOPR one-piece chassis \u2014 motor mounts and wheel wells now print together",
+  "subject": "WOPR correction \u2014 zip-tie loops now route around the motors",
   "attachments": [
     "wopr-reinforced.pdf"
   ],
-  "kit_download_url": "https://raw.githubusercontent.com/JeremyProffittOrg/wopr/ddb40c461e3c87d01970e97fd5c9f20f7bc5dfed/output/reinforced/wopr-reinforced-kit.zip",
-  "bambu_projects_url": "https://github.com/JeremyProffittOrg/wopr/tree/ddb40c461e3c87d01970e97fd5c9f20f7bc5dfed/output/reinforced/bambu-projects",
-  "sent_at": "2026-09-29T08:39:20.149962-04:00"
+  "kit_download_url": "https://raw.githubusercontent.com/JeremyProffittOrg/wopr/1cbc59adcdeaba11c0f9cb318f3d3975c3f627ba/output/reinforced/wopr-reinforced-kit.zip",
+  "bambu_projects_url": "https://github.com/JeremyProffittOrg/wopr/tree/1cbc59adcdeaba11c0f9cb318f3d3975c3f627ba/output/reinforced/bambu-projects",
+  "sent_at": "2026-09-29T09:20:01.124402-04:00"
 }

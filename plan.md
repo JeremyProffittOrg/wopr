@@ -311,10 +311,14 @@ Non-goals: screw-cap geometry, motor locations, firmware, new hardware types.
 Files: reinforced CAD/builder/guide, three zip chassis exports, affected drawings/PDF/kit, two zip Bambu projects, plan and delivery receipt.
 Proof: r-check-zip includes complete belt/lock-head versus actual motor and chassis intersections; exported connected meshes and tunnel wall sections; native Bambu import/export roundtrip. Prior slot-only check did not prove a feasible tie loop.
 - [x] external-tie-geometry — clearance and thickness probes pass for all three robots.
-- [ ] external-tie-delivery — update guide/kit, open corrected zip projects, commit/push and send corrected PDF.
+- [x] external-tie-delivery — update guide/kit, open corrected zip projects, commit/push and send corrected PDF.
 Use verified private-desktop launch chain only. Per-command180s; at most two corrected retries. Existing stop conditions apply.
 
 ## Execution log
 - 2026-09-29: corrected front-to-back tie tunnels pass r-check-zip for exposed/four/wide, including complete3.6x1.2mm external bands and6x6x5mm lock heads against actual motors, chassis, wheels and enclosure. Each chassis is a watertight connected solid. Measured tunnel side walls5.0/5.9mm and vertical web5.4mm. Standard frame meshes match prior vertices/bounds/volume.
 - 2026-09-29: regression probe restoring old cross-motor slots is rejected by the full-loop check, with1465.344mm3 interference. Correction supersedes the earlier empty-slot-only clearance claim.
 - 2026-09-29: corrected zip native Bambu import/export roundtrips exited0, six objects each. Opened corrected exposed PID11052 and wide PID33548; exact project titles verified. Updated38-page PDF includes eight-angle loop routing page34; changed chassis views and reflowed instructions visually reviewed. ZIP integrity and corrected STL byte equality passed.
+
+- 2026-09-29: correction commit1cbc59adcdeaba11c0f9cb318f3d3975c3f627ba pushed to main; git diff --cached --check exited0 and gh run list --limit3 --json status,conclusion,headSha returned[]. Unrelated wording-test change and old untracked files preserved.
+
+- 2026-09-29: /root/email_reinforced sent corrected38-page PDF plus immutable kit/Bambu links, explicitly correcting the old slot-only check claim. SES MessageId010001a0ed527b74-2cafc993-7079-4927-b373-250d14825b53-000000; receipt read back; parent17112 exited0 on WoprBuildPrivate.
