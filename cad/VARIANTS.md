@@ -1,5 +1,8 @@
 # WOPR variants - assembly and operation
 
+Current reinforced editions (2026-09-29): see [REINFORCED.md](REINFORCED.md) and use `output/reinforced` for new prints. The files and dimensions below describe archived pre-reinforcement editions.
+
+
 Design date: 2026-09-28. Six RGB modules per side, twelve total, on both variants. The original seven-per-side source and exports remain unchanged. Dimensions are millimeters. This is a CAD-checked prototype; no physical fit, load, drop, traction, thermal or battery test has been performed.
 
 ## Files and dimensions

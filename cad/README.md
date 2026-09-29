@@ -1,5 +1,8 @@
 # W.O.P.R. / draft 07: adjusted LCD opening
 
+Current reinforced editions (2026-09-29): see [REINFORCED.md](REINFORCED.md) and use `output/reinforced` for new prints. The files and dimensions below describe archived pre-reinforcement editions.
+
+
 Open `wopr.scad` in OpenSCAD. Default view is the assembled mockup. Units are millimeters.
 Run `python cad/build.py` from the repository root to export meshes, 3MF, views, and PDF.
 The builder uses an existing OpenSCAD executable (`OPENSCAD` environment variable overrides its Windows default).

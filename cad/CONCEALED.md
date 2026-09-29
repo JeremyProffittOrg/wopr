@@ -1,5 +1,8 @@
 # WOPR concealed-wheel variants
 
+Current reinforced editions (2026-09-29): see [REINFORCED.md](REINFORCED.md) and use `output/reinforced` for new prints. The files and dimensions below describe archived pre-reinforcement editions.
+
+
 2026-09-28. Two additional designs; the previous eight-wheel robot and six-per-side replica remain available unchanged. These are checked CAD prototypes, not physically tested vehicles.
 
 ## Choose a version

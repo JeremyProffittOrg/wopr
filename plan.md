@@ -250,3 +250,26 @@ Restart policy: each export180s; watcher checks exit/log for both PASS and trace
 
 - 2026-09-28: commit af87dd3c503add324abbf97060e65225b65f7656 pushed to main; git diff --cached --check exited0. gh run list --limit3 --json status,conclusion,headSha returned[] (no workflow). Unrelated modified output/wording-test/wopr-two-filament-test.3mf preserved.
 - 2026-09-28: /root/email_concealed sent26-page PDF and print kit via SES to proffitt.jeremy@gmail.com; MessageId010001a0ea282e30-8cabe41e-1953-4d4d-a046-3a4a51c53011-000000. Receipt output/concealed/email-receipt.json read back. Email explicitly states physical fit, driving and durability remain untested.
+
+## full-reinforcement — reinforce every organizer and robot variant
+Depends on: concealed-solids.
+## Locked decisions (user-confirmed; do not revisit)
+- 2026-09-29: "reinfoce the entire model structure on them all 5mm walls, and an even thicker 10mm base for the motor bases, adn reinforce everything!"
+Outcome: five reinforced replacements (seven-per-side organizer, six-per-side organizer, exposed eight-wheel robot, tucked four-wheel robot, wide tucked eight-wheel robot). Nominal structural walls/panels5mm; robot chassis and motor bearing feet10mm. Necessary holes/hardware relief remain openings. Load-bearing motor cheeks remain5mm by using open-sided cradles, not shaving walls against wheels.
+Non-goals: new electronics or firmware, physical strength certification, overwriting historical exports or user-owned Bambu edits. New reinforced kits are the current print recommendations.
+Files: cad/wopr-reinforced.scad, cad/build-reinforced.py, cad/REINFORCED.md, current-kit notices in existing CAD guides, output/reinforced, output/pdf/wopr-reinforced.pdf, plan.md. Reuse existing silhouette/mount positions and document/render workflow.
+Verified facts: structural walls are currently3mm, base6mm, tray3mm, caps4mm, hood end walls3mm; motor shaft span36.6mm and paired wheels constrain front/rear cradle walls. Existing Node->pythonw->WoprBuildPrivate launch chain is verified.
+Assumptions: nominal5mm applies to structural sections, not empty fastener bores, assembly seams, lettering volumes or hardware openings. Dimensions may grow where necessary for reinforcement and actual hardware clearance; report final envelopes.
+### reinforced-solids — build thick sections and verify interfaces
+- [x] reinforced-geometry — python C:/dev/wopr/cad/build-reinforced.py exits0: watertight connected structures, measured5mm/10mm sections, component/assembly path probes, correct wheel/module counts.
+### reinforced-packet — export and review instructions
+- [x] reinforced-drawings — same build exits0, all PDF pages visually reviewed; updated print files and hardware instructions match CAD.
+### reinforced-delivery — publish and send the updated packet
+- [ ] reinforced-push — focused commit/push exits0; workflow terminal state checked.
+- [ ] reinforced-email — final PDF/kit SES MessageId recorded.
+Stop conditions: unavailable credentials/resources; unapproved scope expansion; hidden execution cannot be guaranteed. Physical testing remains explicitly unverified and does not block a CAD draft. Per-export timeout180s; tracebacks/errors as well as PASS are monitored; two corrected retries per failing check; no automatic restart or scheduled automation.
+
+## Execution log
+- 2026-09-29: reinforcement covers all five editions; organizer bases also increased to10mm so no existing6mm base was weakened. Wide tucked body increased to220mm; exposed platform196mm. Hidden motor flanges leave6.5mm ground clearance; exposed motor feet7.1mm. Retain hardware/module counts and unchanged WOPR firmware.
+- 2026-09-29: final CAD export/clearance phase via reinforced-worker.py on WoprBuildPrivate produced47 watertight STL meshes; each structural part is one component. Thickness-validation continuation (parent29728) measured exported5mm shell/LCD/letter backing/cup/lid/tray/cap/hood sections and10mm base/foot/flange sections; foot/flange overlap exceeds10mm where joined. All five assembly and sampled installation-path probes passed.
+- 2026-09-29: reinforced-final-packet.py parent44204 / worker44012 exited0. All38 PDF pages visually reviewed; five aligned two-color3MF projects and47 STL archive entries validated. Final output/pdf/wopr-reinforced.pdf and output/reinforced/wopr-reinforced-kit.zip contain current matching parts and updated assembly/screw guidance. Historical guides now point to reinforced kits. Physical fit, load, drop, torque and driving remain untested.
