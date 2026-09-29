@@ -322,3 +322,37 @@ Use verified private-desktop launch chain only. Per-command180s; at most two cor
 - 2026-09-29: correction commit1cbc59adcdeaba11c0f9cb318f3d3975c3f627ba pushed to main; git diff --cached --check exited0 and gh run list --limit3 --json status,conclusion,headSha returned[]. Unrelated wording-test change and old untracked files preserved.
 
 - 2026-09-29: /root/email_reinforced sent corrected38-page PDF plus immutable kit/Bambu links, explicitly correcting the old slot-only check claim. SES MessageId010001a0ed527b74-2cafc993-7079-4927-b373-250d14825b53-000000; receipt read back; parent17112 exited0 on WoprBuildPrivate.
+
+## slim-pillars-top-tie — clamp the seated motor with three ties
+Locked decisions2026-09-29: "Better, but the pillars the zip ties go in need to be skinner so the zip ties connect better, and there should be a cap between the pillars so the motor stops when in place"; corrected by "nevermind, the motirs top at the bottom, they insert fromt he top"; then "that means we need a zip tie over the top of the motor too". No added cap.
+Outcome: zip-only upper supports10mm deep instead23mm,11.8mm wide instead12.7mm; tie paths turn inward to motor faces. Third2.5mm-wide tie (<=1mm thick) passes over motor and under existing10mm foot, offset6mm from shaft centerline. Existing two side ties remain3.6mm (<=1.2mm thick).
+Non-goals: screw-cap geometry, motor/shaft/wheel locations, firmware. Files: reinforced CAD/checks/guide, zip exports/views/PDF/kit and zip Bambu projects.
+- [x] slim-pillars-proof — all three chassis pass motor insertion, complete three-tie clearance,5mm tunnel walls and10mm foot; screw frames unchanged.
+- [ ] slim-pillars-delivery — drawings reviewed, corrected zip projects opened, commit/push and updated email receipt.
+Verified private-desktop launch chain, per-command180s, two corrected retries per failing check; existing stop conditions apply.
+
+## tray-shelves-lighting — tie mounts and lighting provisions
+Locked2026-09-29: "the rtray should be zip tied in place as well, adn there should be a  platform over each of the center wheel wells that matches to the height of the r-tray when attched, and it should have zip tie loops on it so we can zip tie in batterey packs"; "And on the bottom and in the wheel wells, add 5mm led holes so we can add some led's , 4 between the wheels, two in each wheel well, 8 under the r-tray on the bottom in a grid".
+All robot chassis receive tray tie tunnels, bottom LED holes and wheel-well LED holes. Both eight-wheel robots receive two shelves over their shared inner wheel cavities; shelf and tray surfaces Z72.3mm. Four-wheel robot has no inner wheel cavity. Shelf tie slots accommodate3.6mm ties; useful pack envelopes54x62x40mm exposed,54x75x40mm wide. Existing central battery bay gets8mm rails for LED lead clearance.
+Pending optional LED-count clarification defaults to two per actual cavity:12 wheel-well LEDs on eight-wheel robots,8 on four-wheel, plus4 between wheels and8 in a4x2 bottom grid.5mm bores; reinforced wheel-roof bosses seat lenses recessed from tire clearance.
+- [x] tray-shelves-proof — tray ties, pack envelopes and LED wiring clearances pass alongside motor/wheel checks.
+- [ ] tray-shelves-delivery — refresh all affected exports/drawings/projects, verify and publish.
+
+- 2026-09-29 locked LED answer: "Two per wheel: 16 wheel-well LEDs". Eight-wheel count28 total:16 wheel-well +4 between +8 below tray. Four-wheel count20 total:8 wheel-well +4 between +8 below tray.
+
+## perimeter-sensors — eight internal Adafruit3967 mounts
+Locked2026-09-29: "add mounts for https://www.adafruit.com/product/3967 (4 hole on the inside, hole in center for sensor), two on the front, two on the back, two on each side.  On the front and back, centered below the sensor, add 8mm led holes as well."
+Verified from Adafruit-VL53L1X-PCB/main/Adafruit VL53L1X.brd: PCB25.4x17.78; holes(2.54,2.54),(22.86,2.54),(2.54,15.24),(22.86,15.24),2.5mm drill; sensor centered(12.7,8.89). Source https://github.com/adafruit/Adafruit-VL53L1X-PCB . Mount pitch20.32x12.70, four blind M2 pilots1.6mm each, sensor aperture10mm. Four8mm LED holes20mm below end-face sensors.
+Front=low X end, rear=tower X end. End sensors Y40/W-40,Z64; side sensors X85/170,Z64. Connector routing and board space checked. Mechanical mounts only; firmware does not yet read these sensors.
+- [x] sensor-proof — all eight PCB/connector spaces clear and holes/pilots verified.
+- [ ] sensor-delivery — exported cases, drawings, guide and Bambu projects updated.
+- 2026-09-29 locked skirt request: "The side of the woper case should go all the way down, the wheel cut outs should not been seen from the side". Tucked models will get continuous side walls and inset chassis; optional scope question for exposed version pending.
+
+- 2026-09-29 locked skirt scope: "Also widen the exposed version". Both eight-wheel bodies220mm wide; four-wheel155mm. Motor centers59.3mm from each side, outer wheel-well faces5.3mm inset. Preserve5mm unbroken side skins; internal ledge relief only. Base width now W-10.6mm. Eight-wheel shelf depth66.4mm, verified pack envelope54x62.4x40mm. Low-axle model retains its lower axle height.
+
+- 2026-09-29: continuous skirts require inset wheel wells. Rotate the existing104x52.3x26mm central USB pack90degrees so it clears the four-wheel housings; retain8mm risers for LED leads. Replace tall center strap anchors with four base slots10.6x2.4mm, two strap rows atX125/154, endsYcenter+/-54; no change to selected battery or firmware.
+
+## Execution log
+- 2026-09-29: OpenSCAD r-check and r-check-zip pass for all three final robot editions.43 exported STL meshes pass watertight/positive-volume checks; structural parts are single solids. Existing thickness checks pass, including5mm continuous lower side skins,5mm tie-tunnel walls,10mm motor feet/base and72.3mm level shelf/tray surfaces. Motor/wheel insertion, all three motor ties, tray ties, shelf pack volumes, sensor/connector spaces and LED lead clearances pass.
+- 2026-09-29: exported subtractive-solid counts verified independently:28 five-mm bores on both eight-wheel models;20 on four-wheel;44 sensor/end-face bores per robot (32 blind mounting pilots,8 optical ports,4 eight-mm LED holes). Final paired shelf supports overlap instead of touching; robot base edge overlaps the well ends by0.1mm. Frame widths209.6/144.6mm. Organizer frames match prior exported vertices/bounds/volume at STL precision.
+- 2026-09-29: cad/build-eight-wheel-projects.py passed native import/export roundtrip for all four projects,10 cap objects or6 zip objects. Four new GUI windows verified:50036 exposed-cap,25624 exposed-zip,37864 wide-cap,50028 wide-zip. All39 PDF pages visually checked; final text reflow removes single-line paragraph tails. ZIP integrity and current exported STL byte matching pass.

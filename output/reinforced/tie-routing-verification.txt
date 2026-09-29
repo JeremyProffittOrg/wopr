@@ -1,4 +1,3 @@
-PASS regression: complete-loop check rejects old cross-motor slots; interference volume 1465.344 mm3
-PASS exposed: complete external tie loops and lock heads clear motor, chassis, wheels and enclosure; threading tunnels stay outside motor; chassis single solid; screw-cap mesh unchanged
-PASS four: complete external tie loops and lock heads clear motor, chassis, wheels and enclosure; threading tunnels stay outside motor; chassis single solid; screw-cap mesh unchanged
-PASS wide: complete external tie loops and lock heads clear motor, chassis, wheels and enclosure; threading tunnels stay outside motor; chassis single solid; screw-cap mesh unchanged
+PASS exposed: three motor ties, tray ties, shelf packs, sensor connectors and LED lead spaces clear; threading paths stay outside motor
+PASS four: three motor ties, tray ties, shelf packs, sensor connectors and LED lead spaces clear; threading paths stay outside motor
+PASS wide: three motor ties, tray ties, shelf packs, sensor connectors and LED lead spaces clear; threading paths stay outside motor

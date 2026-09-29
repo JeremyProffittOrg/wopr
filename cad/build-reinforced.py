@@ -8,7 +8,7 @@ ROOT=Path(__file__).resolve().parents[1];OUT=ROOT/'output/reinforced';TMP=ROOT/'
 for p in [OUT,TMP,OUT/'views']:p.mkdir(parents=True,exist_ok=True)
 SCAD=ROOT/'cad/wopr-reinforced.scad';EXE='C:/Users/Jeremy/tools/openscad-nightly/openscad.exe'
 ENV=dict(os.environ,FONTCONFIG_FILE=str(ROOT/'tmp/pdfs/fonts.conf'))
-variants={'seven':(155,7),'six':(155,6),'exposed':(155,6),'four':(155,6),'wide':(220,6)}
+variants={'seven':(155,7),'six':(155,6),'exposed':(220,6),'four':(155,6),'wide':(220,6)}
 common=['r-shell','r-white','r-frame','r-retainer','r-lcd-coupon']
 parts={v:common+(['r-cup-left','r-cup-right','r-cup-tower'] if v in ['seven','six'] else ['r-lid','r-tray','r-cap','r-frame-zip']) for v in variants}
 meshes={};evidence=[]
@@ -35,7 +35,13 @@ for variant in variants:
         scad(probe,'r-check-zip',variant,['--export-format','binstl']);m=trimesh.load(probe,force='mesh')
         assert np.allclose(m.bounds,[[-100,-100,-100],[-99,-99,-99]],atol=.001) and abs(m.volume-1)<.001,(variant,'zip-chassis interference',m.bounds,m.volume)
         evidence.append('PASS '+variant+': standard and zip-tie chassis are single solids; complete motor/wheel installation sweeps clear')
-        evidence.append('PASS '+variant+': complete external tie loops and lock heads clear motor, chassis, wheels and enclosure; threading tunnels stay outside motor')
+        evidence.append('PASS '+variant+': three motor ties, tray ties, shelf packs, sensor connectors and LED lead spaces clear; threading paths stay outside motor')
+        # Count the separate subtractive solids for every requested mounting bore.
+        for module,count in [('r_led_holes',20 if variant=='four' else 28),('r_sensor_holes',44)]:
+            src=TMP/(variant+'-'+module+'.scad');src.write_text('include <'+str(SCAD).replace('\\','/')+'>\n'+module+'();')
+            scad(probe,'bore-probe',variant,['--export-format','binstl'],src)
+            assert len(trimesh.load(probe,force='mesh').split())==count,(variant,module,'bore count')
+        evidence.append('PASS '+variant+': exported bore counts match requested LEDs and eight four-hole sensor mounts')
 (OUT/'verification.txt').write_text('\n'.join(evidence)+'\n')
 # Measure thickness on exported triangles, independently of parameter assertions.
 def hits(mesh,axis,a,b):
@@ -62,21 +68,41 @@ for v,(width,panels) in variants.items():
     thickness(v,'r-frame',2,139,width/2,10)
     thickness(v,'r-retainer',2,0,12,5)
     if robot:
-        mx=54 if v=='four' else 46.3;my=28 if v=='exposed' else 54
+        mx=54 if v=='four' else 46.3;my=59.3
         for frame in ['r-frame','r-frame-zip']:
             foot=hits(meshes[(v,frame)],2,mx,my);assert foot[1]-foot[0]>=9.99,(v,'motor foot below10mm',foot)
-            thickness(v,frame,0,my+9,axle+35,12.7 if frame=='r-frame-zip' else 5)
+            thickness(v,frame,0,my+(0 if frame=='r-frame-zip' else 9),axle+38,11.8 if frame=='r-frame-zip' else 5)
             roof=hits(meshes[(v,frame)],2,mx,my-27-6.5);assert abs(roof[-1]-roof[-2]-5)<.06,(v,'wheel roof',roof)
             thickness(v,frame,1,mx+20,1 if v=='exposed' else axle+7,5)
         if frame=='r-frame-zip':
-                section=hits(meshes[(v,frame)],0,my+9,axle+42)
+                section=hits(meshes[(v,frame)],0,my,axle+42)
                 section=section[(section>mx-25)&(section<mx+25)]
                 widths=section[1::2]-section[::2]
-                assert len(widths)==4 and np.allclose(sorted(widths),[5,5,5.9,5.9],atol=.06),(v,'tie tunnel walls',widths)
-        zip_post=hits(meshes[(v,'r-frame-zip')],2,mx+18.5,my+9);assert any(abs((b-a)-5.4)<.06 for a,b in zip(zip_post[::2],zip_post[1::2])),(v,'zip slot web',zip_post)
+                assert len(widths)==4 and np.allclose(sorted(widths),[5,5,5,5],atol=.06),(v,'tie tunnel walls',widths)
+        zip_post=hits(meshes[(v,'r-frame-zip')],2,mx+17.6,my);assert any(abs((b-a)-5.4)<.06 for a,b in zip(zip_post[::2],zip_post[1::2])),(v,'zip slot web',zip_post)
         thickness(v,'r-cap',2,18,8,5)
         thickness(v,'r-cap',1,0,axle+45,5)
         thickness(v,'r-tray',2,122,width/2,5)
+        for x in [mx,279.4-mx]:
+            h=hits(meshes[(v,'r-shell')],1,x,20)
+            assert abs(h[1]-h[0]-5)<.06 and abs(h[-1]-h[-2]-5)<.06,(v,'continuous side skins',h)
+        if v!='four':
+            for x in [mx,279.4-mx]:
+                h=hits(meshes[(v,'r-frame')],2,x,width/2)
+                assert abs(h[-1]-72.3)<.06 and abs(h[-1]-h[-2]-5)<.06,(v,'level shelf',h)
+        for x in [112,130,148,166]:
+            for y in [width/2-16,width/2+16]:
+                h=hits(meshes[(v,'r-frame')],2,x,y)
+                bottom=-10 if v=='exposed' else 3
+                assert not any(bottom-.01<=z<=bottom+10+.01 for z in h),(v,'bottom LED bore',x,y,h)
+        for x in [85,170]:
+            h=hits(meshes[(v,'r-shell')],1,x,64)
+            assert not any(-.01<=z<=5.01 or width-5.01<=z<=width+.01 for z in h),(v,'side sensor aperture',x,h)
+        for y in [40,width-40]:
+            for z in [44,64]:
+                h=hits(meshes[(v,'r-shell')],0,y,z)
+                assert not any(-.01<=x<=5.01 or 274.39<=x<=279.41 for x in h),(v,'end sensor/LED aperture',y,z,h)
+        evidence.append(f'PASS {v}: eight four-hole sensor mounts; four8mm end LED bores; {20 if v=="four" else 28} five-mm LED positions; continuous5mm side skins; level72.3mm tray/shelves')
         thickness(v,'r-lid',2,120,30,5)
         roof=hits(meshes[(v,'r-lid')],2,120,30);assert abs(roof[-1]-roof[-2]-5)<.06,(v,'roof',roof)
     else:
@@ -116,7 +142,7 @@ for variant in parts:
 
 from concurrent.futures import ThreadPoolExecutor
 angles=[('Front',(0,-1,0)),('Rear',(0,1,0)),('Low end',(-1,0,0)),('Tower end',(1,0,0)),('Top oblique',(.22,-.28,1)),('Bottom oblique',(.22,-.28,-1)),('Front oblique',(1,-1,.8)),('Rear oblique',(-1,1,.8))]
-labels={'seven':'Seven-per-side organizer','six':'Six-per-side organizer','exposed':'Exposed eight-wheel robot','four':'Tucked four-wheel robot','wide':'Wide tucked eight-wheel robot'}
+labels={'seven':'Seven-per-side organizer','six':'Six-per-side organizer','exposed':'Wide low-axle eight-wheel robot','four':'Tucked four-wheel robot','wide':'Wide tucked eight-wheel robot'}
 header='include <'+str(SCAD).replace('\\','/')+'>\n'
 def imp(v,n,col='[.40,.43,.46]',move=''):
     return move+'color('+col+') import("'+str(TMP/(v+'-'+n+'.stl')).replace('\\','/')+'");\n'
@@ -134,7 +160,7 @@ for v,(width,panels) in variants.items():
     if robot:
         explode=imp(v,'r-shell',move='translate([0,0,100]) ')+imp(v,'r-white','[.98,.98,.96]','translate([0,0,100]) ')+fixed+imp(v,'r-lid',move='translate([0,0,170]) ')
         scenes[v+'-exploded']=(v,header+explode,np.array([139.7,width/2,130]))
-scenes['four-zip-route']=('four',header+'r_motor_hardware(); color([.45,.48,.5]) difference(){r_motor_mount(true);r_zip_channels();} color([.05,.65,.9]) r_zip_loops();',np.array([0,0,43]))
+scenes['four-zip-route']=('four',header+'r_motor_hardware(); color([.45,.48,.5]) difference(){r_motor_mount(true);r_zip_channels();r_top_tie_channels();} color([.05,.65,.9]) {r_zip_loops();r_top_tie();}',np.array([0,0,43]))
 for key,(v,code,center) in scenes.items():(TMP/(key+'.scad')).write_text(code)
 jobs=[(key,i) for key in scenes for i in range(8) if not(key.endswith('exploded') and i!=6)]
 def render(job):
@@ -168,10 +194,10 @@ def grid(key):
         x=37+(i%4)*181;y=285 if i<4 else 66
         pic(key,i,x,y,170,174);c.setFillColor(HexColor('#334155'));c.setFont('Helvetica-Bold',9);c.drawString(x,y+181,label)
     c.showPage()
-title('Current print kits','One-piece WOPR chassis','5 mm structural walls. 10 mm bases and motor feet. Screw-cap and zip-tie choices.')
+title('Current print kits','WOPR: ties, sensors and lighting','5 mm structural walls. 10 mm bases and motor feet. Screw-cap and zip-tie choices.')
 pic('wide-r-frame-zip',6,40,177,338,300);pic('wide-assembly',6,414,177,338,300)
 c.setFillColor(HexColor('#334155'));c.setFont('Helvetica',10)
-for j,line in enumerate(['Both organizers and all three robots are included.', 'Robot chassis, motor mounts and wheel wells form one structural print.', 'Use matching reinforced parts. Earlier thin-wall exports are historical references.', 'Fit coupons and assembly checks are supplied; no load, drop or driving test is claimed.']):c.drawString(44,135-j*19,line)
+for j,line in enumerate(['Both organizers and all three robots are included.', 'Continuous side skirts; integral wheel wells, motor mounts and battery shelves.', 'Use matching reinforced parts. Earlier thin-wall exports are historical references.', 'Fit coupons and assembly checks are supplied; no load, drop or driving test is claimed.']):c.drawString(44,135-j*19,line)
 c.showPage()
 for v,(width,panels) in variants.items():
     title('Eight-angle assembly',labels[v],f'Body 279.4 x {width} x 165 mm; {panels} RGB modules per side. Nominal walls 5 mm, base 10 mm.');grid(v+'-assembly')
@@ -179,16 +205,16 @@ for v in ['exposed','four','wide']:
     title('Printed assembly breakdown',labels[v],'Shell and lid lifted. Motor mounts and wheel wells are integral with the single-piece chassis.')
     pic(v+'-exploded',6,40,70,450,425);pic(v+'-r-frame-zip',6,520,247,220,215)
     c.setFillColor(HexColor('#334155'));c.setFont('Helvetica',10)
-    for j,line in enumerate(['One structural chassis','Integral motor mounts and wells','10 mm base and motor feet','5 mm case and wheel-well walls','Bare motors fit from above','Wheels fit below, then slide inward','Alternative: two zip ties per motor']):c.drawString(508,218-j*20,line)
+    for j,line in enumerate(['One structural chassis','Integral mounts, wells and shelves','10 mm base and motor feet','5 mm case and wheel-well walls','Bare motors fit from above','Wheels fit below, then slide inward','Three motor ties; tied controller tray']):c.drawString(508,218-j*20,line)
     c.showPage()
 for v,n in catalog:
     dims=' x '.join(f'{a:.2f}' for a in meshes[(v,n)].extents)
     sub='Bounds: '+dims+' mm. '+('Nearest lettering face shown front/rear.' if n=='r-white' else 'Actual checked mesh; top/bottom tilted for depth.')
     title('Printed part / '+labels[v],n,sub);grid(v+'-'+n)
-title('Corrected tie routing','Each tie surrounds the motor','Blue: complete tie loops and heads. Gray: supports and motor can. Yellow: gearbox.')
+title('Corrected tie routing','Two side ties and one over the top','Blue: complete tie loops and heads. Gray: supports and motor can. Yellow: gearbox.')
 grid('four-zip-route')
 c.save()
-styles=getSampleStyleSheet();styles.add(ParagraphStyle(name='BodyW',fontName='Helvetica',fontSize=9.5,leading=13,spaceAfter=6,textColor=HexColor('#172535')))
+styles=getSampleStyleSheet();styles.add(ParagraphStyle(name='BodyW',allowWidows=0,allowOrphans=0,fontName='Helvetica',fontSize=9.5,leading=13,spaceAfter=6,textColor=HexColor('#172535')))
 styles['Heading1'].keepWithNext=True;styles['Heading2'].keepWithNext=True
 styles['Heading1'].textColor=HexColor('#172535');styles['Heading2'].textColor=HexColor('#9A431C');flow=[]
 for block in (ROOT/'cad/REINFORCED.md').read_text().split('\n\n'):
