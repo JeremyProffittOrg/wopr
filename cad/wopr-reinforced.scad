@@ -231,6 +231,13 @@ module r_shelf_slots(){if(edition!="four") for(x=r_xs,dx=[-12,12],dy=[-r_shelf_d
 module r_tray_tie_channels(){for(p=r_tray_holes)
     translate([p[0]-8,p[1]-2.3,60.3]) cube([16,4.6,1.8]);
 }
+module r_center_battery_straps(){for(x=[121,157])
+    translate([x-5,W/2,0]) rotate([90,0,90]) linear_extrude(10) difference(){
+        translate([-54.5,r_bottom-1.2]) square([109,r_top+35.3-r_bottom+1.2]);
+        translate([-53.5,r_bottom-.2]) square([107,r_top+34.3-r_bottom+.2]);
+    }
+}
+module r_bottom_lens_space(){for(p=r_bottom_leds)translate([p[0],p[1],r_bottom-3])cylinder(d=5.2,h=r_base+3.1);}
 module r_tray_ties(){for(p=r_tray_holes){
     translate([p[0],p[1]+1.8,0]) rotate([90,0,0]) linear_extrude(3.6) difference(){
         translate([-8.6,60.6]) square([17.2,13.1]);
@@ -274,7 +281,7 @@ module r_frame(zip_ties=false){difference(){union(){
         r_well_void();r_motor_void();
         if(zip_ties) r_pods(){r_zip_channels();r_top_tie_channels();}
         r_tray_tie_channels();r_shelf_slots();r_led_holes();
-        for(x=[125,154],y=[W/2-54,W/2+54]) translate([x-5.3,y-1.2,r_bottom-1]) cube([10.6,2.4,r_base+2]);
+        for(x=[121,157],y=[W/2-54,W/2+54]) translate([x-5.3,y-1.2,r_bottom-1]) cube([10.6,2.4,r_base+2]);
     }
 }}
 module r_tray(){difference(){translate([92,W/2-44,67.3]) cube([98,88,5]);
@@ -327,6 +334,7 @@ module r_check(zip_ties=false){
         intersection(){r_shell();r_lid();}
         intersection(){r_tray();r_frame(zip_ties);}
         intersection(){r_tray_ties();union(){r_frame(zip_ties);r_tray();r_shell();}}
+        intersection(){r_center_battery_straps();union(){r_frame(zip_ties);r_tray();r_shell();r_bottom_lens_space();translate([113.55,W/2-52,r_top+8.1])cube([52.3,104,26]);}}
         intersection(){r_led_wire_space();union(){r_frame(zip_ties);r_shell();r_tray();translate([113.55,W/2-52,r_top+8.1]) cube([52.3,104,26]);}}
         intersection(){r_shelf_pack_space();union(){r_frame(zip_ties);r_shell();r_tray();r_lid();r_pods() r_motor_hardware();if(zip_ties)r_motor_ties();else r_pods()r_cap();}}
         intersection(){r_frame(zip_ties);r_pods() r_cap();}

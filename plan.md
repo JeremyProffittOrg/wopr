@@ -365,3 +365,7 @@ Front=low X end, rear=tower X end. End sensors Y40/W-40,Z64; side sensors X85/17
 
 - 2026-09-29: corrected four-wheel export passes both retention assembly checks,20 five-mm bores,44 sensor/end-face bores, motor-pair intersections and shaft insertion spacing. Updated STL bounds279.4x158mm case;147.6mm chassis. Eight-wheel hardware-pair checks also pass. All affected drawings and39-page PDF reviewed again; ZIP current-STL equality passes.
 - [ ] shaft-gap-correction-email — send corrected39-page packet and explicitly supersede155mm four-wheel width.
+
+- 2026-09-29: central battery strap rows set toX121/157, between the bottom LED columns. Added complete10mm strap-envelope checks against chassis, battery, tray, shell and bottom LED lens volumes so the straps cannot cover the LEDs. End slots remain10.6x2.4mm.
+
+- 2026-09-29: all three complete10mm central-strap envelopes pass against the base, battery, shell, tray and bottom LED lens spaces. All six chassis and assembly probes pass again. Updated four native Bambu projects pass import/export roundtrip; final opened PIDs38568/44552/32976/36244.39-page PDF regenerated from matching views.

@@ -64,4 +64,7 @@ PASS four: exported bore counts match requested LEDs and eight four-hole sensor 
 PASS four:158mm body,2.8mm unused inner shaft-tip gap; hardware-pair and insertion-envelope checks pass
 PASS four: eight four-hole sensor mounts; four8mm end LED bores; 20 five-mm LED positions; continuous5mm side skins; level72.3mm tray/shelves
 PASS four: exported structural5mm sections and 10mm one-piece chassis/motor base measured
+PASS exposed: complete central battery straps clear bottom LEDs and all structures; motor-pair clearance passes
+PASS four: complete central battery straps clear bottom LEDs and all structures; motor-pair clearance passes
+PASS wide: complete central battery straps clear bottom LEDs and all structures; motor-pair clearance passes
 PDF: 39 pages; eight-angle assemblies and unique printed parts; text/raster checks passed
