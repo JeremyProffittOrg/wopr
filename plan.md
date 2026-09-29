@@ -380,7 +380,7 @@ Assumption after optional width question: reduce across-case66.4mm width to53.12
 Outcome: solid CAD blocks from curved wheel roofs to shelf tops, with horizontal tie tunnels preserving5mm top skins and external wrap clearance. New platform infill regions in native Bambu projects will make these blocks100percent infill.
 Non-goals: outer body dimensions, motors/sensors/controller changes, physical printing. Files: reinforced CAD/builders/guide, affected chassis views/PDF/kit/native projects, plan and email receipt.
 - [x] solid-block-proof — connected watertight meshes, solid vertical sections,53.12mm width,22 LED bores and assembly/tie clearances pass.
-- [ ] solid-block-delivery — reviewed drawings, dense platform modifiers verified in Bambu, latest wide zip model opened, commit/push/email.
+- [x] solid-block-delivery — reviewed drawings, dense platform modifiers verified in Bambu, latest wide zip model opened, commit/push/email.
 Same verified private-desktop launch chain. Per-command180s; two corrected retries per failing check; existing stop conditions apply.
 
 - 2026-09-29 user clarification: "the platform oavboce the wheel wells". Applied the20percent reduction to those two platforms across the case (66.4 to53.12mm); their top remains72.3mm.
@@ -390,3 +390,7 @@ Same verified private-desktop launch chain. Per-command180s; two corrected retri
 ## Execution log
 - 2026-09-29: all six modified chassis pass watertight single-solid checks and r-check/r-check-zip. Exported solid-section samples show uninterrupted material from curved cavity roofs to72.3mm; platform width53.12mm verified. Shelf tie tunnels and full wrap/head envelopes clear all hardware.22 five-mm bores per robot confirmed;44 sensor/end-face bores unchanged. All three outer shell meshes match their previous vertices/bounds/volumes.
 - 2026-09-29: all four native Bambu projects pass import/export roundtrip with exactly two aligned modifier_part volumes,100percent infill and native zig-zag(Rectilinear) pattern. One post-export CLI shutdown timed out; a fresh-output retry exited successfully. Print-object counts remain10 cap/6 zip, with one actual chassis mesh. Latest wide zip model opened and title verified atPID47224.
+
+- 2026-09-29: revision1b784febcf8ca2e880e7fb20ff654fd113b33030 committed and pushed main. git diff --cached --check exited0; gh run list --limit3 --json status,conclusion,headSha returned[].39-page PDF visually reviewed, source text includes53.12mm/22 LED holes/100percent block infill. ZIP integrity and all six current chassis byte equality passed. Unrelated user files preserved.
+
+- 2026-09-29: final39-page solid-block packet sent by /root/email_reinforced. SES MessageId010001a0eeb93ebc-a34466e7-d42e-4012-91b2-f68e0480a544-000000; receipt read back; parent9568 exited0 on WoprBuildPrivate.

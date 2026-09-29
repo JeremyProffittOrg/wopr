@@ -1,11 +1,11 @@
 {
-  "MessageId": "010001a0ed926f32-478473aa-9df0-43cf-81d8-b23d3ac13d04-000000",
+  "MessageId": "010001a0eeb93ebc-a34466e7-d42e-4012-91b2-f68e0480a544-000000",
   "recipient": "proffitt.jeremy@gmail.com",
-  "subject": "WOPR corrected final packet \u2014 four-wheel body 158 mm, battery straps clear LEDs",
+  "subject": "WOPR revised \u2014 outer-wheel LEDs and narrower solid battery blocks",
   "attachments": [
     "wopr-reinforced.pdf"
   ],
-  "kit_download_url": "https://raw.githubusercontent.com/JeremyProffittOrg/wopr/e1d1900b8beea9096f1813385a6c7a5df49379c4/output/reinforced/wopr-reinforced-kit.zip",
-  "bambu_projects_url": "https://github.com/JeremyProffittOrg/wopr/tree/e1d1900b8beea9096f1813385a6c7a5df49379c4/output/reinforced/bambu-projects",
-  "sent_at": "2026-09-29T10:29:52.247629-04:00"
+  "kit_download_url": "https://raw.githubusercontent.com/JeremyProffittOrg/wopr/1b784febcf8ca2e880e7fb20ff654fd113b33030/output/reinforced/wopr-reinforced-kit.zip",
+  "bambu_projects_url": "https://github.com/JeremyProffittOrg/wopr/tree/1b784febcf8ca2e880e7fb20ff654fd113b33030/output/reinforced/bambu-projects",
+  "sent_at": "2026-09-29T15:51:52.966904-04:00"
 }
