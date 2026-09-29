@@ -1,11 +1,11 @@
 {
-  "MessageId": "010001a0ed86b805-4222f804-95e8-425a-91dc-409c74927655-000000",
+  "MessageId": "010001a0ed926f32-478473aa-9df0-43cf-81d8-b23d3ac13d04-000000",
   "recipient": "proffitt.jeremy@gmail.com",
-  "subject": "WOPR final design \u2014 closed sides, three-tie motors, battery shelves and sensor mounts",
+  "subject": "WOPR corrected final packet \u2014 four-wheel body 158 mm, battery straps clear LEDs",
   "attachments": [
     "wopr-reinforced.pdf"
   ],
-  "kit_download_url": "https://raw.githubusercontent.com/JeremyProffittOrg/wopr/5867ea70df1af8e40677681150ca35e2de0772aa/output/reinforced/wopr-reinforced-kit.zip",
-  "bambu_projects_url": "https://github.com/JeremyProffittOrg/wopr/tree/5867ea70df1af8e40677681150ca35e2de0772aa/output/reinforced/bambu-projects",
-  "sent_at": "2026-09-29T10:17:04.465614-04:00"
+  "kit_download_url": "https://raw.githubusercontent.com/JeremyProffittOrg/wopr/e1d1900b8beea9096f1813385a6c7a5df49379c4/output/reinforced/wopr-reinforced-kit.zip",
+  "bambu_projects_url": "https://github.com/JeremyProffittOrg/wopr/tree/e1d1900b8beea9096f1813385a6c7a5df49379c4/output/reinforced/bambu-projects",
+  "sent_at": "2026-09-29T10:29:52.247629-04:00"
 }

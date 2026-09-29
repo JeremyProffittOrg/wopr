@@ -364,8 +364,12 @@ Front=low X end, rear=tower X end. End sensors Y40/W-40,Z64; side sensors X85/17
 - 2026-09-29 correction: final hardware-pair audit identified0.2mm overlap of unused inner shaft tips in the155mm four-wheel layout. Four-wheel body widened to158mm, giving2.8mm shaft-tip gap and preserving5mm skins. Added hardware-pair intersection and >37.2mm insertion-envelope separation assertions. The earlier39-page delivery email stated155mm; a corrected packet and explicit email correction will supersede it. Eight-wheel bodies remain220mm.
 
 - 2026-09-29: corrected four-wheel export passes both retention assembly checks,20 five-mm bores,44 sensor/end-face bores, motor-pair intersections and shaft insertion spacing. Updated STL bounds279.4x158mm case;147.6mm chassis. Eight-wheel hardware-pair checks also pass. All affected drawings and39-page PDF reviewed again; ZIP current-STL equality passes.
-- [ ] shaft-gap-correction-email — send corrected39-page packet and explicitly supersede155mm four-wheel width.
+- [x] shaft-gap-correction-email — send corrected39-page packet and explicitly supersede155mm four-wheel width.
 
 - 2026-09-29: central battery strap rows set toX121/157, between the bottom LED columns. Added complete10mm strap-envelope checks against chassis, battery, tray, shell and bottom LED lens volumes so the straps cannot cover the LEDs. End slots remain10.6x2.4mm.
 
 - 2026-09-29: all three complete10mm central-strap envelopes pass against the base, battery, shell, tray and bottom LED lens spaces. All six chassis and assembly probes pass again. Updated four native Bambu projects pass import/export roundtrip; final opened PIDs38568/44552/32976/36244.39-page PDF regenerated from matching views.
+
+- 2026-09-29: final artifact commit e1d1900b8beea9096f1813385a6c7a5df49379c4 pushed main. git diff --cached --check exited0; gh run list --limit3 --json status,conclusion,headSha returned[]. Final four-wheel body158mm, eight-wheel bodies220mm. Native four-project verification and current kit ZIP check pass.
+
+- 2026-09-29: corrected final39-page packet sent by /root/email_reinforced; explicitly supersedes155mm four-wheel statement with158mm and2.8mm shaft clearance. SES MessageId010001a0ed926f32-478473aa-9df0-43cf-81d8-b23d3ac13d04-000000; receipt read back; parent53732 exited0 on WoprBuildPrivate.
