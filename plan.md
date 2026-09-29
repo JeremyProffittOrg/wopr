@@ -265,11 +265,14 @@ Assumptions: nominal5mm applies to structural sections, not empty fastener bores
 ### reinforced-packet — export and review instructions
 - [x] reinforced-drawings — same build exits0, all PDF pages visually reviewed; updated print files and hardware instructions match CAD.
 ### reinforced-delivery — publish and send the updated packet
-- [ ] reinforced-push — focused commit/push exits0; workflow terminal state checked.
-- [ ] reinforced-email — final PDF/kit SES MessageId recorded.
+- [x] reinforced-push — focused commit/push exits0; workflow terminal state checked.
+- [x] reinforced-email — final PDF/kit SES MessageId recorded.
 Stop conditions: unavailable credentials/resources; unapproved scope expansion; hidden execution cannot be guaranteed. Physical testing remains explicitly unverified and does not block a CAD draft. Per-export timeout180s; tracebacks/errors as well as PASS are monitored; two corrected retries per failing check; no automatic restart or scheduled automation.
 
 ## Execution log
 - 2026-09-29: reinforcement covers all five editions; organizer bases also increased to10mm so no existing6mm base was weakened. Wide tucked body increased to220mm; exposed platform196mm. Hidden motor flanges leave6.5mm ground clearance; exposed motor feet7.1mm. Retain hardware/module counts and unchanged WOPR firmware.
 - 2026-09-29: final CAD export/clearance phase via reinforced-worker.py on WoprBuildPrivate produced47 watertight STL meshes; each structural part is one component. Thickness-validation continuation (parent29728) measured exported5mm shell/LCD/letter backing/cup/lid/tray/cap/hood sections and10mm base/foot/flange sections; foot/flange overlap exceeds10mm where joined. All five assembly and sampled installation-path probes passed.
 - 2026-09-29: reinforced-final-packet.py parent44204 / worker44012 exited0. All38 PDF pages visually reviewed; five aligned two-color3MF projects and47 STL archive entries validated. Final output/pdf/wopr-reinforced.pdf and output/reinforced/wopr-reinforced-kit.zip contain current matching parts and updated assembly/screw guidance. Historical guides now point to reinforced kits. Physical fit, load, drop, torque and driving remain untested.
+
+- 2026-09-29: commit d80eaeede3af0e1519453574ff8baa690669d6ab pushed to main. git diff --cached --check exited0; gh run list --limit3 --json status,conclusion,headSha returned[] (no workflow). Unrelated output/wording-test/wopr-two-filament-test.3mf remains untouched and modified.
+- 2026-09-29: /root/email_reinforced sent the38-page PDF and an immutable GitHub print-kit download link to proffitt.jeremy@gmail.com. SES MessageId010001a0ec9004df-56f2aab8-15a9-496b-b71d-17ae961afc9e-000000; output/reinforced/email-receipt.json read back. PDF-only attachment avoids combined MIME size exceeding the legacy raw-email limit. Physical testing limitations and matching-parts requirement were included.
