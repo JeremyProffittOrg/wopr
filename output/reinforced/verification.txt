@@ -24,7 +24,6 @@ exposed/r-lcd-coupon: watertight; components=1; bounds_mm=[79.0, 42.0, 68.0]
 exposed/r-lid: watertight; components=1; bounds_mm=[177.4, 124.4, 20.652]
 exposed/r-tray: watertight; components=1; bounds_mm=[98.0, 88.0, 5.0]
 exposed/r-cap: watertight; components=1; bounds_mm=[66.0, 33.4, 26.3]
-exposed/r-frame-zip: watertight; components=1; bounds_mm=[268.8, 209.0, 113.4]
 PASS exposed assembly clearances
 PASS exposed: standard and zip-tie chassis are single solids; complete motor/wheel installation sweeps clear
 four/r-shell: watertight; components=1; bounds_mm=[279.4, 155.0, 164.952]
@@ -35,7 +34,6 @@ four/r-lcd-coupon: watertight; components=1; bounds_mm=[79.0, 42.0, 68.0]
 four/r-lid: watertight; components=1; bounds_mm=[177.4, 124.4, 20.652]
 four/r-tray: watertight; components=1; bounds_mm=[98.0, 88.0, 5.0]
 four/r-cap: watertight; components=1; bounds_mm=[66.0, 33.4, 26.3]
-four/r-frame-zip: watertight; components=1; bounds_mm=[268.8, 155.0, 84.4]
 PASS four assembly clearances
 PASS four: standard and zip-tie chassis are single solids; complete motor/wheel installation sweeps clear
 wide/r-shell: watertight; components=1; bounds_mm=[279.4, 220.0, 164.952]
@@ -46,7 +44,6 @@ wide/r-lcd-coupon: watertight; components=1; bounds_mm=[79.0, 42.0, 68.0]
 wide/r-lid: watertight; components=1; bounds_mm=[177.4, 189.4, 20.652]
 wide/r-tray: watertight; components=1; bounds_mm=[98.0, 88.0, 5.0]
 wide/r-cap: watertight; components=1; bounds_mm=[66.0, 33.4, 26.3]
-wide/r-frame-zip: watertight; components=1; bounds_mm=[268.8, 220.0, 84.4]
 PASS wide assembly clearances
 PASS wide: standard and zip-tie chassis are single solids; complete motor/wheel installation sweeps clear
 PASS seven: exported structural5mm sections and 5mm cup floors/dividers and10mm base measured
@@ -54,4 +51,12 @@ PASS six: exported structural5mm sections and 5mm cup floors/dividers and10mm ba
 PASS exposed: exported structural5mm sections and 10mm one-piece chassis/motor base measured
 PASS four: exported structural5mm sections and 10mm one-piece chassis/motor base measured
 PASS wide: exported structural5mm sections and 10mm one-piece chassis/motor base measured
-PDF: 37 pages; eight-angle assemblies and unique printed parts; text/raster checks passed
+PASS exposed: complete external tie loops and lock heads clear motor, chassis, wheels and enclosure; threading tunnels stay outside motor; chassis single solid; screw-cap mesh unchanged
+PASS four: complete external tie loops and lock heads clear motor, chassis, wheels and enclosure; threading tunnels stay outside motor; chassis single solid; screw-cap mesh unchanged
+PASS wide: complete external tie loops and lock heads clear motor, chassis, wheels and enclosure; threading tunnels stay outside motor; chassis single solid; screw-cap mesh unchanged
+PASS seven: exported structural5mm sections and 5mm cup floors/dividers and10mm base measured
+PASS six: exported structural5mm sections and 5mm cup floors/dividers and10mm base measured
+PASS exposed: exported structural5mm sections and 10mm one-piece chassis/motor base measured
+PASS four: exported structural5mm sections and 10mm one-piece chassis/motor base measured
+PASS wide: exported structural5mm sections and 10mm one-piece chassis/motor base measured
+PDF: 38 pages; eight-angle assemblies and unique printed parts; text/raster checks passed

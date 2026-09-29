@@ -437,13 +437,30 @@ module r_pods(){for(x=r_xs,y=r_ys) translate([x,y,0]) children();}
 module r_motor_mount(zip_ties=false){difference(){union(){
     // Ten-millimeter bearing foot; five-millimeter cheeks join the chassis directly.
     translate([-16.7,-11.5,r_mbottom-10]) cube([33.4,23,10]);
-    for(x=[-16.7,11.7]) translate([x,-11.5,r_mbottom]) cube([5,23,r_axle+60-r_mbottom]);
+    for(s=[-1,1]) scale([s,1,1]) translate([11.7,-11.5,r_mbottom]) cube([zip_ties?12.7:5,23,r_axle+60-r_mbottom]);
     for(x=[-22,22]) translate([x-6.5,-6.5,r_mbottom-5]) cube([13,13,r_axle+65-r_mbottom]);
     for(z=[r_mbottom+5,r_axle+42]) for(x=[-24,16]) translate([x,-6,z]) cube([8,12,5]);
 }
     translate([-11.7,-11.7,r_mbottom]) cube([23.4,23.4,100]);
     if(!zip_ties) for(x=[-22,22]) translate([x,0,r_axle+47]) cylinder(d=2.5,h=20);
 }}
+// Front-to-back tunnels stay outside the motor, with >=5mm side walls.
+module r_zip_channels(){for(x=[-18.5,18.5],z=[r_axle+42,r_axle+52])
+    translate([x-.9,-12,z-2.3]) cube([1.8,24,4.6]);
+}
+// Complete 3.6 x 1.2mm belt envelope, including front/rear spans and lock heads.
+// The bands surround the motor and both supports; no span crosses the motor.
+module r_zip_loops(){for(z=[r_axle+42,r_axle+52]){
+    translate([0,0,z-1.8]) linear_extrude(3.6) difference(){
+        square([38.2,25.6],center=true);square([35.8,23.2],center=true);
+    }
+    translate([-3,-18.8,z-2.5]) cube([6,6,5]);
+}}
+module r_motor_hardware(){
+    color([.95,.67,.07]) translate([-11.2,-9.3,r_axle-14]) cube([22.4,18.6,38]);
+    color([.55,.57,.59]) translate([-10,-11.2,r_axle+24]) cube([20,22.4,32]);
+    color([.8,.8,.8]) translate([0,0,r_axle]) r_axc(2.7,36.6);
+}
 module r_cap(){difference(){union(){
     translate([-33,-16.7,r_cap_z]) cube([66,33.4,5]);
     for(y=[-16.7,11.7]) translate([-33,y,r_axle+39]) cube([66,5,r_cap_z-r_axle-39]);
@@ -495,7 +512,7 @@ module r_frame(zip_ties=false){difference(){union(){
     for(p=r_holes) translate([p[0],p[1],r_bottom-1]) cylinder(d=3.3,h=r_base+2);
     if(r_robot){
         r_well_void();r_motor_void();
-        if(zip_ties) r_pods() for(z=[r_axle+42,r_axle+52]) translate([-30,-.9,z-2.3]) cube([60,1.8,4.6]);
+        if(zip_ties) r_pods() r_zip_channels();
         for(p=r_tray_holes) translate([p[0],p[1],55]) cylinder(d=2.5,h=15);
         for(x=[114,163],y=[W/2-40,W/2+40]) translate([x-4,y-8.5,r_top+6]) cube([8,17,3]);
     }
@@ -511,7 +528,7 @@ module r_hardware(){
     }
     color([.07,.12,.14]) translate([208.5,5,103.5]) cube([55,2,41]);
     if(r_robot){
-        r_pods(){color([.95,.67,.07]) translate([-11.2,-9.3,r_axle-14]) cube([22.4,18.6,38]);color([.55,.57,.59]) translate([-10,-11.2,r_axle+24]) cube([20,22.4,32]);color([.8,.8,.8]) translate([0,0,r_axle]) r_axc(2.7,36.6);}
+        r_pods() r_motor_hardware();
         for(p=r_wheels) color([.98,.4,.08]) translate(p) r_axc(31.5,29);
         color([.12,.15,.19]) translate([87.5,W/2-26.15,r_top+1]) cube([104,52.3,26]);
         color([.08,.4,.26]) translate([97,W/2-34,77.3]) cube([55,28,10]);
@@ -525,6 +542,7 @@ module r_assembly(explode=false,zip_ties=false){
     if(r_robot){
         color([.40,.43,.46]) translate([0,0,explode?170:0]) r_lid();
         if(!zip_ties) color([.50,.53,.56]) r_pods() r_cap();
+        else if(electronics) color([.05,.65,.9]) r_pods() r_zip_loops();
         color([.65,.68,.70]) translate([0,0,explode?60:0]) r_tray();
     }else color([.4,.43,.46]){r_cup();r_cup(true);}
     if(electronics) r_hardware();
@@ -544,7 +562,11 @@ module r_check(zip_ties=false){
         intersection(){r_frame(zip_ties);r_pods() r_cap();}
         intersection(){r_tray();r_pods() r_cap();}
         intersection(){union(){r_frame(zip_ties);r_pods() r_cap();r_tray();}translate([87.5,W/2-26.15,r_top+1]) cube([104,52.3,26]);}
-        if(zip_ties) intersection(){r_frame(true);r_pods() for(z=[r_axle+42,r_axle+52]) translate([-29.9,-.8,z-2.2]) cube([59.8,1.6,4.4]);}
+        if(zip_ties){
+            intersection(){r_pods() r_zip_loops();union(){r_frame(true);r_shell();r_lid();r_tray();r_pods() r_motor_hardware();r_wheel_space(.2);}}
+            // Probe the entire front-to-back threading paths, not just empty slots.
+            intersection(){r_pods() r_zip_channels();r_pods() r_motor_hardware();}
+        }
     }else{
         intersection(){r_shell();r_cup();translate([0,0,40.01]) cube([L,W,150]);}intersection(){r_shell();r_cup(true);translate([0,0,65.01]) cube([L,W,150]);}
     }
@@ -563,6 +585,7 @@ else if(part=="r-shell") r_shell();
 else if(part=="r-white") r_white();
 else if(part=="r-frame") r_frame();
 else if(part=="r-frame-zip") r_frame(true);
+else if(part=="r-zip-route") {color([.45,.48,.5]) difference(){r_motor_mount(true);r_zip_channels();}r_motor_hardware();color([.05,.65,.9]) r_zip_loops();}
 else if(part=="r-lid") r_lid();
 else if(part=="r-tray") r_tray();
 else if(part=="r-cap") r_cap();

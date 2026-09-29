@@ -1,12 +1,12 @@
 # WOPR reinforced editions - current print kits
 
-2026-09-29. ONE-PIECE CHASSIS REVISION. These files replace the earlier thin-wall kits for new prints. Five editions are included: seven-module-per-side organizer, six-per-side organizer, exposed eight-wheel robot, tucked four-wheel robot, and wide tucked eight-wheel robot. Earlier exports remain historical references. Do not mix old and reinforced mating parts.
+2026-09-29. ONE-PIECE CHASSIS / EXTERNAL TIE-LOOP CORRECTION. These files replace the earlier thin-wall kits for new prints. Five editions are included: seven-module-per-side organizer, six-per-side organizer, exposed eight-wheel robot, tucked four-wheel robot, and wide tucked eight-wheel robot. Earlier exports remain historical references. Do not mix old and reinforced mating parts.
 
 ## What is reinforced
 
 Structural case walls, roof skins, lid floor and rim, cup walls/floors/dividers, LED retainer thickness, controller tray, motor retaining cheeks and wheel-cover skins are nominally 5 mm. All chassis/base plates are now 10 mm, including the organizers so their previous 6 mm base is not weakened. Robot motor bearing feet are at least 10 mm and are part of the chassis. There are no detachable motor-mount flanges or separate wheel-well covers.
 
-Every robot chassis is one continuous printed solid: the main base, all four motor mounts and every wheel well are fused together. The standard version uses four removable 5 mm retaining caps. The second version uses two zip ties per motor and omits the caps. The 13 mm motor posts, 5 mm cheeks and braces remain integral in both versions.
+Every robot chassis is one continuous printed solid: the main base, all four motor mounts and every wheel well are fused together. The standard version uses four removable 5 mm retaining caps. The second version uses two zip ties per motor and omits the caps. The 13 mm motor posts and braces remain integral. Screw-cap cheeks remain 5 mm; zip-tie cheeks are widened to 12.7 mm. Their front-to-back tunnels have 5.9 mm of material toward the motor and 5 mm outside, with 5.4 mm between levels.
 
 The wheel wells include 6.5 mm of axial fitting travel. Install bare motors from above, then raise each wheel through the underside opening at the service offset and slide it onto its shaft. On the eight-wheel models, the two inner tires at each end share a continuous arched chamber. This provides fitting room without a thin divider. Open shaft slots admit the motor's fixed double-ended shaft.
 
@@ -59,10 +59,10 @@ M3 pilots are 2.5 mm and are intended for plastic-compatible screws. Hand-tighte
 ## Robot assembly order
 
 1. Remove all support material from the one-piece chassis. Check the motor pockets, shaft slots, fixed wheel chambers and screw or zip-tie passages. Do not try to assemble the earlier loose motor-mount or wheel-cover parts onto this chassis.
-2. For the zip-tie version, pre-thread two loose ties through each pair of opposed post slots before seating the motor. Route each loop around the motor can, not across the shaft or electrical terminals. Slots are 1.8 x 4.6 mm; they leave at least 5.4 mm between the two levels. A thin rubber pad can improve grip on the metal can. Leave the loops loose during installation.
+2. For the zip-tie version, each tie makes a complete horizontal loop around the motor and both side supports. Feed it front-to-back through the LEFT support tunnel, across the back of the motor, then back-to-front through the RIGHT support tunnel. Close the head across the front of the motor. Repeat at the second height. The 1.8 x 4.6 mm tunnels run beside the motor, never through its pocket. Leave the loops loose until the motor is seated.
 3. Lower each BARE motor from above, motor can upward. Its fixed double shaft enters the open U-slots and the gearbox seats on the integral 10 mm foot. Do not install the wheels before this step.
 4. Insert each wheel from below at its service position: 6.5 mm farther away from the motor than its running position. Raise it until the hub aligns with the shaft, then slide it inward and press it fully onto the shaft while supporting the gearbox. Repeat for one outward wheel per motor on the four-wheel model, or both shaft ends on either eight-wheel model.
-5. Verify every wheel turns freely. For screw-cap retention, fit the cap with a trimmed foam pad in the nominal 4 mm top gap, then install two M3x14 screws. For zip-tie retention, tighten both ties evenly around the motor can, trim the tails and confirm the motor cannot lift or rock. Do not use a retaining cap on the zip-tie base.
+5. Verify every wheel turns freely. For screw-cap retention, fit the cap with a trimmed foam pad in the nominal 4 mm top gap, then install two M3x14 screws. For zip-tie retention, place 1 mm rubber pads between each band and the front and rear faces of the motor can. Tighten both ties to compress the pads and clamp the can between the front and rear spans. Keep heads on the front span and clear of terminals. Trim the tails and confirm the motor cannot lift or rock. Do not use a retaining cap on the zip-tie base.
 6. Route motor wires clear of tires and tie tails. Pad and strap the USB pack in the center. Mount the controller and drivers on the insulating carrier, then fit the 5 mm tray with four M3x14 screws.
 7. Fit LED modules with the reinforced retainers, then the LCD using the new fit coupon. Fit the motor-power switch. Attach the body with eight M3x20 screws and the lid with four M3x20 screws.
 
@@ -80,7 +80,7 @@ Test direction, release-to-stop, STOP, Wi-Fi loss, driver fault and the manual s
 
 ## Verification and limits
 
-The builder checks watertight connected structural meshes, actual exported wall/base/foot thicknesses, wheel and battery clearance, LCD/LED fit volumes, and bare-motor insertion, wheel lifting and axial fitting paths. White lettering consists of separate glyph solids by design.
+The builder checks watertight connected structural meshes, actual exported wall/base/foot thicknesses, wheel and battery clearance, LCD/LED fit volumes, and bare-motor insertion, wheel lifting and axial fitting paths. The zip-tie check now includes the complete external belt and lock head against the motor, chassis, wheels and enclosure. The prior straight-through slots are superseded; their earlier empty-slot check did not prove a usable loop. White lettering consists of separate glyph solids by design.
 
 This is a stronger CAD revision, not a certified load or drop rating. Print fit, motor torque under the heavier case, steering scrub, operating temperature, runtime and impact durability remain untested. Plastic TT gears and press-fit wheel hubs remain mechanical limits. Check an actual motor and wheel against the fit geometry before relying on the full set. Zip-tie retention also needs a physical pull/rocking test and inspection after driving.
 

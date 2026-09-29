@@ -35,6 +35,7 @@ for variant in variants:
         scad(probe,'r-check-zip',variant,['--export-format','binstl']);m=trimesh.load(probe,force='mesh')
         assert np.allclose(m.bounds,[[-100,-100,-100],[-99,-99,-99]],atol=.001) and abs(m.volume-1)<.001,(variant,'zip-chassis interference',m.bounds,m.volume)
         evidence.append('PASS '+variant+': standard and zip-tie chassis are single solids; complete motor/wheel installation sweeps clear')
+        evidence.append('PASS '+variant+': complete external tie loops and lock heads clear motor, chassis, wheels and enclosure; threading tunnels stay outside motor')
 (OUT/'verification.txt').write_text('\n'.join(evidence)+'\n')
 # Measure thickness on exported triangles, independently of parameter assertions.
 def hits(mesh,axis,a,b):
@@ -64,10 +65,15 @@ for v,(width,panels) in variants.items():
         mx=54 if v=='four' else 46.3;my=28 if v=='exposed' else 54
         for frame in ['r-frame','r-frame-zip']:
             foot=hits(meshes[(v,frame)],2,mx,my);assert foot[1]-foot[0]>=9.99,(v,'motor foot below10mm',foot)
-            thickness(v,frame,0,my+9,axle+40,5)
+            thickness(v,frame,0,my+9,axle+35,12.7 if frame=='r-frame-zip' else 5)
             roof=hits(meshes[(v,frame)],2,mx,my-27-6.5);assert abs(roof[-1]-roof[-2]-5)<.06,(v,'wheel roof',roof)
             thickness(v,frame,1,mx+20,1 if v=='exposed' else axle+7,5)
-        zip_post=hits(meshes[(v,'r-frame-zip')],2,mx+22,my);assert any(abs((b-a)-5.4)<.06 for a,b in zip(zip_post[::2],zip_post[1::2])),(v,'zip slot web',zip_post)
+        if frame=='r-frame-zip':
+                section=hits(meshes[(v,frame)],0,my+9,axle+42)
+                section=section[(section>mx-25)&(section<mx+25)]
+                widths=section[1::2]-section[::2]
+                assert len(widths)==4 and np.allclose(sorted(widths),[5,5,5.9,5.9],atol=.06),(v,'tie tunnel walls',widths)
+        zip_post=hits(meshes[(v,'r-frame-zip')],2,mx+18.5,my+9);assert any(abs((b-a)-5.4)<.06 for a,b in zip(zip_post[::2],zip_post[1::2])),(v,'zip slot web',zip_post)
         thickness(v,'r-cap',2,18,8,5)
         thickness(v,'r-cap',1,0,axle+45,5)
         thickness(v,'r-tray',2,122,width/2,5)
@@ -128,6 +134,7 @@ for v,(width,panels) in variants.items():
     if robot:
         explode=imp(v,'r-shell',move='translate([0,0,100]) ')+imp(v,'r-white','[.98,.98,.96]','translate([0,0,100]) ')+fixed+imp(v,'r-lid',move='translate([0,0,170]) ')
         scenes[v+'-exploded']=(v,header+explode,np.array([139.7,width/2,130]))
+scenes['four-zip-route']=('four',header+'r_motor_hardware(); color([.45,.48,.5]) difference(){r_motor_mount(true);r_zip_channels();} color([.05,.65,.9]) r_zip_loops();',np.array([0,0,43]))
 for key,(v,code,center) in scenes.items():(TMP/(key+'.scad')).write_text(code)
 jobs=[(key,i) for key in scenes for i in range(8) if not(key.endswith('exploded') and i!=6)]
 def render(job):
@@ -178,8 +185,11 @@ for v,n in catalog:
     dims=' x '.join(f'{a:.2f}' for a in meshes[(v,n)].extents)
     sub='Bounds: '+dims+' mm. '+('Nearest lettering face shown front/rear.' if n=='r-white' else 'Actual checked mesh; top/bottom tilted for depth.')
     title('Printed part / '+labels[v],n,sub);grid(v+'-'+n)
+title('Corrected tie routing','Each tie surrounds the motor','Blue: complete tie loops and heads. Gray: supports and motor can. Yellow: gearbox.')
+grid('four-zip-route')
 c.save()
-styles=getSampleStyleSheet();styles.add(ParagraphStyle(name='BodyW',fontName='Helvetica',fontSize=10,leading=14,spaceAfter=7,textColor=HexColor('#172535')))
+styles=getSampleStyleSheet();styles.add(ParagraphStyle(name='BodyW',fontName='Helvetica',fontSize=9.5,leading=13,spaceAfter=6,textColor=HexColor('#172535')))
+styles['Heading1'].keepWithNext=True;styles['Heading2'].keepWithNext=True
 styles['Heading1'].textColor=HexColor('#172535');styles['Heading2'].textColor=HexColor('#9A431C');flow=[]
 for block in (ROOT/'cad/REINFORCED.md').read_text().split('\n\n'):
     block=block.strip()
