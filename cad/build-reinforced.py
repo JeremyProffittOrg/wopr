@@ -37,7 +37,7 @@ for variant in variants:
         evidence.append('PASS '+variant+': standard and zip-tie chassis are single solids; complete motor/wheel installation sweeps clear')
         evidence.append('PASS '+variant+': three motor ties, tray ties, shelf packs, sensor connectors and LED lead spaces clear; threading paths stay outside motor')
         # Count the separate subtractive solids for every requested mounting bore.
-        for module,count in [('r_led_holes',20 if variant=='four' else 28),('r_sensor_holes',44)]:
+        for module,count in [('r_led_holes',22),('r_sensor_holes',44)]:
             src=TMP/(variant+'-'+module+'.scad');src.write_text('include <'+str(SCAD).replace('\\','/')+'>\n'+module+'();')
             scad(probe,'bore-probe',variant,['--export-format','binstl'],src)
             assert len(trimesh.load(probe,force='mesh').split())==count,(variant,module,'bore count')
@@ -88,8 +88,16 @@ for v,(width,panels) in variants.items():
             assert abs(h[1]-h[0]-5)<.06 and abs(h[-1]-h[-2]-5)<.06,(v,'continuous side skins',h)
         if v!='four':
             for x in [mx,279.4-mx]:
-                h=hits(meshes[(v,'r-frame')],2,x,width/2)
-                assert abs(h[-1]-72.3)<.06 and abs(h[-1]-h[-2]-5)<.06,(v,'level shelf',h)
+                for frame in ['r-frame','r-frame-zip']:
+                    for dx in [-20,0,20]:
+                        for dy in [-10,0,10]:
+                            h=hits(meshes[(v,frame)],2,x+dx,width/2+dy)
+                            assert abs(h[-1]-72.3)<.06 and abs(h[-2]-(axle+np.sqrt(32.5**2-dx**2)))<.1,(v,'solid shelf fill',h)
+                    h=hits(meshes[(v,frame)],1,x,70)
+                    spans=[b-a for a,b in zip(h[::2],h[1::2]) if a<width/2<b]
+                    assert len(spans)==1 and abs(spans[0]-53.12)<.06,(v,'shelf width reduced20percent',spans)
+                    h=hits(meshes[(v,frame)],2,x+12,width/2)
+                    assert any(abs(a-65.5)<.06 and abs(b-67.3)<.06 for a,b in zip(h[1:-1:2],h[2::2])),(v,'tie tunnel',h)
         for x in [112,130,148,166]:
             for y in [width/2-16,width/2+16]:
                 h=hits(meshes[(v,'r-frame')],2,x,y)
@@ -102,7 +110,7 @@ for v,(width,panels) in variants.items():
             for z in [44,64]:
                 h=hits(meshes[(v,'r-shell')],0,y,z)
                 assert not any(-.01<=x<=5.01 or 274.39<=x<=279.41 for x in h),(v,'end sensor/LED aperture',y,z,h)
-        evidence.append(f'PASS {v}: eight four-hole sensor mounts; four8mm end LED bores; {20 if v=="four" else 28} five-mm LED positions; continuous5mm side skins; level72.3mm tray/shelves')
+        evidence.append(f'PASS {v}: eight four-hole sensor mounts; four8mm end LED bores; 22 five-mm LED positions; continuous5mm side skins; level72.3mm tray/shelves')
         thickness(v,'r-lid',2,120,30,5)
         roof=hits(meshes[(v,'r-lid')],2,120,30);assert abs(roof[-1]-roof[-2]-5)<.06,(v,'roof',roof)
     else:
@@ -215,6 +223,7 @@ title('Corrected tie routing','Two side ties and one over the top','Blue: comple
 grid('four-zip-route')
 c.save()
 styles=getSampleStyleSheet();styles.add(ParagraphStyle(name='BodyW',allowWidows=0,allowOrphans=0,fontName='Helvetica',fontSize=9.5,leading=13,spaceAfter=6,textColor=HexColor('#172535')))
+styles.add(ParagraphStyle(name='RefW',parent=styles['BodyW'],fontSize=9.2,leading=12,spaceAfter=2))
 styles['Heading1'].keepWithNext=True;styles['Heading2'].keepWithNext=True
 styles['Heading1'].textColor=HexColor('#172535');styles['Heading2'].textColor=HexColor('#9A431C');flow=[]
 for block in (ROOT/'cad/REINFORCED.md').read_text().split('\n\n'):
@@ -223,7 +232,7 @@ for block in (ROOT/'cad/REINFORCED.md').read_text().split('\n\n'):
     if block.startswith('# '):flow.append(Paragraph(escape(block[2:]),styles['Heading1']))
     elif block.startswith('## '):flow.append(Paragraph(escape(block[3:]),styles['Heading2']))
     else:
-        for row in block.split('\n'):flow.append(Paragraph('<link href="'+escape(row)+'">'+escape(row)+'</link>' if row.startswith('https://') else escape(row),styles['BodyW']))
+        for row in block.split('\n'):flow.append(Paragraph('<link href="'+escape(row)+'">'+escape(row)+'</link>' if row.startswith('https://') else escape(row),styles['RefW'] if row.startswith('https://') else styles['BodyW']))
 def footer(c,doc):
     c.setFont('Helvetica',8);c.setFillColor(HexColor('#475569'));c.drawString(36,24,'WOPR / reinforced assembly and verification / 2026-09-29')
 SimpleDocTemplate(str(TMP/'instructions.pdf'),pagesize=(792,612),rightMargin=42,leftMargin=42,topMargin=38,bottomMargin=43).build(flow,onFirstPage=footer,onLaterPages=footer)

@@ -40,9 +40,7 @@ PASS wide: standard and zip-tie chassis are single solids; complete motor/wheel 
 PASS wide: three motor ties, tray ties, shelf packs, sensor connectors and LED lead spaces clear; threading paths stay outside motor
 PASS seven: exported structural5mm sections and 5mm cup floors/dividers and10mm base measured
 PASS six: exported structural5mm sections and 5mm cup floors/dividers and10mm base measured
-PASS exposed: eight four-hole sensor mounts; four8mm end LED bores; 28 five-mm LED positions; continuous5mm side skins; level72.3mm tray/shelves
 PASS exposed: exported structural5mm sections and 10mm one-piece chassis/motor base measured
-PASS wide: eight four-hole sensor mounts; four8mm end LED bores; 28 five-mm LED positions; continuous5mm side skins; level72.3mm tray/shelves
 PASS wide: exported structural5mm sections and 10mm one-piece chassis/motor base measured
 seven/r-frame: watertight; components=1; bounds_mm=[268.8, 144.4, 10.0]; unchanged from prior organizer
 six/r-frame: watertight; components=1; bounds_mm=[268.8, 144.4, 10.0]; unchanged from prior organizer
@@ -62,9 +60,17 @@ PASS four: standard and zip-tie chassis are single solids; complete motor/wheel 
 PASS four: three motor ties, tray ties, shelf packs, sensor connectors and LED lead spaces clear; threading paths stay outside motor
 PASS four: exported bore counts match requested LEDs and eight four-hole sensor mounts
 PASS four:158mm body,2.8mm unused inner shaft-tip gap; hardware-pair and insertion-envelope checks pass
-PASS four: eight four-hole sensor mounts; four8mm end LED bores; 20 five-mm LED positions; continuous5mm side skins; level72.3mm tray/shelves
 PASS four: exported structural5mm sections and 10mm one-piece chassis/motor base measured
 PASS exposed: complete central battery straps clear bottom LEDs and all structures; motor-pair clearance passes
 PASS four: complete central battery straps clear bottom LEDs and all structures; motor-pair clearance passes
 PASS wide: complete central battery straps clear bottom LEDs and all structures; motor-pair clearance passes
+PASS exposed: solid narrow battery blocks and shelf tie tunnels clear all hardware; outer wheel LEDs only and six side LEDs
+PASS four: solid narrow battery blocks and shelf tie tunnels clear all hardware; outer wheel LEDs only and six side LEDs
+PASS wide: solid narrow battery blocks and shelf tie tunnels clear all hardware; outer wheel LEDs only and six side LEDs
+PASS exposed:22 five-mm LED bores (8 outer wheel,6 between wheels,8 bottom grid);44 sensor/end-face bores
+PASS four:22 five-mm LED bores (8 outer wheel,6 between wheels,8 bottom grid);44 sensor/end-face bores
+PASS wide:22 five-mm LED bores (8 outer wheel,6 between wheels,8 bottom grid);44 sensor/end-face bores
+PASS exposed: eight four-hole sensor mounts; four8mm end LED bores; 22 five-mm LED positions; continuous5mm side skins; level72.3mm tray/shelves
+PASS four: eight four-hole sensor mounts; four8mm end LED bores; 22 five-mm LED positions; continuous5mm side skins; level72.3mm tray/shelves
+PASS wide: eight four-hole sensor mounts; four8mm end LED bores; 22 five-mm LED positions; continuous5mm side skins; level72.3mm tray/shelves
 PDF: 39 pages; eight-angle assemblies and unique printed parts; text/raster checks passed

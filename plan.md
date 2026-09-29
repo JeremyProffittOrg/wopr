@@ -373,3 +373,20 @@ Front=low X end, rear=tower X end. End sensors Y40/W-40,Z64; side sensors X85/17
 - 2026-09-29: final artifact commit e1d1900b8beea9096f1813385a6c7a5df49379c4 pushed main. git diff --cached --check exited0; gh run list --limit3 --json status,conclusion,headSha returned[]. Final four-wheel body158mm, eight-wheel bodies220mm. Native four-project verification and current kit ZIP check pass.
 
 - 2026-09-29: corrected final39-page packet sent by /root/email_reinforced; explicitly supersedes155mm four-wheel statement with158mm and2.8mm shaft clearance. SES MessageId010001a0ed926f32-478473aa-9df0-43cf-81d8-b23d3ac13d04-000000; receipt read back; parent53732 exited0 on WoprBuildPrivate.
+
+## solid-battery-blocks — narrow and fill the inner-well battery supports
+Locked request2026-09-29: "remove the led holders from the inside wheel wells, add 2 more led's on the sides between the wheels, and bring the platform for the batteries overr the inside wheel wells down so it's a complete block from the wheel wells to the bottom of the platform, solid.  and reduce the width of that platform by 20 percent".
+Assumption after optional width question: reduce across-case66.4mm width to53.12mm; keep56mm length and72.3mm top height. Add two LEDs total, one per side, producing six between wheels. Remove inner-wheel LED bosses and bores, retain eight outer-wheel LEDs and eight bottom-grid LEDs:22 five-mm LEDs per robot plus four8mm end LEDs.
+Outcome: solid CAD blocks from curved wheel roofs to shelf tops, with horizontal tie tunnels preserving5mm top skins and external wrap clearance. New platform infill regions in native Bambu projects will make these blocks100percent infill.
+Non-goals: outer body dimensions, motors/sensors/controller changes, physical printing. Files: reinforced CAD/builders/guide, affected chassis views/PDF/kit/native projects, plan and email receipt.
+- [x] solid-block-proof — connected watertight meshes, solid vertical sections,53.12mm width,22 LED bores and assembly/tie clearances pass.
+- [ ] solid-block-delivery — reviewed drawings, dense platform modifiers verified in Bambu, latest wide zip model opened, commit/push/email.
+Same verified private-desktop launch chain. Per-command180s; two corrected retries per failing check; existing stop conditions apply.
+
+- 2026-09-29 user clarification: "the platform oavboce the wheel wells". Applied the20percent reduction to those two platforms across the case (66.4 to53.12mm); their top remains72.3mm.
+
+- Native modifier format verified against BambuStudio src/libslic3r/Model.cpp and PrintConfig.cpp: subtype modifier_part; Rectilinear serializes as zig-zag. Roundtrip must retain both100percent densities and that pattern. Imported source-volume indices and centroids are checked to prevent marking the chassis itself as a modifier.
+
+## Execution log
+- 2026-09-29: all six modified chassis pass watertight single-solid checks and r-check/r-check-zip. Exported solid-section samples show uninterrupted material from curved cavity roofs to72.3mm; platform width53.12mm verified. Shelf tie tunnels and full wrap/head envelopes clear all hardware.22 five-mm bores per robot confirmed;44 sensor/end-face bores unchanged. All three outer shell meshes match their previous vertices/bounds/volumes.
+- 2026-09-29: all four native Bambu projects pass import/export roundtrip with exactly two aligned modifier_part volumes,100percent infill and native zig-zag(Rectilinear) pattern. One post-export CLI shutdown timed out; a fresh-output retry exited successfully. Print-object counts remain10 cap/6 zip, with one actual chassis mesh. Latest wide zip model opened and title verified atPID47224.

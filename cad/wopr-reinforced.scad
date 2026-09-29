@@ -218,16 +218,22 @@ module r_wheel_install(){for(x=r_xs,y=r_ys,side=(edition=="four"?[y<W/2?-1:1]:[-
     hull(){translate([x,sy,r_axle]) r_axc(31.7,29.4);translate([x,cy,r_axle]) r_axc(31.7,29.4);}
 }}
 // Tie-mounted tray and two level battery shelves over shared inner wheel wells.
-r_shelf_depth=r_ys[1]-r_ys[0]-35;
-r_bottom_leds=concat([for(x=[102,178],y=[27,W-27]) [x,y]], [for(x=[112,130,148,166],y=[W/2-16,W/2+16]) [x,y]]);
-module r_shelves(){if(r_robot && edition!="four") for(x=r_xs){
-    translate([x-28,W/2-r_shelf_depth/2,67.3]) cube([56,r_shelf_depth,5]);
-    for(dx=[-22,22],dy=[-5,5])
-        translate([x+dx,W/2+dy,r_axle+29.5]) cylinder(d=12,h=67.3-r_axle-29.5);
-}}
-module r_shelf_slots(){if(edition!="four") for(x=r_xs,dx=[-12,12],dy=[-r_shelf_depth/2+6,r_shelf_depth/2-6])
-    translate([x+dx-2.3,W/2+dy-.9,66.3]) cube([4.6,1.8,7]);
+r_shelf_depth=(r_ys[1]-r_ys[0]-35)*.8;
+r_bottom_leds=concat([for(x=[102,140,178],y=[27,W-27]) [x,y]], [for(x=[112,130,148,166],y=[W/2-16,W/2+16]) [x,y]]);
+module r_shelves(){if(r_robot && edition!="four") for(x=r_xs)
+    translate([x-28,W/2-r_shelf_depth/2,r_axle+24]) cube([56,r_shelf_depth,72.3-r_axle-24]);
 }
+// Solid blocks retain two horizontal tie tunnels below a five-millimeter top skin.
+module r_shelf_slots(){if(edition!="four") for(x=r_xs,dx=[-12,12])
+    translate([x+dx-2.3,W/2-r_shelf_depth/2-1,65.5]) cube([4.6,r_shelf_depth+2,1.8]);
+}
+module r_shelf_ties(){if(edition!="four") for(x=r_xs,dx=[-12,12]){
+    translate([x+dx-1.8,W/2,0]) rotate([90,0,90]) linear_extrude(3.6) difference(){
+        offset(delta=1.2) polygon([[-r_shelf_depth/2-.3,67],[r_shelf_depth/2+.3,67],[r_shelf_depth/2+.3,72.4],[r_shelf_depth/2-1.8,112.7],[-r_shelf_depth/2+1.8,112.7],[-r_shelf_depth/2-.3,72.4]]);
+        polygon([[-r_shelf_depth/2-.3,67],[r_shelf_depth/2+.3,67],[r_shelf_depth/2+.3,72.4],[r_shelf_depth/2-1.8,112.7],[-r_shelf_depth/2+1.8,112.7],[-r_shelf_depth/2-.3,72.4]]);
+    }
+    translate([x+dx-3,W/2+r_shelf_depth/2+.2,90]) cube([6,6,5]);
+}}
 module r_tray_tie_channels(){for(p=r_tray_holes)
     translate([p[0]-8,p[1]-2.3,60.3]) cube([16,4.6,1.8]);
 }
@@ -245,7 +251,7 @@ module r_tray_ties(){for(p=r_tray_holes){
     }
     translate([p[0]-3,p[1]-3,73.7]) cube([6,6,5]);
 }}
-module r_well_led_positions(){for(p=r_wheels,dx=[-18,18]){
+module r_well_led_positions(){for(p=r_wheels,dx=[-18,18]) if(p[1]<r_ys[0] || p[1]>r_ys[1]){
     y=p[1]<r_ys[0]?p[1]-12:p[1]>r_ys[1]?p[1]+12:p[1];
     translate([p[0]+dx,y,0]) children();
 }}
@@ -319,7 +325,7 @@ module r_check(zip_ties=false){
     translate([-100,-100,-100]) cube(1);
     if(r_robot){
         assert(len(r_wheels)==(edition=="four"?4:8));
-        assert(len(r_bottom_leds)==12);
+        assert(len(r_bottom_leds)==14);
         // Include hardware-to-hardware clearance, especially unused inner shafts.
         for(x=r_xs){
             intersection(){translate([x,r_ys[0],0])r_motor_hardware();translate([x,r_ys[1],0])r_motor_hardware();}
@@ -336,6 +342,7 @@ module r_check(zip_ties=false){
         intersection(){r_tray_ties();union(){r_frame(zip_ties);r_tray();r_shell();}}
         intersection(){r_center_battery_straps();union(){r_frame(zip_ties);r_tray();r_shell();r_bottom_lens_space();translate([113.55,W/2-52,r_top+8.1])cube([52.3,104,26]);}}
         intersection(){r_led_wire_space();union(){r_frame(zip_ties);r_shell();r_tray();translate([113.55,W/2-52,r_top+8.1]) cube([52.3,104,26]);}}
+        intersection(){r_shelf_ties();union(){r_frame(zip_ties);r_tray();r_shell();r_lid();r_shelf_pack_space();r_pods()r_motor_hardware();r_pods()r_cap();}}
         intersection(){r_shelf_pack_space();union(){r_frame(zip_ties);r_shell();r_tray();r_lid();r_pods() r_motor_hardware();if(zip_ties)r_motor_ties();else r_pods()r_cap();}}
         intersection(){r_frame(zip_ties);r_pods() r_cap();}
         intersection(){r_tray();r_pods() r_cap();}

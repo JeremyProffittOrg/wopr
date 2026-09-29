@@ -1,6 +1,6 @@
 # WOPR reinforced editions - current print kits
 
-2026-09-29. CONTINUOUS-SKIRT / THREE-TIE MOTOR / SENSOR AND LIGHTING REVISION. These files replace the earlier thin-wall kits for new prints. Five editions are included: seven-module-per-side organizer, six-per-side organizer, wide low-axle eight-wheel robot, tucked four-wheel robot, and wide tucked eight-wheel robot. Earlier exports remain historical references. Do not mix old and reinforced mating parts.
+2026-09-29. SOLID BATTERY BLOCK / OUTER-WELL LIGHTING REVISION. These files replace the earlier thin-wall kits for new prints. Five editions are included: seven-module-per-side organizer, six-per-side organizer, wide low-axle eight-wheel robot, tucked four-wheel robot, and wide tucked eight-wheel robot. Earlier exports remain historical references. Do not mix old and reinforced mating parts.
 
 ## What is reinforced
 
@@ -75,11 +75,11 @@ Organizer assembly: install display and RGB hardware first, fit the 10 mm base, 
 
 ## Level battery shelves and tray
 
-The tray and both eight-wheel shelves have top surfaces at Z72.3 mm. Each shelf is 56 x 66.4 mm and has two pairs of tie slots. Use two ties per pack, passing down a slot, under the shelf and up its paired slot before closing over the pack. Verified pack envelope per shelf is 54 x 62.4 x 40 mm, including any padding; use protected battery packs. These shelves supplement the original central USB pack bay. The four-wheel model has no center wheel cavities and therefore no added wheel-cavity shelves. Do not connect separate packs together without a suitable power circuit.
+The tray and both eight-wheel shelves have top surfaces at Z72.3 mm. Each platform is 56 x 53.12 mm: its across-case width is reduced by 20%. It is a continuous solid CAD block from the curved wheel-well roof to the platform top. Two 4.6 x 1.8 mm tunnels run horizontally through each block, beneath a 5 mm top skin. Feed each tie straight through a tunnel, then wrap it around the pack; keep its head on the upper outside face above the motor supports. Verified pack envelope per platform is 54 x 49.12 x 40 mm, including any padding; use protected battery packs. The native Bambu projects include two 100% rectilinear infill modifiers for the battery blocks. Keep these modifiers enabled to print the blocks densely. Other parts retain their existing settings. The blocks supplement the original central USB pack bay. The four-wheel model has no center wheel cavities and therefore no added wheel-cavity shelves. Do not connect separate packs together without a suitable power circuit.
 
 ## Lighting holes
 
-Eight-wheel models have 28 holes for 5 mm LEDs: two per wheel position (16), four between the wheels, and eight below the tray in a 4 x 2 grid. The four-wheel robot has 20: eight at the wheels plus four between and eight below the tray. All three also have FOUR 8 mm LED holes, one centered 20 mm below each front/rear sensor. These counts exclude the existing RGB modules.
+All robot models now have 22 holes for 5 mm LEDs: eight at the OUTER wheel positions, six between the wheels (three per side), and eight below the tray in a 4 x 2 grid. The inner wheel wells have no LED holders or LED holes. All three also have FOUR 8 mm LED holes, one centered 20 mm below each front/rear sensor. These counts exclude the existing RGB modules.
 
 The 5 mm holes are nominal lens bores. Wheel-roof bosses include 6 mm flange seats, 1 mm deep, so the lens stays recessed from the tire space. Use LED lens bodies no longer than 8.7 mm below the flange and flanges no wider than 6 mm; check actual parts before printing. Seven millimeters of lead-routing space is reserved above the base and wheel bosses. The 8 mm holes reserve a 9 mm diameter, 8 mm deep internal LED/wire space. Fit and insulate the leads, add strain relief, and confirm all lenses stay clear of rotating tires. Add appropriate current limiting; this revision adds mounting provisions, not LED control firmware.
 
