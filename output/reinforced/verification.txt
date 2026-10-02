@@ -1,5 +1,6 @@
 seven/r-shell: watertight; components=1; bounds_mm=[279.4, 155.0, 164.952]
 seven/r-white: watertight; components=66; bounds_mm=[70.494, 154.942, 21.66]
+seven/r-frame: watertight; components=1; bounds_mm=[268.8, 144.4, 10.0]
 seven/r-retainer: watertight; components=1; bounds_mm=[168.485, 28.38, 5.0]
 seven/r-lcd-coupon: watertight; components=1; bounds_mm=[79.0, 42.0, 68.0]
 seven/r-cup-left: watertight; components=1; bounds_mm=[166.4, 111.0, 88.0]
@@ -8,69 +9,58 @@ seven/r-cup-tower: watertight; components=1; bounds_mm=[58.4, 94.4, 100.0]
 PASS seven assembly clearances
 six/r-shell: watertight; components=1; bounds_mm=[279.4, 155.0, 164.952]
 six/r-white: watertight; components=66; bounds_mm=[70.494, 154.942, 21.66]
+six/r-frame: watertight; components=1; bounds_mm=[268.8, 144.4, 10.0]
 six/r-retainer: watertight; components=1; bounds_mm=[147.23, 28.38, 5.0]
 six/r-lcd-coupon: watertight; components=1; bounds_mm=[79.0, 42.0, 68.0]
 six/r-cup-left: watertight; components=1; bounds_mm=[166.4, 111.0, 88.0]
 six/r-cup-right: watertight; components=1; bounds_mm=[166.4, 111.0, 88.0]
 six/r-cup-tower: watertight; components=1; bounds_mm=[58.4, 94.4, 100.0]
 PASS six assembly clearances
-exposed/r-shell: watertight; components=1; bounds_mm=[279.4, 220.0, 164.952]
+exposed/r-shell: watertight; components=1; bounds_mm=[279.4, 220.0, 177.952]
 exposed/r-white: watertight; components=66; bounds_mm=[70.494, 219.942, 21.66]
-exposed/r-frame: watertight; components=1; bounds_mm=[268.8, 209.6, 118.7]
+exposed/r-frame: watertight; components=1; bounds_mm=[268.8, 209.6, 109.0]
 exposed/r-retainer: watertight; components=1; bounds_mm=[147.23, 28.38, 5.0]
 exposed/r-lcd-coupon: watertight; components=1; bounds_mm=[79.0, 42.0, 68.0]
 exposed/r-lid: watertight; components=1; bounds_mm=[177.4, 189.4, 20.652]
 exposed/r-tray: watertight; components=1; bounds_mm=[98.0, 88.0, 5.0]
-exposed/r-cap: watertight; components=1; bounds_mm=[66.0, 33.4, 26.3]
-exposed/r-frame-zip: watertight; components=1; bounds_mm=[268.8, 209.6, 118.7]
+exposed/r-cap: watertight; components=1; bounds_mm=[66.0, 20.0, 5.0]
+exposed/r-frame-zip: watertight; components=1; bounds_mm=[268.8, 209.6, 109.0]
 PASS exposed assembly clearances
 PASS exposed: standard and zip-tie chassis are single solids; complete motor/wheel installation sweeps clear
 PASS exposed: three motor ties, tray ties, shelf packs, sensor connectors and LED lead spaces clear; threading paths stay outside motor
-wide/r-shell: watertight; components=1; bounds_mm=[279.4, 220.0, 164.952]
-wide/r-white: watertight; components=66; bounds_mm=[70.494, 219.942, 21.66]
-wide/r-frame: watertight; components=1; bounds_mm=[268.8, 209.6, 84.4]
-wide/r-retainer: watertight; components=1; bounds_mm=[147.23, 28.38, 5.0]
-wide/r-lcd-coupon: watertight; components=1; bounds_mm=[79.0, 42.0, 68.0]
-wide/r-lid: watertight; components=1; bounds_mm=[177.4, 189.4, 20.652]
-wide/r-tray: watertight; components=1; bounds_mm=[98.0, 88.0, 5.0]
-wide/r-cap: watertight; components=1; bounds_mm=[66.0, 33.4, 26.3]
-wide/r-frame-zip: watertight; components=1; bounds_mm=[268.8, 209.6, 84.4]
-PASS wide assembly clearances
-PASS wide: standard and zip-tie chassis are single solids; complete motor/wheel installation sweeps clear
-PASS wide: three motor ties, tray ties, shelf packs, sensor connectors and LED lead spaces clear; threading paths stay outside motor
-PASS seven: exported structural5mm sections and 5mm cup floors/dividers and10mm base measured
-PASS six: exported structural5mm sections and 5mm cup floors/dividers and10mm base measured
-PASS exposed: exported structural5mm sections and 10mm one-piece chassis/motor base measured
-PASS wide: exported structural5mm sections and 10mm one-piece chassis/motor base measured
-seven/r-frame: watertight; components=1; bounds_mm=[268.8, 144.4, 10.0]; unchanged from prior organizer
-six/r-frame: watertight; components=1; bounds_mm=[268.8, 144.4, 10.0]; unchanged from prior organizer
 PASS exposed: exported bore counts match requested LEDs and eight four-hole sensor mounts
-PASS wide: exported bore counts match requested LEDs and eight four-hole sensor mounts
 four/r-shell: watertight; components=1; bounds_mm=[279.4, 158.0, 164.952]
 four/r-white: watertight; components=66; bounds_mm=[70.494, 157.942, 21.66]
-four/r-frame: watertight; components=1; bounds_mm=[268.8, 147.6, 84.4]
+four/r-frame: watertight; components=1; bounds_mm=[268.8, 147.6, 81.4]
 four/r-retainer: watertight; components=1; bounds_mm=[147.23, 28.38, 5.0]
 four/r-lcd-coupon: watertight; components=1; bounds_mm=[79.0, 42.0, 68.0]
 four/r-lid: watertight; components=1; bounds_mm=[177.4, 127.4, 20.652]
 four/r-tray: watertight; components=1; bounds_mm=[98.0, 88.0, 5.0]
-four/r-cap: watertight; components=1; bounds_mm=[66.0, 33.4, 26.3]
-four/r-frame-zip: watertight; components=1; bounds_mm=[268.8, 147.6, 84.4]
+four/r-cap: watertight; components=1; bounds_mm=[66.0, 20.0, 5.0]
+four/r-frame-zip: watertight; components=1; bounds_mm=[268.8, 147.6, 81.4]
 PASS four assembly clearances
 PASS four: standard and zip-tie chassis are single solids; complete motor/wheel installation sweeps clear
 PASS four: three motor ties, tray ties, shelf packs, sensor connectors and LED lead spaces clear; threading paths stay outside motor
 PASS four: exported bore counts match requested LEDs and eight four-hole sensor mounts
-PASS four:158mm body,2.8mm unused inner shaft-tip gap; hardware-pair and insertion-envelope checks pass
-PASS four: exported structural5mm sections and 10mm one-piece chassis/motor base measured
-PASS exposed: complete central battery straps clear bottom LEDs and all structures; motor-pair clearance passes
-PASS four: complete central battery straps clear bottom LEDs and all structures; motor-pair clearance passes
-PASS wide: complete central battery straps clear bottom LEDs and all structures; motor-pair clearance passes
-PASS exposed: solid narrow battery blocks and shelf tie tunnels clear all hardware; outer wheel LEDs only and six side LEDs
-PASS four: solid narrow battery blocks and shelf tie tunnels clear all hardware; outer wheel LEDs only and six side LEDs
-PASS wide: solid narrow battery blocks and shelf tie tunnels clear all hardware; outer wheel LEDs only and six side LEDs
-PASS exposed:22 five-mm LED bores (8 outer wheel,6 between wheels,8 bottom grid);44 sensor/end-face bores
-PASS four:22 five-mm LED bores (8 outer wheel,6 between wheels,8 bottom grid);44 sensor/end-face bores
-PASS wide:22 five-mm LED bores (8 outer wheel,6 between wheels,8 bottom grid);44 sensor/end-face bores
-PASS exposed: eight four-hole sensor mounts; four8mm end LED bores; 22 five-mm LED positions; continuous5mm side skins; level72.3mm tray/shelves
-PASS four: eight four-hole sensor mounts; four8mm end LED bores; 22 five-mm LED positions; continuous5mm side skins; level72.3mm tray/shelves
-PASS wide: eight four-hole sensor mounts; four8mm end LED bores; 22 five-mm LED positions; continuous5mm side skins; level72.3mm tray/shelves
-PDF: 39 pages; eight-angle assemblies and unique printed parts; text/raster checks passed
+wide/r-shell: watertight; components=1; bounds_mm=[279.4, 220.0, 164.952]
+wide/r-white: watertight; components=66; bounds_mm=[70.494, 219.942, 21.66]
+wide/r-frame: watertight; components=1; bounds_mm=[268.8, 209.6, 81.4]
+wide/r-retainer: watertight; components=1; bounds_mm=[147.23, 28.38, 5.0]
+wide/r-lcd-coupon: watertight; components=1; bounds_mm=[79.0, 42.0, 68.0]
+wide/r-lid: watertight; components=1; bounds_mm=[177.4, 189.4, 20.652]
+wide/r-tray: watertight; components=1; bounds_mm=[98.0, 88.0, 5.0]
+wide/r-cap: watertight; components=1; bounds_mm=[66.0, 20.0, 5.0]
+wide/r-frame-zip: watertight; components=1; bounds_mm=[268.8, 209.6, 81.4]
+PASS wide assembly clearances
+PASS wide: standard and zip-tie chassis are single solids; complete motor/wheel installation sweeps clear
+PASS wide: three motor ties, tray ties, shelf packs, sensor connectors and LED lead spaces clear; threading paths stay outside motor
+PASS wide: exported bore counts match requested LEDs and eight four-hole sensor mounts
+PASS seven: exported structural5mm sections and 5mm cup floors/dividers and10mm base measured
+PASS six: exported structural5mm sections and 5mm cup floors/dividers and10mm base measured
+PASS exposed: eight chassis-mounted rotated ToF boards;32 blind pilots; clear optical windows; old body ports closed;3mm skirt overlap; four8mm end LEDs unchanged
+PASS exposed: exported structural5mm sections and 10mm one-piece chassis/motor top stop measured
+PASS four: eight chassis-mounted rotated ToF boards;32 blind pilots; clear optical windows; old body ports closed;3mm skirt overlap; four8mm end LEDs unchanged
+PASS four: exported structural5mm sections and 10mm one-piece chassis/motor top stop measured
+PASS wide: eight chassis-mounted rotated ToF boards;32 blind pilots; clear optical windows; old body ports closed;3mm skirt overlap; four8mm end LEDs unchanged
+PASS wide: exported structural5mm sections and 10mm one-piece chassis/motor top stop measured
+PDF: 40 pages; eight-angle assemblies and unique printed parts; text/raster checks passed

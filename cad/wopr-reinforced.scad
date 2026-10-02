@@ -6,8 +6,14 @@ r_robot=edition!="seven" && edition!="six";
 r_exposed=edition=="exposed"; r_wide=edition=="wide";
 r_wall=5; r_base=10; r_bottom=r_exposed?-10:3; r_top=r_bottom+r_base;
 r_axle=r_exposed?-22:18; r_mbottom=r_axle-14.4; r_mtop=r_axle+56;
-r_cap_z=r_axle+60.3;
-r_xs=edition=="four"?[54,L-54]:[46.3,L-46.3];
+r_tire_radius=31.5+8; // Enlarged design envelope; physical Adafruit tire remains 63mm.
+r_well_radius=r_tire_radius+1;
+r_well_peak=r_well_radius+6.5;
+r_motor_stop=r_axle+56.4;
+r_cap_top=min(r_mbottom-.31,r_bottom-.01);
+r_shell_bottom=r_robot?r_bottom-3:0;
+r_sensor_z=r_bottom+14;
+r_xs=edition=="four"?[54,L-54]:[51.3,L-51.3];
 r_ys=[59.3,W-59.3];
 r_wheels=[for(x=r_xs,y=r_ys,s=(edition=="four"?[y<W/2?-1:1]:[-1,1])) [x,y+s*27,r_axle]];
 r_holes=[for(x=[104,128,151,175],y=[15,W-15]) [x,y]];
@@ -61,36 +67,48 @@ module r_cup_supports(){
 module r_white(){intersection(){white();outline();}}
 // Adafruit3967:25.4x17.78mm PCB,20.32x12.70mm mounting pitch, four2.5mm holes.
 // Local coordinates: horizontal X, inward depth Y, vertical Z. Front=low X end.
-module r_sensor_sites(ends_only=false){
-    for(y=[40,W-40]){
-        translate([0,y,64]) multmatrix([[0,1,0,0],[1,0,0,0],[0,0,1,0],[0,0,0,1]]) children();
-        translate([L,y,64]) rotate([0,0,90]) children();
+module r_sensor_sites(){
+    for(y=r_ys){
+        translate([5.35,y,r_sensor_z]) multmatrix([[0,1,0,0],[1,0,0,0],[0,0,1,0],[0,0,0,1]]) children();
+        translate([L-5.35,y,r_sensor_z]) rotate([0,0,90]) children();
     }
-    if(!ends_only) for(x=[85,170],back=[false,true]) side(back) translate([x,0,64]) children();
+    for(x=r_xs,back=[false,true]) side(back) translate([x,5.35,r_sensor_z]) children();
 }
-module r_sensor_mounts(){r_sensor_sites() for(x=[-10.16,10.16],z=[-6.35,6.35])
-    translate([x,4.5,z]) rotate([-90,0,0]) cylinder(d=6.5,h=3.5);
+module r_sensor_carriers(clear=0){
+    r_sensor_sites() translate([-11.2-clear,-clear,-14-clear]) cube([22.4+2*clear,5+2*clear,30+2*clear]);
+}
+module r_sensor_windows(d=10,depth=13){r_sensor_sites()
+    translate([0,-6.5,0]) rotate([-90,0,0]) cylinder(d=d,h=depth);
 }
 module r_sensor_holes(){
-    r_sensor_sites(){
-        translate([0,-1,0]) rotate([-90,0,0]) cylinder(d=10,h=11);
-        for(x=[-10.16,10.16],z=[-6.35,6.35]) translate([x,2,z]) rotate([-90,0,0]) cylinder(d=1.6,h=6.1);
-    }
-    r_sensor_sites(true) translate([0,-1,-20]) rotate([-90,0,0]) cylinder(d=8,h=12);
+    r_sensor_windows();
+    r_sensor_sites() rotate([0,90,0]) for(x=[-10.16,10.16],z=[-6.35,6.35])
+        translate([x,1,z]) rotate([-90,0,0]) cylinder(d=1.6,h=2.6);
 }
-module r_sensor_space(){r_sensor_sites(){
-    translate([-13,8.05,-9.2]) cube([26,1.9,18.4]);
-    translate([-2,6.2,-3]) cube([4,1.8,6]);
-    for(s=[-1,1]) scale([s,1,1]) translate([8,5.1,-3.1]) cube([15,4.8,6.2]);
+module r_sensor_space(clear=0){r_sensor_sites() rotate([0,90,0]){
+    translate([-13-clear,3.55-clear,-9.2-clear]) cube([26+2*clear,1.9+2*clear,18.4+2*clear]);
+    translate([-2-clear,1.7-clear,-3-clear]) cube([4+2*clear,1.8+2*clear,6+2*clear]);
+    for(s=[-1,1]) scale([s,1,1]) translate([8-clear,.6-clear,-3.1-clear]) cube([15+2*clear,4.8+2*clear,6.2+2*clear]);
 }}
-module r_sensor_led_space(){r_sensor_sites(true) translate([0,5.05,-20]) rotate([-90,0,0]) cylinder(d=9,h=8);}
+// End LEDs retain their existing body positions when the ToF boards move.
+module r_end_led_sites(){for(y=[40,W-40]){
+    translate([0,y,44]) multmatrix([[0,1,0,0],[1,0,0,0],[0,0,1,0],[0,0,0,1]]) children();
+    translate([L,y,44]) rotate([0,0,90]) children();
+}}
+module r_end_led_holes(){r_end_led_sites() translate([0,-1,0]) rotate([-90,0,0]) cylinder(d=8,h=12);}
+module r_sensor_led_space(clear=0){r_end_led_sites() translate([0,5.05-clear,0]) rotate([-90,0,0]) cylinder(d=9+2*clear,h=8+2*clear);}
 module r_raw(){difference(){
     union(){
         difference(){outline();r_inside();
+            if(r_robot && r_shell_bottom<0) translate([-1,-1,-100]) cube([L+2,W+2,102]);
             for(back=[false,true]) side(back) translate([bank_x-bank_w/2-10,4,led_z-board_z/2-5.3]) cube([bank_w+20,20,board_z+10.6]);
             translate([tft_x-32.8,-1,tft_z-26.8]) cube([65.6,42,53.6]);
         }
-        r_lights();r_display();r_bosses();if(r_robot)r_sensor_mounts();
+        r_lights();r_display();r_bosses();
+        if(r_robot && r_shell_bottom<0) difference(){
+            translate([0,0,r_shell_bottom]) cube([L,W,3-r_shell_bottom]);
+            translate([5,5,r_shell_bottom-1]) cube([L-10,W-10,5-r_shell_bottom]);
+        }
         // Keep five millimeters of gray backing beneath the recessed lettering.
         for(back=[false,true]) side(back) translate([199,4.5,54]) cube([76,1.3,31]);
         if(r_robot) for(x=[9,173],y=[5,W-30]) translate([x,y,106]) cube([14,25,10]);
@@ -99,8 +117,8 @@ module r_raw(){difference(){
             side(true) translate([200,4.5,139]) cube([66,1.2,16]);
         }
     }
-    if(r_robot)r_sensor_holes();
-    r_white();translate([-1,-1,-7]) cube([L+2,W+2,7]);
+    if(r_robot){r_sensor_windows();r_end_led_holes();}
+    r_white();translate([-1,-1,-100]) cube([L+2,W+2,100+r_shell_bottom]);
     if(r_robot) translate([-1,W/2,55]) rotate([0,90,0]) cylinder(d=12.3,h=8);
     else {
         intersection(){door_grooves();union(){translate([-1,-1,0]) cube([L+2,W+2,60]);translate([190,W-2,138]) cube([90,4,20]);}}
@@ -112,7 +130,7 @@ module r_shell(){difference(){r_raw();
 
     }
     else r_cup_cuts();
-    if(r_robot){intersection(){r_well_outer(.3);translate([-50,5,-100])cube([400,W-10,300]);}r_well_led_bosses(.3);}
+    if(r_robot){intersection(){r_well_outer(.3);translate([-50,5,-100])cube([400,W-10,300]);}r_well_led_bosses(.3);r_sensor_carriers(.3);}
 }}
 module r_lid(){difference(){
     intersection(){outline();translate([9.3,15.3,116.3]) cube([177.4,W-30.6,70]);}
@@ -128,48 +146,52 @@ module r_cup(tower=false,reverse=false){
         translate([15.3,22,40]) cube([166.4,111,88]);
         for(y=[27,53.5,80,106.5]) translate([20.3,y,89.9]) cube([75.7,21.5,100]);
         for(x=[101,141.35],y=[27,80]) translate([x,y,45]) cube([35.35,48,100]);
-        translate([20.3,27,39]) cube([75.7,101,45.9]);
+        // Taper the underside of the raised floor at 45 degrees; bridge only25.7mm.
+        hull(){
+            translate([20.3,27,39]) cube([75.7,101,20.9]);
+            translate([45.3,52,84.8]) cube([25.7,51,.1]);
+        }
     }
 }
 module r_axc(r,h){rotate([90,0,0]) cylinder(r=r,h=h,center=true,$fn=64);}
-module r_wheel_space(gap=0,up=false){for(p=r_wheels){translate(p) r_axc(31.5+gap,29+2*gap);if(up) translate([p[0]-31.5-gap,p[1]-14.5-gap,-100]) cube([63+2*gap,29+2*gap,250]);}}
+module r_wheel_space(gap=0,up=false){for(p=r_wheels){translate(p) r_axc(r_tire_radius+gap,29+2*gap);if(up) translate([p[0]-r_tire_radius-gap,p[1]-14.5-gap,-100]) cube([2*(r_tire_radius+gap),29+2*gap,250]);}}
 module r_pods(){for(x=r_xs,y=r_ys) translate([x,y,0]) children();}
 module r_motor_mount(zip_ties=false){difference(){union(){
-    // Ten-millimeter bearing foot; five-millimeter cheeks join the chassis directly.
-    translate([-16.7,-11.5,r_mbottom-10]) cube([33.4,23,10]);
+    // Closed ten-millimeter top stop; the bare motor rises through the open bottom.
+    translate([-16.7,-11.5,r_motor_stop]) cube([33.4,23,10]);
     for(s=[-1,1]) scale([s,1,1]) {
-        translate([11.7,-11.5,r_mbottom]) cube([5,23,(zip_ties?r_axle+24:r_axle+60)-r_mbottom]);
-        if(zip_ties) translate([11.7,-5,r_axle+24]) cube([11.8,10,36]);
+        translate([11.7,-11.5,r_mbottom-.3]) cube([5,23,(zip_ties?r_axle+24:r_motor_stop+10)-(r_mbottom-.3)]);
+        if(zip_ties) translate([0,5,r_axle]) rotate([90,0,0]) linear_extrude(10)
+            polygon([[11.7,24],[16.7,24],[23.5,30.8],[23.5,66.4],[11.7,66.4]]);
     }
-    for(x=[-22,22]) translate([x-6.5,-6.5,r_mbottom-5]) cube([13,13,(zip_ties?r_axle+29:r_axle+65)-r_mbottom]);
+    for(x=[-22,22]) translate([x-6.5,-6.5,r_mbottom-.3]) cube([13,13,(zip_ties?r_axle+29:r_motor_stop+10)-(r_mbottom-.3)]);
     for(z=(zip_ties?[r_mbottom+5]:[r_mbottom+5,r_axle+42])) for(x=[-24,16]) translate([x,-6,z]) cube([8,12,5]);
 }
-    translate([-11.7,-11.7,r_mbottom]) cube([23.4,23.4,100]);
-    if(!zip_ties) for(x=[-22,22]) translate([x,0,r_axle+47]) cylinder(d=2.5,h=20);
+    translate([-11.7,-11.7,-120]) cube([23.4,23.4,r_motor_stop+120]);
 }}
 // Front-to-back tunnels stay outside the motor, with >=5mm side walls.
-module r_zip_channels(){for(x=[-17.6,17.6],z=[r_axle+42,r_axle+52])
+module r_zip_channels(){for(x=[-17.6,17.6],z=[r_axle+44,r_axle+54])
     translate([x-.9,-6,z-2.3]) cube([1.8,12,4.6]);
 }
 // Complete 3.6 x 1.2mm belt envelope, including front/rear spans and lock heads.
 // The bands surround the motor and both supports; no span crosses the motor.
-module r_zip_loops(){for(z=[r_axle+42,r_axle+52]){
-    translate([0,0,z-1.8]) linear_extrude(3.6) difference(){
-        offset(delta=1.2) polygon([[-10.2,-11.4],[10.2,-11.4],[17,-5],[17,5],[10.2,11.4],[-10.2,11.4],[-17,5],[-17,-5]]);
-        polygon([[-10.2,-11.4],[10.2,-11.4],[17,-5],[17,5],[10.2,11.4],[-10.2,11.4],[-17,5],[-17,-5]]);
+module r_zip_loops(clear=0){for(z=[r_axle+44,r_axle+54]){
+    translate([0,0,z-1.8-clear]) linear_extrude(3.6+2*clear) difference(){
+        offset(delta=1.2+clear) polygon([[-10.2,-11.4],[10.2,-11.4],[17,-5],[17,5],[10.2,11.4],[-10.2,11.4],[-17,5],[-17,-5]]);
+        offset(delta=-clear) polygon([[-10.2,-11.4],[10.2,-11.4],[17,-5],[17,5],[10.2,11.4],[-10.2,11.4],[-17,5],[-17,-5]]);
     }
-    translate([-3,-18.6,z-2.5]) cube([6,6,5]);
+    translate([-3-clear,-18.6-clear,z-2.5-clear]) cube([6+2*clear,6+2*clear,5+2*clear]);
 }}
-// Third tie runs in a Y/Z plane offset from the shaft, over the motor and under its foot.
+// Third tie surrounds the top stop and the bottom of the gearbox.
 module r_top_tie(){
     translate([4.75,0,0]) rotate([90,0,90]) linear_extrude(2.5) difference(){
-        translate([-12.3,r_mbottom-11.2]) square([24.6,r_axle+57.2-(r_mbottom-11.2)]);
-        translate([-11.3,r_mbottom-10.2]) square([22.6,r_axle+56.2-(r_mbottom-10.2)]);
+        translate([-12.25,r_mbottom-1.2]) square([24.5,r_motor_stop+11.2-(r_mbottom-1.2)]);
+        translate([-11.25,r_mbottom-.2]) square([22.5,r_motor_stop+10.2-(r_mbottom-.2)]);
     }
-    translate([3.75,-2.25,r_axle+57.2]) cube([4.5,4.5,3.5]);
+    translate([3.75,-2.25,r_motor_stop+11.2]) cube([4.5,4.5,3.5]);
 }
 module r_top_tie_channels(){for(s=[-1,1]) scale([1,s,1])
-    translate([4.25,10.9,r_mbottom-12]) cube([3.5,1.8,90]);
+    translate([4.25,10.9,-120]) cube([3.5,1.8,r_motor_stop+130.1]);
 }
 module r_motor_ties(){for(x=r_xs,y=r_ys) translate([x,y,0]) scale([1,y<W/2?1:-1,1]){r_zip_loops();r_top_tie();}}
 module r_motor_hardware(){
@@ -177,49 +199,50 @@ module r_motor_hardware(){
     color([.55,.57,.59]) translate([-10,-11.2,r_axle+24]) cube([20,22.4,32]);
     color([.8,.8,.8]) translate([0,0,r_axle]) r_axc(2.7,36.6);
 }
-module r_cap(){difference(){union(){
-    translate([-33,-16.7,r_cap_z]) cube([66,33.4,5]);
-    for(y=[-16.7,11.7]) translate([-33,y,r_axle+39]) cube([66,5,r_cap_z-r_axle-39]);
-}
-    for(x=[-22,22]) translate([x,0,r_cap_z-1]) cylinder(d=3.3,h=7);
-    translate([-6,-5,r_cap_z-1]) cube([12,10,7]);
+module r_cap(){difference(){
+    translate([-33,-10,r_cap_top-5]) cube([66,20,5]);
+    for(x=[-22,22]) translate([x,0,r_cap_top-6]) cylinder(d=3.3,h=7);
 }}
 // Each outer well includes 6.5mm axial fitting travel. The two inner tires
 // share one arched well, so no thin divider obstructs installation.
 r_service=6.5;
 r_well_ranges=concat([[r_ys[0]-49,r_ys[0]-11.5],[r_ys[1]+11.5,r_ys[1]+49]],edition=="four"?[]:[[r_ys[0]+11.5,r_ys[1]-11.5]]);
+// Circumscribed 45-degree roof with a short central bridge instead of a round ceiling.
+module r_well_profile(){
+    r=r_well_radius; shoulder=r*(sqrt(2)-1); crown=r*sqrt(2)-r_well_peak;
+    polygon([[-r,-140],[r,-140],[r,shoulder],[crown,r_well_peak],[-crown,r_well_peak],[-r,shoulder]]);
+}
+module r_well_prism(length,skin=0){rotate([90,0,0]) linear_extrude(length,center=true) offset(delta=skin) r_well_profile();}
 module r_well_outer(clear=0){
     intersection(){
         union() for(x=r_xs,range=r_well_ranges){
-            translate([x,(range[0]+range[1])/2,r_axle]) r_axc(37.5+clear,range[1]-range[0]+10+2*clear);
-            if(r_axle>r_bottom) translate([x-37.5-clear,range[0]-5-clear,r_bottom-clear]) cube([75+2*clear,range[1]-range[0]+10+2*clear,r_axle-r_bottom+clear]);
+            translate([x,(range[0]+range[1])/2,r_axle]) r_well_prism(range[1]-range[0]+10+2*clear,5+clear);
         }
         translate([-50,-60,r_bottom-clear]) cube([400,W+120,150]);
     }
 }
 module r_well_void(){for(x=r_xs,range=r_well_ranges){
-    translate([x,(range[0]+range[1])/2,r_axle]) r_axc(32.5,range[1]-range[0]);
-    translate([x-32.5,range[0],-120]) cube([65,range[1]-range[0],r_axle+120]);
+    translate([x,(range[0]+range[1])/2,r_axle]) r_well_prism(range[1]-range[0]);
 }}
 module r_motor_void(){r_pods(){
-    translate([-11.7,-11.7,r_mbottom]) cube([23.4,23.4,180]);
-    // Open U-slots admit the motor's fixed double-ended shaft from above.
-    translate([-3.5,-18.6,r_axle-3.5]) cube([7,37.2,140]);
+    translate([-11.7,-11.7,-120]) cube([23.4,23.4,r_motor_stop+120]);
+    // Inverted U-slots admit the fixed double-ended shaft from below.
+    translate([-3.5,-18.6,-120]) cube([7,37.2,r_axle+3.5+120]);
 }}
 module r_motor_insert(){r_pods(){
-    translate([-11.3,-9.4,r_axle-14.2]) cube([22.6,18.8,180]);
-    translate([-10.1,-11.3,r_axle+24]) cube([20.2,22.6,150]);
-    translate([-2.8,-18.4,r_axle-2.8]) cube([5.6,36.8,150]);
+    translate([-11.3,-9.4,-120]) cube([22.6,18.8,r_axle+24.2+120]);
+    translate([-10.1,-11.3,-120]) cube([20.2,22.6,r_axle+56.2+120]);
+    translate([-2.8,-18.4,-120]) cube([5.6,36.8,r_axle+2.8+120]);
 }}
 module r_wheel_install(){for(x=r_xs,y=r_ys,side=(edition=="four"?[y<W/2?-1:1]:[-1,1])){
     cy=y+side*27;sy=cy+side*r_service;
     // First raise the tire clear of the shaft, then press it axially onto it.
-    hull(){translate([x,sy,r_axle]) r_axc(31.7,29.4);translate([x,sy,r_axle-100]) r_axc(31.7,29.4);}
-    hull(){translate([x,sy,r_axle]) r_axc(31.7,29.4);translate([x,cy,r_axle]) r_axc(31.7,29.4);}
+    hull(){translate([x,sy,r_axle]) r_axc(r_tire_radius+.2,29.4);translate([x,sy,r_axle-100]) r_axc(r_tire_radius+.2,29.4);}
+    hull(){translate([x,sy,r_axle]) r_axc(r_tire_radius+.2,29.4);translate([x,cy,r_axle]) r_axc(r_tire_radius+.2,29.4);}
 }}
 // Tie-mounted tray and two level battery shelves over shared inner wheel wells.
 r_shelf_depth=(r_ys[1]-r_ys[0]-35)*.8;
-r_bottom_leds=concat([for(x=[102,140,178],y=[27,W-27]) [x,y]], [for(x=[112,130,148,166],y=[W/2-16,W/2+16]) [x,y]]);
+r_bottom_leds=concat([for(x=[106,140,174],y=[27,W-27]) [x,y]], [for(x=[112,130,148,166],y=[W/2-16,W/2+16]) [x,y]]);
 module r_shelves(){if(r_robot && edition!="four") for(x=r_xs)
     translate([x-28,W/2-r_shelf_depth/2,r_axle+24]) cube([56,r_shelf_depth,72.3-r_axle-24]);
 }
@@ -227,12 +250,12 @@ module r_shelves(){if(r_robot && edition!="four") for(x=r_xs)
 module r_shelf_slots(){if(edition!="four") for(x=r_xs,dx=[-12,12])
     translate([x+dx-2.3,W/2-r_shelf_depth/2-1,65.5]) cube([4.6,r_shelf_depth+2,1.8]);
 }
-module r_shelf_ties(){if(edition!="four") for(x=r_xs,dx=[-12,12]){
-    translate([x+dx-1.8,W/2,0]) rotate([90,0,90]) linear_extrude(3.6) difference(){
-        offset(delta=1.2) polygon([[-r_shelf_depth/2-.3,67],[r_shelf_depth/2+.3,67],[r_shelf_depth/2+.3,72.4],[r_shelf_depth/2-1.8,112.7],[-r_shelf_depth/2+1.8,112.7],[-r_shelf_depth/2-.3,72.4]]);
-        polygon([[-r_shelf_depth/2-.3,67],[r_shelf_depth/2+.3,67],[r_shelf_depth/2+.3,72.4],[r_shelf_depth/2-1.8,112.7],[-r_shelf_depth/2+1.8,112.7],[-r_shelf_depth/2-.3,72.4]]);
+module r_shelf_ties(clear=0){if(edition!="four") for(x=r_xs,dx=[-12,12]){
+    translate([x+dx-1.8-clear,W/2,0]) rotate([90,0,90]) linear_extrude(3.6+2*clear) difference(){
+        offset(delta=1.2+clear) polygon([[-r_shelf_depth/2-.3,67],[r_shelf_depth/2+.3,67],[r_shelf_depth/2+.3,72.4],[r_shelf_depth/2-1.8,112.7],[-r_shelf_depth/2+1.8,112.7],[-r_shelf_depth/2-.3,72.4]]);
+        offset(delta=-clear) polygon([[-r_shelf_depth/2-.3,67],[r_shelf_depth/2+.3,67],[r_shelf_depth/2+.3,72.4],[r_shelf_depth/2-1.8,112.7],[-r_shelf_depth/2+1.8,112.7],[-r_shelf_depth/2-.3,72.4]]);
     }
-    translate([x+dx-3,W/2+r_shelf_depth/2+.2,90]) cube([6,6,5]);
+    translate([x+dx-3-clear,W/2+r_shelf_depth/2+.2-clear,90-clear]) cube([6+2*clear,6+2*clear,5+2*clear]);
 }}
 module r_tray_tie_channels(){for(p=r_tray_holes)
     translate([p[0]-8,p[1]-2.3,60.3]) cube([16,4.6,1.8]);
@@ -255,7 +278,7 @@ module r_well_led_positions(){for(p=r_wheels,dx=[-18,18]) if(p[1]<r_ys[0] || p[1
     y=p[1]<r_ys[0]?p[1]-12:p[1]>r_ys[1]?p[1]+12:p[1];
     translate([p[0]+dx,y,0]) children();
 }}
-r_led_boss_top=r_axle+sqrt(37.5*37.5-18*18)+5;
+r_led_boss_top=r_axle+min(r_well_peak,r_well_radius*sqrt(2)-18)+10;
 module r_well_led_bosses(clear=0){r_well_led_positions()
     translate([0,0,r_axle+25-clear]) cylinder(d=10+2*clear,h=r_led_boss_top-r_axle-25+2*clear);
 }
@@ -276,7 +299,7 @@ module r_shelf_pack_space(){if(edition!="four") for(x=r_xs)
 module r_frame(zip_ties=false){difference(){union(){
     translate([5.3,r_robot?5.2:5.3,r_bottom]) linear_extrude(r_base) offset(r=2) translate([2,2]) square([L-14.6,W-(r_robot?14.4:14.6)]);
     if(r_robot){
-        r_well_outer();r_well_led_bosses();r_shelves();r_pods() r_motor_mount(zip_ties);
+        r_well_outer();r_well_led_bosses();r_shelves();r_pods() r_motor_mount(zip_ties);r_sensor_carriers();
         for(x=[120,159]) translate([x-3,W/2-52,r_top]) cube([6,104,8]);
         for(p=r_tray_holes) translate([p[0],p[1],r_top]) cylinder(d=13,h=67.3-r_top);
 
@@ -285,8 +308,13 @@ module r_frame(zip_ties=false){difference(){union(){
     for(p=r_holes) translate([p[0],p[1],r_bottom-1]) cylinder(d=3.3,h=r_base+2);
     if(r_robot){
         r_well_void();r_motor_void();
-        if(zip_ties) r_pods(){r_zip_channels();r_top_tie_channels();}
-        r_tray_tie_channels();r_shelf_slots();r_led_holes();
+        if(!zip_ties) r_pods() for(x=[-22,22]) translate([x,0,r_cap_top-.1]) cylinder(d=2.5,h=12);
+        r_sensor_space(.05);r_sensor_led_space(.05);r_sensor_holes();
+        if(zip_ties){
+            r_pods(){r_zip_channels();r_top_tie_channels();}
+            for(x=r_xs,y=r_ys) translate([x,y,0]) scale([1,y<W/2?1:-1,1]) r_zip_loops(.3);
+        }
+        r_tray_tie_channels();r_shelf_slots();r_shelf_ties(.35);r_led_holes();
         for(x=[121,157],y=[W/2-54,W/2+54]) translate([x-5.3,y-1.2,r_bottom-1]) cube([10.6,2.4,r_base+2]);
     }
 }}
@@ -332,6 +360,9 @@ module r_check(zip_ties=false){
             assert(r_ys[1]-r_ys[0]>37.2,"Motor insertion envelopes require separate inner shafts");
         }
         intersection(){union(){r_sensor_space();r_sensor_led_space();}union(){r_shell();r_frame(zip_ties);r_tray();r_lid();r_pods()r_motor_hardware();}}
+        intersection(){r_sensor_space();r_wheel_space(.2);}
+        intersection(){r_sensor_space();union(){r_wheel_install();r_motor_insert();}}
+        intersection(){r_sensor_windows(9.8,8.2);union(){r_shell();r_frame(zip_ties);}}
         assert(27+r_service-14.5>18.3+.3,"Wheel starts clear of shaft tip");
         intersection(){r_frame(zip_ties);r_motor_insert();}
         intersection(){r_frame(zip_ties);r_wheel_install();}

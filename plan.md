@@ -394,3 +394,50 @@ Same verified private-desktop launch chain. Per-command180s; two corrected retri
 - 2026-09-29: revision1b784febcf8ca2e880e7fb20ff654fd113b33030 committed and pushed main. git diff --cached --check exited0; gh run list --limit3 --json status,conclusion,headSha returned[].39-page PDF visually reviewed, source text includes53.12mm/22 LED holes/100percent block infill. ZIP integrity and all six current chassis byte equality passed. Unrelated user files preserved.
 
 - 2026-09-29: final39-page solid-block packet sent by /root/email_reinforced. SES MessageId010001a0eeb93ebc-a34466e7-d42e-4012-91b2-f68e0480a544-000000; receipt read back; parent9568 exited0 on WoprBuildPrivate.
+
+
+## bottom-load-clearance — enlarge wheel space and reduce print supports
+
+## Locked decisions (user-confirmed; do not revisit)
+- 2026-10-02 (America/New_York): "the wheel wells are too small, we need to increase the radius of the tires by 8mm in the model to provide clearance.  Also, the motor and tire must insert from the bottom and not the top.  Modify all models for that, then open the 4 wheel model in bambu labs, and review the model for print time, esxpecially the use of supports, and revamp all models to ensure smallest print time, use angled approaches instead of 90 degree turns when printing from bottom to avoidprinting support material where possible as well."
+
+Outcome: all current reinforced robot editions and both motor-retention choices gain an 8mm larger radial tire envelope, bottom-loading motors and wheels, and 45-degree wheel roofs. Review measured Bambu estimates and open the four-wheel native project.
+Non-goals: historical superseded kits, firmware, physical printing, new dependencies, email, scheduled automation. Keep existing wall/base thicknesses and dense battery blocks.
+Files: cad/wopr-reinforced.scad, cad/build-reinforced.py, cad/build-eight-wheel-projects.py, cad/REINFORCED.md, current reinforced exports, plan.md.
+Verified facts: C:/dev/wopr/deploy.md requires main delivery; git branch is main; existing unrelated wording-test 3MF and untracked old Bambu projects/result.json must be preserved. Existing Node -> C:/Python314/pythonw.exe -> C:/dev/wopr/tmp/pdfs/desktop-launch.py -> WoprBuildPrivate child assertion is verified.
+Assumptions: 8mm applies to radial clearance envelope, not replacement hardware. Physical tires remain63mm diameter. Current reinforced editions supersede historical variant exports.
+- [x] bottom-load-geometry — C:/Python314/pythonw.exe private worker running cad/build-reinforced.py passes all exported meshes and bottom insertion sweeps.
+- [x] support-time-review — Bambu CLI slice succeeds with outside=false and records estimated seconds and support use for comparable original/revised four-wheel parts.
+- [x] four-wheel-handoff — native import/export roundtrip passes for all robot projects; four-wheel zip project opens in Bambu Studio.
+- [~] clearance-delivery — git diff --cached --check passes; scoped commit and git push origin main succeed; GitHub workflow reaches terminal success or no workflow exists.
+Job policy: private-desktop parents tracked by PID and exit code; logs include failure and success. CAD export180s, slice180s with mstpp120. Deterministic failures corrected before at most two retries per check; no automatic restarts.
+Stop conditions: existing hidden-execution, missing-credential, scope-expansion and irreversible-action conditions apply. Physical fit and actual print duration remain unverified.
+Execution log: discovery parent39072 exited0; main at a1b386f. Original slice parent16700 tracked in memory and tmp/pdfs/clearance-baseline.log.
+
+- 2026-10-02: C:/dev/wopr/tmp/pdfs/clearance-probes.py parent53424/40272 followed by final probe passes all six r-check/r-check-zip empty-intersection checks after local sensor and complete tie-route recesses. Enlarged radius39.5mm, circumscribed cavity40.5mm, 45-degree roofs and20.55mm bridges. Final export parent53884 tracked; output log C:/dev/wopr/tmp/pdfs/clearance-build.log. Original Bambu STL slices parent52912 exited0 after selecting Textured PEI Plate; baseline four-wheel chassis76122s/633.42g and shell120705s/1270.45g, outside=false.
+
+- 2026-10-02: final full cad/build-reinforced.py private parent17264 exited0: all43 meshes, six bottom-insertion/assembly probes, exported5mm/10mm structural sections, open underside cap screw pilots, LED/sensor counts, shelf widths and tie paths pass. Current39-page packet rendered and checked; date/labels refreshed separately through clearance-packet.py.
+- 2026-10-02: cad/build-eight-wheel-projects.py private parent17076 exited0: all six robot/retention projects plus four-wheel single-color project pass native import/export roundtrip. H2D Standard#1 nozzles set explicitly. Isolated CLI data directory resolves post-export shutdown stalls; no console or desktop app was launched for CLI work. Original user Bambu settings remain unchanged.
+- 2026-10-02: Bambu comparison: 0.20mm/35percent gyroid/grid baseline196827s, support toolpath569.93g for chassis plus single-color shell; revised0.24mm/35percent rectilinear/snug157823s, support188.93g. Both parts slice outside=false. Tree support still fails H2D G-code validation with explicit nozzle configuration; rejected rather than delivered. Normal snug is the fastest valid tested choice. Complete four-wheel slice parent45944 tracked in tmp/pdfs/clearance-final-slice.log.
+
+
+## concealed-chassis-sensors — relocate the eight optical mounts and hide their boards
+
+Locked user decision2026-10-02: "excellent, move the time of flight sensors to around the base of the wheel housing and off the main body, have the main body overlap the bottom by 3mm so it makes a ledge, and the time of flight sensors become kinda hidden."
+Outcome: eight Adafruit3967 mounts belong to the chassis near wheel housings, with two front, two rear and two each side; shell retains only small optical windows. All robot skirts extend3mm below the base underside. Rotate boards90degrees to fit the gap between paired tires.
+Non-goals: sensor firmware, new sensors, changing motors/wheels, moving the four8mm end LEDs, discarding unsaved Bambu edits.
+Files: current reinforced SCAD/build/checks/guide/exports/projects/PDF/kit and plan.
+Verified facts: tucked base undersideZ3 and shell edgeZ0 already give3mm overlap. Low-axle base undersideZ-10 needs shell edgeZ-13. Existing sensor boards25.4x17.78mm; mounting pitch20.32x12.7mm. Current Bambu window has user-created unsaved edits; preserve them.
+Assembly assumption: install wheels and motors before the sensor boards; removable shell covers the board mounts. Optical windows remain open.
+- [x] wheel-housing-sensor-geometry — existing r-check/r-check-zip pass for all three robots; sensor boards, motor/wheel paths and optical sightlines clear; exported mounts and old-hole removal verified.
+- [x] skirt-overlap-proof — exported shell minimumZ equals base minimumZ-3 for each robot; shell/frame mating clearance and continuous5mm skins pass.
+- [~] concealed-sensor-delivery — refresh native projects and measured print review, preserve user Bambu edits, commit/push main and verify workflow terminal result.
+Dependencies: concealed-sensor-delivery depends on wheel-housing-sensor-geometry and skirt-overlap-proof. Same hidden-launch and credential stop conditions and bounded retry policies apply.
+
+- 2026-10-02: sensor revision probes pass r-check and r-check-zip for four/exposed/wide, including PCB/connector envelopes versus running tires, complete motor/wheel bottom insertion and9.8mm optical corridors to the lens face. Sensor recesses clear the shell ledge; carriers are chassis-owned. Eight-wheel axle stations move5mm inward to preserve5mm front/rear skins around the enlarged wells. Low-axle skirt follows the existing rectangular ledge down toZ-13; focused exposed shell export is a watertight single solid. Full sensor-revision builder parent26216 tracked in tmp/pdfs/clearance-build.log.
+
+- 2026-10-02: final sensor model command C:/Python314/pythonw.exe C:/dev/wopr/tmp/pdfs/desktop-launch.py C:/dev/wopr/tmp/pdfs/clearance-build.py, parent25140, exited0. All43 meshes, both retention paths for each robot,32 relocated sensor pilots, old-port closure,3mm skirt overlap and structural sections pass.
+- 2026-10-02: native project command C:/Python314/pythonw.exe C:/dev/wopr/tmp/pdfs/desktop-launch.py C:/dev/wopr/tmp/pdfs/clearance-projects.py, parent22392, exited0. Six native robot/retention projects and a slice-verified single-color four-wheel project pass. Final four-wheel GUI PID13056/window1856270 shows the relocated chassis mounts and low skirt windows. No print command sent.
+- 2026-10-02: cad/review-print-time.py via private parent53232 exited0. Final chassis+single-color shell:157638s (43h47m), support188.55g, versus baseline196827s (54h40m), support569.93g. Normal snug support is fastest of two valid tested strategies.
+- 2026-10-02: complete four-wheel slices via private parent25684 exited0, every plate outside=false. Single-color kit181243s (50h20m43s),1895.78g total,179.35g support deposition; two-color kit186361s (51h46m01s),1914.17g total,182.05g support. Models are unchanged by slicing.
+- 2026-10-02:40-page final PDF rendered and all page contact sheets visually reviewed; no clipping/overlap or orphan reference page. Physical fit, print time, strength and sensor optical range remain untested.

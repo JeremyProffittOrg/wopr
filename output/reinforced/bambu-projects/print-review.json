@@ -1,0 +1,151 @@
+{
+  "printer": "Bambu Lab H2D 0.4 nozzle",
+  "filament": "Generic PETG",
+  "bed": "Textured PEI Plate",
+  "baseline_ref": "a1b386f",
+  "baseline_process": "0.20mm Standard, 35% gyroid, normal automatic support",
+  "revised_process": "0.24mm Standard, 35% rectilinear, short bridges without support",
+  "baseline_single_color_parts": [
+    {
+      "file": "baseline-r-frame-zip.3mf",
+      "plates": [
+        {
+          "index": 1,
+          "seconds": 76122,
+          "grams": 633.42,
+          "support_used": true
+        }
+      ],
+      "seconds": 76122,
+      "grams": 633.42,
+      "support_toolpath_grams": 114.62
+    },
+    {
+      "file": "baseline-r-shell.3mf",
+      "plates": [
+        {
+          "index": 1,
+          "seconds": 120705,
+          "grams": 1270.45,
+          "support_used": true
+        }
+      ],
+      "seconds": 120705,
+      "grams": 1270.45,
+      "support_toolpath_grams": 455.31
+    }
+  ],
+  "revised_single_color_parts": {
+    "grid": [
+      {
+        "file": "revised-grid-r-frame-zip.3mf",
+        "plates": [
+          {
+            "index": 1,
+            "seconds": 68023,
+            "grams": 646.01,
+            "support_used": true
+          }
+        ],
+        "seconds": 68023,
+        "grams": 646.01,
+        "support_toolpath_grams": 38.07
+      },
+      {
+        "file": "revised-grid-r-shell.3mf",
+        "plates": [
+          {
+            "index": 1,
+            "seconds": 95242,
+            "grams": 1027.11,
+            "support_used": true
+          }
+        ],
+        "seconds": 95242,
+        "grams": 1027.11,
+        "support_toolpath_grams": 209.48
+      }
+    ],
+    "snug": [
+      {
+        "file": "revised-snug-r-frame-zip.3mf",
+        "plates": [
+          {
+            "index": 1,
+            "seconds": 65536,
+            "grams": 628.91,
+            "support_used": true
+          }
+        ],
+        "seconds": 65536,
+        "grams": 628.91,
+        "support_toolpath_grams": 20.83
+      },
+      {
+        "file": "revised-snug-r-shell.3mf",
+        "plates": [
+          {
+            "index": 1,
+            "seconds": 92102,
+            "grams": 987.04,
+            "support_used": true
+          }
+        ],
+        "seconds": 92102,
+        "grams": 987.04,
+        "support_toolpath_grams": 167.72
+      }
+    ]
+  },
+  "selected_support": "snug",
+  "rejected_support": "Tree support failed H2D G-code validation with both automatic and explicit nozzle configuration. Not used.",
+  "limits": "Estimates only. Support grams derived from XY extrusion toolpaths. No physical print or strength test. Fastest of the two valid tested support strategies.",
+  "complete_four_zip_projects": [
+    {
+      "file": "wopr-four-one-piece-zip-single-color.3mf",
+      "plates": [
+        {
+          "index": 1,
+          "seconds": 109592,
+          "grams": 1203.61,
+          "support_used": true
+        },
+        {
+          "index": 2,
+          "seconds": 71651,
+          "grams": 692.17,
+          "support_used": true
+        }
+      ],
+      "seconds": 181243,
+      "grams": 1895.78,
+      "support_toolpath_grams": 179.35
+    },
+    {
+      "file": "complete-four-zip.3mf",
+      "plates": [
+        {
+          "index": 1,
+          "seconds": 66778,
+          "grams": 640.91,
+          "support_used": true
+        },
+        {
+          "index": 2,
+          "seconds": 24213,
+          "grams": 278.3,
+          "support_used": true
+        },
+        {
+          "index": 3,
+          "seconds": 95370,
+          "grams": 994.96,
+          "support_used": true
+        }
+      ],
+      "seconds": 186361,
+      "grams": 1914.17,
+      "support_toolpath_grams": 182.05
+    }
+  ]
+}

@@ -1,4 +1,7 @@
-PASS wopr-exposed-one-piece-cap.3mf: 10 print objects, one connected chassis, native Bambu import/export roundtrip, two100% battery-block modifiers, unsliced
-PASS wopr-exposed-one-piece-zip.3mf: 6 print objects, one connected chassis, native Bambu import/export roundtrip, two100% battery-block modifiers, unsliced
-PASS wopr-wide-one-piece-cap.3mf: 10 print objects, one connected chassis, native Bambu import/export roundtrip, two100% battery-block modifiers, unsliced
-PASS wopr-wide-one-piece-zip.3mf: 6 print objects, one connected chassis, native Bambu import/export roundtrip, two100% battery-block modifiers, unsliced
+PASS wopr-exposed-one-piece-cap.3mf: 10 print objects, one connected chassis, native Bambu import/export roundtrip, 2 solid battery-block modifiers, unsliced
+PASS wopr-exposed-one-piece-zip.3mf: 6 print objects, one connected chassis, native Bambu import/export roundtrip, 2 solid battery-block modifiers, unsliced
+PASS wopr-four-one-piece-cap.3mf: 10 print objects, one connected chassis, native Bambu import/export roundtrip, 0 solid battery-block modifiers, unsliced
+PASS wopr-four-one-piece-zip.3mf: 6 print objects, one connected chassis, native Bambu import/export roundtrip, 0 solid battery-block modifiers, unsliced
+PASS wopr-four-one-piece-zip-single-color.3mf: all parts use filament1; no prime tower; native roundtrip and all-plate slice outside=false
+PASS wopr-wide-one-piece-cap.3mf: 10 print objects, one connected chassis, native Bambu import/export roundtrip, 2 solid battery-block modifiers, unsliced
+PASS wopr-wide-one-piece-zip.3mf: 6 print objects, one connected chassis, native Bambu import/export roundtrip, 2 solid battery-block modifiers, unsliced
