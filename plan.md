@@ -409,7 +409,7 @@ Assumptions: 8mm applies to radial clearance envelope, not replacement hardware.
 - [x] bottom-load-geometry — C:/Python314/pythonw.exe private worker running cad/build-reinforced.py passes all exported meshes and bottom insertion sweeps.
 - [x] support-time-review — Bambu CLI slice succeeds with outside=false and records estimated seconds and support use for comparable original/revised four-wheel parts.
 - [x] four-wheel-handoff — native import/export roundtrip passes for all robot projects; four-wheel zip project opens in Bambu Studio.
-- [~] clearance-delivery — git diff --cached --check passes; scoped commit and git push origin main succeed; GitHub workflow reaches terminal success or no workflow exists.
+- [x] clearance-delivery — git diff --cached --check passes; scoped commit and git push origin main succeed; GitHub workflow reaches terminal success or no workflow exists.
 Job policy: private-desktop parents tracked by PID and exit code; logs include failure and success. CAD export180s, slice180s with mstpp120. Deterministic failures corrected before at most two retries per check; no automatic restarts.
 Stop conditions: existing hidden-execution, missing-credential, scope-expansion and irreversible-action conditions apply. Physical fit and actual print duration remain unverified.
 Execution log: discovery parent39072 exited0; main at a1b386f. Original slice parent16700 tracked in memory and tmp/pdfs/clearance-baseline.log.
@@ -431,7 +431,7 @@ Verified facts: tucked base undersideZ3 and shell edgeZ0 already give3mm overlap
 Assembly assumption: install wheels and motors before the sensor boards; removable shell covers the board mounts. Optical windows remain open.
 - [x] wheel-housing-sensor-geometry — existing r-check/r-check-zip pass for all three robots; sensor boards, motor/wheel paths and optical sightlines clear; exported mounts and old-hole removal verified.
 - [x] skirt-overlap-proof — exported shell minimumZ equals base minimumZ-3 for each robot; shell/frame mating clearance and continuous5mm skins pass.
-- [~] concealed-sensor-delivery — refresh native projects and measured print review, preserve user Bambu edits, commit/push main and verify workflow terminal result.
+- [x] concealed-sensor-delivery — refresh native projects and measured print review, preserve user Bambu edits, commit/push main and verify workflow terminal result.
 Dependencies: concealed-sensor-delivery depends on wheel-housing-sensor-geometry and skirt-overlap-proof. Same hidden-launch and credential stop conditions and bounded retry policies apply.
 
 - 2026-10-02: sensor revision probes pass r-check and r-check-zip for four/exposed/wide, including PCB/connector envelopes versus running tires, complete motor/wheel bottom insertion and9.8mm optical corridors to the lens face. Sensor recesses clear the shell ledge; carriers are chassis-owned. Eight-wheel axle stations move5mm inward to preserve5mm front/rear skins around the enlarged wells. Low-axle skirt follows the existing rectangular ledge down toZ-13; focused exposed shell export is a watertight single solid. Full sensor-revision builder parent26216 tracked in tmp/pdfs/clearance-build.log.
@@ -441,3 +441,5 @@ Dependencies: concealed-sensor-delivery depends on wheel-housing-sensor-geometry
 - 2026-10-02: cad/review-print-time.py via private parent53232 exited0. Final chassis+single-color shell:157638s (43h47m), support188.55g, versus baseline196827s (54h40m), support569.93g. Normal snug support is fastest of two valid tested strategies.
 - 2026-10-02: complete four-wheel slices via private parent25684 exited0, every plate outside=false. Single-color kit181243s (50h20m43s),1895.78g total,179.35g support deposition; two-color kit186361s (51h46m01s),1914.17g total,182.05g support. Models are unchanged by slicing.
 - 2026-10-02:40-page final PDF rendered and all page contact sheets visually reviewed; no clipping/overlap or orphan reference page. Physical fit, print time, strength and sensor optical range remain untested.
+
+- 2026-10-02: scoped model commit3048831f7d29a840473386db95712786b43339a1 pushed to origin/main; git diff --cached --check exited0. gh run list --commit3048831f7d29a840473386db95712786b43339a1 returned[] (no triggered workflow). Final archive byte equality passed for every entry. Unrelated wording-test3MF, old untracked eight-wheel projects, root result.json and Bambu-generated cache remain unstaged and preserved. Both requested model revisions are complete; final execution-record commit follows.
